@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PAES Biología · Clase 4 · Organelos Celulares I (Nivel Intermedio)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Source+Sans+3:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-deep:#1a1030;
+    --bg-panel:#241a42;
+    --bg-panel-2:#2c2050;
+    --accent-amber:#f0a24b;
+    --accent-sage:#7fb88f;
+    --accent-coral:#e85c5c;
+    --text-light:#f3ede1;
+    --text-muted:#bdb0d6;
+    --line:#3c2f5c;
+    --radius:14px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:radial-gradient(circle at 15% -10%, #372a5c 0%, var(--bg-deep) 55%) fixed;
+    color:var(--text-light);
+    font-family:'Source Sans 3', system-ui, sans-serif;
+    min-height:100vh;
+    padding:32px 16px 64px;
+  }
+  .wrap{max-width:820px;margin:0 auto;}
+  .eyebrow{font-family:'JetBrains Mono', monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent-amber);margin:0 0 8px;}
+  h1{font-family:'Fraunces', serif;font-weight:600;font-size:clamp(26px,4vw,38px);line-height:1.1;margin:0 0 6px;color:var(--text-light);}
+  .sub{color:var(--text-muted);font-size:15px;margin:0 0 28px;max-width:60ch;}
+  .card{background:linear-gradient(180deg, var(--bg-panel) 0%, var(--bg-panel-2) 100%);border:1px solid var(--line);border-radius:var(--radius);padding:28px;box-shadow:0 20px 40px -20px rgba(0,0,0,.5);}
+  #start-screen ul{color:var(--text-muted);font-size:14.5px;line-height:1.7;padding-left:20px;margin:18px 0 26px;}
+  #start-screen li{margin-bottom:4px;}
+  .btn{font-family:'Source Sans 3', sans-serif;font-weight:700;font-size:15px;border:none;border-radius:999px;padding:14px 30px;cursor:pointer;background:var(--accent-amber);color:#2a1608;transition:transform .15s ease, box-shadow .15s ease;box-shadow:0 8px 20px -8px rgba(0,0,0,.35);}
+  .btn:hover{transform:translateY(-1px);}
+  .btn:active{transform:translateY(0);}
+  .btn.ghost{background:transparent;color:var(--text-muted);border:1.5px solid var(--line);box-shadow:none;}
+  .progress-row{display:flex;align-items:center;gap:14px;margin-bottom:18px;}
+  .progress-track{flex:1;height:6px;border-radius:99px;background:var(--line);overflow:hidden;}
+  .progress-fill{height:100%;background:linear-gradient(90deg,var(--accent-sage),var(--accent-amber));border-radius:99px;transition:width .3s ease;}
+  .progress-label{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--text-muted);white-space:nowrap;}
+  .skill-tag{display:inline-block;font-family:'JetBrains Mono', monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--bg-deep);background:var(--accent-sage);padding:5px 11px;border-radius:999px;margin-bottom:14px;}
+  .qnum{color:var(--text-muted);font-size:13px;font-family:'JetBrains Mono',monospace;margin-bottom:6px;}
+  .question-text{font-family:'Fraunces', serif;font-weight:500;font-size:19px;line-height:1.45;margin:0 0 22px;}
+  .options{display:flex;flex-direction:column;gap:10px;}
+  .option{display:flex;align-items:flex-start;gap:12px;text-align:left;background:rgba(255,255,255,.03);border:1.5px solid var(--line);border-radius:10px;padding:13px 15px;cursor:pointer;color:var(--text-light);font-size:14.5px;line-height:1.4;transition:border-color .15s, background .15s;}
+  .option:hover:not(.locked){border-color:var(--accent-amber);}
+  .option .letter{font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--accent-amber);flex-shrink:0;}
+  .option.correct{border-color:var(--accent-sage);background:rgba(111,168,138,.14);}
+  .option.incorrect{border-color:var(--accent-coral);background:rgba(228,87,46,.14);}
+  .option.locked{cursor:default;}
+  .option.dim{opacity:.45;}
+  .feedback{margin-top:18px;padding:16px 18px;border-radius:10px;background:rgba(255,255,255,.04);border-left:4px solid var(--accent-sage);font-size:14px;line-height:1.6;color:var(--text-muted);}
+  .feedback.wrong{border-left-color:var(--accent-coral);}
+  .feedback strong{color:var(--text-light);}
+  .feedback .pista-label{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent-amber);display:block;margin-bottom:6px;}
+  .nav-row{display:flex;justify-content:flex-end;margin-top:22px;}
+  .score-hero{text-align:center;padding:10px 0 26px;}
+  .score-big{font-family:'Fraunces',serif;font-weight:700;font-size:56px;color:var(--accent-amber);line-height:1;}
+  .score-big span{font-size:24px;color:var(--text-muted);font-weight:500;}
+  .score-caption{color:var(--text-muted);font-size:14px;margin-top:6px;}
+  .skill-bars{display:flex;flex-direction:column;gap:16px;margin:22px 0 8px;}
+  .skill-bar-head{display:flex;justify-content:space-between;font-size:13.5px;margin-bottom:6px;}
+  .skill-bar-head .name{font-weight:600;}
+  .skill-bar-head .frac{font-family:'JetBrains Mono',monospace;color:var(--text-muted);}
+  .skill-bar-track{height:10px;border-radius:99px;background:var(--line);overflow:hidden;}
+  .skill-bar-fill{height:100%;border-radius:99px;}
+  .improve-box{margin-top:26px;background:rgba(228,87,46,.08);border:1px solid rgba(228,87,46,.35);border-radius:10px;padding:18px 20px;}
+  .improve-box h3{font-family:'Fraunces',serif;font-size:16px;margin:0 0 10px;color:var(--accent-coral);}
+  .improve-box ul{margin:0;padding-left:20px;color:var(--text-light);font-size:14px;line-height:1.75;}
+  .strong-box{margin-top:14px;background:rgba(111,168,138,.08);border:1px solid rgba(111,168,138,.35);border-radius:10px;padding:18px 20px;}
+  .strong-box h3{font-family:'Fraunces',serif;font-size:16px;margin:0 0 10px;color:var(--accent-sage);}
+  .strong-box p{margin:0;color:var(--text-light);font-size:14px;line-height:1.6;}
+  .actions{display:flex;gap:12px;margin-top:28px;flex-wrap:wrap;}
+  .hidden{display:none !important;}
+  footer{text-align:center;color:var(--text-muted);font-size:12px;margin-top:26px;opacity:.6;}
+</style>
+</head>
+<body> <div style="float: left; margin-right: 25px; margin-bottom: 25px;"><img src="Logo_AMC.png" alt="Logo" style="max-width: 150px;"></div>
+<div class="wrap">
+  <p class="eyebrow">PAES · Ciencias — Módulo Biología Común · Nivel Intermedio</p>
+  <h1>Organelos Celulares I</h1>
+  <p class="sub">Eje 1: Organización, estructura y actividad celular — Sub-eje: Organelos celulares y membrana plasmática — Clase 4: Organelos Celulares I (Núcleo, RE, Golgi, Ribosomas)</p>
+
+  <div class="card" id="start-screen">
+    <p class="eyebrow" style="margin-bottom:14px;">Antes de comenzar</p>
+    <p style="color:var(--text-muted);font-size:14.5px;line-height:1.6;">Este quiz evalúa nivel <strong style='color:var(--text-light);'>intermedio</strong>, con 20 preguntas (4 por cada habilidad PAES), extraídas al azar de un banco amplio. Cada intento genera una versión distinta.</p>
+    <ul>
+      <li>Observar y plantear preguntas</li>
+      <li>Planificar y conducir una investigación</li>
+      <li>Procesar y analizar la evidencia</li>
+      <li>Evaluar</li>
+      <li>Comunicar</li>
+    </ul>
+    <button class="btn" onclick="startQuiz()">Comenzar quiz</button>
+  </div>
+
+  <div class="card hidden" id="quiz-screen">
+    <div class="progress-row">
+      <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+      <div class="progress-label" id="progress-label">1 / 20</div>
+    </div>
+    <span class="skill-tag" id="skill-tag"></span>
+    <p class="qnum" id="qnum"></p>
+    <p class="question-text" id="question-text"></p>
+    <div class="options" id="options"></div>
+    <div class="feedback hidden" id="feedback"></div>
+    <div class="nav-row">
+      <button class="btn hidden" id="next-btn" onclick="nextQuestion()">Siguiente →</button>
+    </div>
+  </div>
+
+  <div class="card hidden" id="dashboard-screen">
+    <p class="eyebrow">Resultados</p>
+    <div class="score-hero">
+      <div class="score-big" id="score-total">0<span>/20</span></div>
+      <p class="score-caption" id="score-caption">Puntaje global</p>
+    </div>
+    <div class="skill-bars" id="skill-bars"></div>
+    <div class="improve-box hidden" id="improve-box">
+      <h3>Puntos a mejorar</h3>
+      <ul id="improve-list"></ul>
+    </div>
+    <div class="strong-box hidden" id="strong-box">
+      <h3>Habilidades consolidadas</h3>
+      <p id="strong-text"></p>
+    </div>
+    <div class="actions">
+      <button class="btn" onclick="restartQuiz()">Repetir con nuevas preguntas</button>
+      <button class="btn ghost" onclick="reviewAnswers()">Revisar mis respuestas</button>
+    </div>
+  </div>
+
+  <div class="card hidden" id="review-screen"></div>
+
+  <footer>Banco de 40 preguntas · nivel intermedio · Clase 4 de 30 · basado en el temario DEMRE PAES Ciencias — Biología Común</footer>
+</div>
+
+<script>
+const SKILL_NAMES = {"OBS": "Observar y plantear preguntas", "PLAN": "Planificar y conducir una investigación", "PROC": "Procesar y analizar la evidencia", "EVAL": "Evaluar", "COM": "Comunicar"};
+const SKILL_ORDER = ["OBS", "PLAN", "PROC", "EVAL", "COM"];
+const LETTERS = ["A","B","C","D","E"];
+const PICK_PER_SKILL = 4;
+
+const QUESTION_BANK = [{"skill": "OBS", "q": "Se observa que una proteína destinada a permanecer en el retículo endoplásmico posee una secuencia específica de cuatro aminoácidos (KDEL) en su extremo, ausente en proteínas que sí avanzan hacia el aparato de Golgi. ¿Pregunta más precisa?", "options": ["¿La secuencia KDEL actúa como una señal de retención que permite recuperar selectivamente proteínas que escapan hacia el Golgi, devolviéndolas al retículo endoplásmico?", "¿La secuencia KDEL impide que cualquier proteína pueda salir del retículo endoplásmico?", "¿Todas las proteínas celulares poseen la secuencia KDEL en su estructura?", "¿La ausencia de KDEL indica que la proteína nunca fue sintetizada en el retículo endoplásmico?", "¿La secuencia KDEL se relaciona con la degradación completa de la proteína?"], "correct": 0, "exp": "La secuencia KDEL es una señal molecular reconocida por receptores específicos que permite recuperar proteínas residentes del retículo que hayan escapado hacia el Golgi, devolviéndolas mediante transporte vesicular retrógrado."}, {"skill": "OBS", "q": "Un investigador observa que, al inhibir experimentalmente la partícula de reconocimiento de señal (SRP), las proteínas destinadas a ser secretadas dejan de dirigirse correctamente hacia el retículo endoplásmico rugoso durante su síntesis. ¿Pregunta más precisa?", "options": ["¿La SRP cumple un rol necesario en el reconocimiento de la secuencia señal del péptido naciente y su direccionamiento hacia el retículo endoplásmico durante la traducción?", "¿La SRP participa en la replicación del ADN dentro del núcleo celular?", "¿La inhibición de la SRP no tiene ningún efecto sobre la localización de las proteínas sintetizadas?", "¿La SRP es un componente exclusivo del aparato de Golgi, sin relación con el retículo endoplásmico?", "¿Todas las proteínas celulares, sin excepción, requieren de la SRP para ser sintetizadas?"], "correct": 0, "exp": "La partícula de reconocimiento de señal (SRP) reconoce la secuencia señal del péptido naciente y dirige el complejo ribosoma-ARNm hacia el retículo endoplásmico rugoso, un paso clave en la síntesis cotraduccional de proteínas de secreción."}, {"skill": "OBS", "q": "Se observa que las cisternas del aparato de Golgi (cis, medial y trans) presentan distintas enzimas de modificación de proteínas según su posición, y que una proteína específica adquiere modificaciones distintas a medida que avanza de una cisterna a otra. ¿Pregunta más precisa?", "options": ["¿La organización en cisternas con distinta composición enzimática permite un procesamiento secuencial y progresivo de las proteínas a medida que atraviesan el aparato de Golgi?", "¿Todas las cisternas del Golgi poseen exactamente las mismas enzimas?", "¿Las proteínas no sufren ninguna modificación adicional una vez que ingresan al aparato de Golgi?", "¿La posición de la cisterna no tiene ninguna relación con el tipo de modificación que recibe la proteína?", "¿El aparato de Golgi degrada por completo cualquier proteína que ingresa a él?"], "correct": 0, "exp": "La organización del Golgi en cisternas con distinta composición enzimática (cis, medial, trans) explica el procesamiento secuencial y ordenado de las proteínas a medida que avanzan a través de este organelo."}, {"skill": "OBS", "q": "Un estudiante observa que proteínas mal plegadas que se acumulan en el retículo endoplásmico activan una respuesta celular (respuesta a proteínas mal plegadas, UPR) que reduce la síntesis general de proteínas y aumenta la producción de chaperonas. ¿Pregunta más precisa?", "options": ["¿La acumulación de proteínas mal plegadas en el retículo endoplásmico activa un mecanismo de control de calidad que ajusta la actividad celular para reducir el estrés y favorecer el correcto plegamiento proteico?", "¿La respuesta UPR aumenta indefinidamente la síntesis de proteínas mal plegadas?", "¿El retículo endoplásmico no posee ningún mecanismo de control de calidad de las proteínas que sintetiza?", "¿La acumulación de proteínas mal plegadas no tiene ningún efecto sobre la actividad celular?", "¿Las chaperonas producidas durante la UPR degradan inmediatamente todas las proteínas del retículo?"], "correct": 0, "exp": "La respuesta a proteínas mal plegadas (UPR) es un mecanismo de control de calidad que la célula activa ante el estrés del retículo endoplásmico, ajustando la síntesis proteica y aumentando chaperonas para restaurar la homeostasis."}, {"skill": "OBS", "q": "Se observa que el transporte de vesículas desde el retículo endoplásmico hacia el Golgi está mediado por un tipo específico de proteína de cubierta (COPII), mientras que el transporte retrógrado del Golgi al retículo utiliza otro tipo (COPI). ¿Pregunta más precisa?", "options": ["¿La especificidad de las proteínas de cubierta vesicular (COPI, COPII) para cada dirección de transporte contribuye a mantener la direccionalidad y organización de la vía de secreción celular?", "¿COPI y COPII son exactamente la misma proteína con distinto nombre?", "¿El transporte vesicular dentro de la célula ocurre siempre sin ningún tipo de cubierta proteica?", "¿La dirección del transporte vesicular no tiene relación con el tipo de cubierta proteica utilizada?", "¿COPI y COPII participan únicamente en la degradación de vesículas, sin ningún rol en el transporte?"], "correct": 0, "exp": "El uso de distintos tipos de cubiertas vesiculares (COPII para transporte anterógrado RE→Golgi, COPI para transporte retrógrado Golgi→RE) es un mecanismo molecular que asegura la direccionalidad correcta del tráfico vesicular."}, {"skill": "OBS", "q": "Un investigador nota que proteínas destinadas al núcleo celular poseen una secuencia específica de aminoácidos (señal de localización nuclear, NLS), reconocida por proteínas transportadoras (importinas) que las guían a través de los poros nucleares. ¿Pregunta más precisa?", "options": ["¿La presencia de una secuencia NLS específica, reconocida por importinas, es el mecanismo molecular que permite el transporte selectivo y activo de proteínas hacia el interior del núcleo celular?", "¿Todas las proteínas celulares poseen automáticamente una secuencia NLS?", "¿Las importinas transportan proteínas exclusivamente desde el núcleo hacia el citoplasma?", "¿La secuencia NLS impide que cualquier proteína pueda ingresar al núcleo celular?", "¿El transporte de proteínas hacia el núcleo ocurre siempre de forma completamente pasiva, sin ningún mecanismo de reconocimiento?"], "correct": 0, "exp": "El sistema de transporte nuclear selectivo depende del reconocimiento específico de secuencias señal (NLS) por proteínas transportadoras especializadas (importinas), que median el paso activo y regulado hacia el núcleo."}, {"skill": "OBS", "q": "Se observa que la glicosilación de proteínas (adición de cadenas de carbohidratos) comienza en el retículo endoplásmico rugoso y continúa modificándose progresivamente en el aparato de Golgi, generando patrones de glicosilación distintos según el destino final de la proteína. ¿Pregunta más precisa?", "options": ["¿El patrón progresivo de glicosilación a lo largo de la vía de secreción cumple un rol funcional en el direccionamiento, estabilidad o reconocimiento de la proteína en su destino final?", "¿La glicosilación ocurre exclusivamente en el núcleo celular, sin relación con el retículo o el Golgi?", "¿Todas las proteínas reciben exactamente el mismo patrón de glicosilación, sin importar su destino final?", "¿La glicosilación destruye la función biológica de cualquier proteína que la recibe?", "¿El retículo endoplásmico rugoso no participa en ningún proceso de modificación de proteínas?"], "correct": 0, "exp": "Los patrones específicos de glicosilación, generados progresivamente a lo largo de la vía de secreción, cumplen roles funcionales importantes, incluyendo el reconocimiento y direccionamiento correcto de la proteína hacia su destino final."}, {"skill": "OBS", "q": "Un estudiante observa que la exportación de proteínas y ARN desde el núcleo hacia el citoplasma requiere de una proteína reguladora (Ran) que cambia entre dos estados (unida a GTP o a GDP) según su localización dentro o fuera del núcleo. ¿Pregunta más precisa?", "options": ["¿El gradiente de Ran-GTP/Ran-GDP entre el núcleo y el citoplasma proporciona la direccionalidad y energía necesaria para el transporte activo y selectivo a través de los poros nucleares?", "¿La proteína Ran no tiene ninguna relación con el transporte a través de los poros nucleares?", "¿Ran se encuentra en la misma concentración y estado tanto dentro como fuera del núcleo?", "¿El transporte nuclear ocurre siempre de forma pasiva, sin necesidad de ningún gradiente regulador?", "¿Ran es una proteína estructural del poro nuclear, sin ninguna función reguladora?"], "correct": 0, "exp": "El gradiente de Ran-GTP (alto en el núcleo) y Ran-GDP (alto en el citoplasma) es el mecanismo molecular central que confiere direccionalidad al transporte activo de moléculas a través de los poros nucleares."}, {"skill": "PLAN", "q": "Para investigar si la secuencia KDEL es responsable de la retención de proteínas en el retículo endoplásmico, ¿cuál es el diseño experimental más adecuado?", "options": ["Comparar la localización final de una proteína con la secuencia KDEL intacta frente a una versión de la misma proteína con esa secuencia eliminada mediante mutagénesis, manteniendo iguales las demás condiciones experimentales", "Comparar dos proteínas completamente distintas, una con y otra sin la secuencia KDEL de forma natural", "Eliminar simultáneamente múltiples secuencias señal sin poder aislar el efecto específico de KDEL", "No es necesario ningún grupo de comparación para esta pregunta", "Observar la localización de la proteína en un solo momento, sin ningún seguimiento temporal"], "correct": 0, "exp": "Comparar la misma proteína con y sin la secuencia KDEL (mediante mutagénesis dirigida), manteniendo todo lo demás constante, permite atribuir específicamente a esa secuencia el efecto de retención observado."}, {"skill": "PLAN", "q": "Se desea determinar si la partícula de reconocimiento de señal (SRP) es necesaria para el direccionamiento de proteínas de secreción hacia el retículo endoplásmico. ¿Diseño experimental más adecuado?", "options": ["Comparar la localización de una proteína de secreción en células con SRP funcional frente a células donde la SRP ha sido inhibida específicamente, manteniendo iguales las demás condiciones", "Inhibir simultáneamente la SRP y el retículo endoplásmico, sin poder diferenciar el efecto de cada uno", "No es necesario ningún grupo de comparación para esta pregunta", "Medir solo la cantidad total de proteína producida, sin evaluar su localización final", "Comparar proteínas de secreción con proteínas nucleares, sin ningún control apropiado"], "correct": 0, "exp": "Comparar bajo condiciones controladas el efecto específico de la inhibición de la SRP, manteniendo todo lo demás constante, permite establecer su necesidad para el direccionamiento correcto de proteínas de secreción."}, {"skill": "PLAN", "q": "Para investigar si las cubiertas vesiculares COPI y COPII median direcciones opuestas de transporte (retrógrado y anterógrado, respectivamente), ¿cuál es el diseño experimental más riguroso?", "options": ["Inhibir selectivamente COPI y COPII por separado en distintos grupos experimentales, y en cada caso determinar si se afecta específicamente el transporte RE→Golgi (anterógrado) o Golgi→RE (retrógrado), comparando con un grupo control sin inhibición", "Inhibir COPI y COPII al mismo tiempo, sin poder diferenciar el efecto de cada una por separado", "No es necesario ningún grupo control para este tipo de experimento", "Medir solo la cantidad total de vesículas presentes, sin evaluar su dirección de transporte", "Asumir la dirección de cada tipo de cubierta sin realizar ningún experimento de inhibición"], "correct": 0, "exp": "Inhibir cada tipo de cubierta vesicular por separado, evaluando el efecto específico sobre cada dirección de transporte, permite establecer de forma rigurosa la especificidad direccional de COPI y COPII."}, {"skill": "PLAN", "q": "Un investigador desea determinar si una secuencia específica de aminoácidos funciona como señal de localización nuclear (NLS). ¿Cuál es el diseño experimental más adecuado?", "options": ["Fusionar la secuencia candidata a una proteína que normalmente no ingresa al núcleo, y observar si esta proteína modificada logra localizarse en el núcleo, comparando con la proteína original sin la secuencia fusionada", "Observar la localización de una proteína que ya se sabe que ingresa al núcleo, sin ninguna modificación experimental", "No es necesario ningún grupo de comparación para esta pregunta", "Fusionar la secuencia candidata a múltiples proteínas distintas sin ningún control apropiado", "Asumir que la secuencia es una NLS sin realizar ningún experimento de fusión"], "correct": 0, "exp": "El experimento clásico para identificar una señal de localización (como NLS) consiste en fusionarla a una proteína reportera que normalmente no se dirige a esa ubicación, y observar si adquiere la capacidad de localizarse allí."}, {"skill": "PLAN", "q": "Para investigar si el gradiente de Ran-GTP/Ran-GDP es necesario para la direccionalidad del transporte nuclear, ¿cuál es el diseño experimental más adecuado?", "options": ["Alterar experimentalmente el gradiente normal de Ran (por ejemplo, mediante una mutación que impida la hidrólisis de GTP) y comparar la eficiencia y direccionalidad del transporte nuclear con un grupo control de gradiente normal", "No es necesario ningún grupo control para este experimento", "Medir solo la cantidad total de Ran presente, sin evaluar el transporte nuclear", "Alterar simultáneamente múltiples componentes del sistema de transporte sin poder aislar el efecto de Ran", "Asumir la necesidad del gradiente sin realizar ningún experimento de alteración"], "correct": 0, "exp": "Alterar específicamente el gradiente de Ran (por ejemplo, bloqueando su ciclo GTP/GDP) y comparar con un grupo control de funcionamiento normal permite establecer su necesidad causal para la direccionalidad del transporte nuclear."}, {"skill": "PLAN", "q": "Se desea investigar si la respuesta a proteínas mal plegadas (UPR) reduce efectivamente el estrés del retículo endoplásmico. ¿Diseño experimental más adecuado?", "options": ["Inducir estrés del retículo endoplásmico en dos grupos de células, uno con la vía UPR funcional y otro con esta vía inhibida, y comparar indicadores de estrés celular (como la cantidad de proteínas mal plegadas acumuladas) entre ambos grupos", "Inducir estrés solo en el grupo con UPR inhibida, sin ningún grupo de comparación con UPR funcional", "No es necesario comparar ambos grupos para responder esta pregunta", "Medir el estrés celular antes de inducirlo experimentalmente, sin ninguna medición posterior", "Usar niveles distintos de estrés inducido para cada grupo experimental"], "correct": 0, "exp": "Comparar el nivel de estrés celular entre un grupo con la vía UPR funcional y otro con esta vía inhibida, bajo el mismo estímulo de estrés inicial, permite evaluar de forma rigurosa la efectividad de este mecanismo de control de calidad."}, {"skill": "PLAN", "q": "Para investigar si el patrón de glicosilación de una proteína influye en su reconocimiento por un receptor celular específico, ¿cuál es el diseño experimental más adecuado?", "options": ["Comparar la unión de la proteína a su receptor en su forma normalmente glicosilada frente a una versión de la misma proteína con la glicosilación experimentalmente eliminada o alterada, bajo las mismas condiciones de ensayo", "Comparar dos proteínas completamente distintas, con y sin glicosilación de forma natural", "No es necesario ningún grupo de comparación para esta pregunta", "Alterar simultáneamente la glicosilación y la secuencia de aminoácidos de la proteína, sin poder aislar el efecto de cada una", "Medir solo la cantidad de carbohidratos presentes, sin evaluar la unión al receptor"], "correct": 0, "exp": "Comparar la misma proteína con y sin su glicosilación característica, bajo condiciones idénticas de ensayo de unión, permite aislar específicamente el efecto de este tipo de modificación sobre el reconocimiento por el receptor."}, {"skill": "PROC", "q": "Se comparó la localización final de una proteína con secuencia KDEL intacta (95% retenida en el retículo endoplásmico) y una versión sin esa secuencia (8% retenida, el resto secretada al exterior). ¿Qué conclusión es más adecuada?", "options": ["La secuencia KDEL es necesaria para la retención eficiente de la proteína en el retículo endoplásmico, ya que su eliminación reduce drásticamente el porcentaje de proteína retenida", "La secuencia KDEL no tiene ninguna relación con la localización final de la proteína", "La eliminación de la secuencia KDEL aumenta la retención de la proteína en el retículo endoplásmico", "Ambas versiones de la proteína muestran exactamente el mismo patrón de localización", "La proteína sin la secuencia KDEL se degrada por completo, sin ser secretada"], "correct": 0, "exp": "La marcada diferencia en el porcentaje de retención entre ambas versiones de la proteína (95% vs 8%) evidencia el rol necesario de la secuencia KDEL en el mecanismo de retención en el retículo endoplásmico."}, {"skill": "PROC", "q": "Se midió el porcentaje de proteínas de secreción correctamente dirigidas al retículo endoplásmico en células con SRP funcional (90%) y con SRP inhibida (12%). ¿Qué conclusión es más adecuada?", "options": ["La SRP es necesaria para el direccionamiento eficiente de proteínas de secreción hacia el retículo endoplásmico, dado que su inhibición reduce drásticamente el porcentaje de proteínas correctamente dirigidas", "La inhibición de la SRP aumenta la eficiencia de direccionamiento hacia el retículo endoplásmico", "La SRP no tiene ninguna relación con el direccionamiento de proteínas hacia el retículo endoplásmico", "Ambos grupos experimentales muestran resultados equivalentes en cuanto a direccionamiento proteico", "Las proteínas de secreción no requieren de ningún mecanismo de direccionamiento hacia el retículo endoplásmico"], "correct": 0, "exp": "La marcada disminución del porcentaje de direccionamiento correcto tras la inhibición de la SRP (de 90% a 12%) confirma su rol necesario en este proceso de reconocimiento y direccionamiento."}, {"skill": "PROC", "q": "Se comparó el efecto de inhibir COPI y COPII por separado sobre el transporte vesicular: inhibición de COPII=bloqueo del transporte RE→Golgi (anterógrado), sin afectar el transporte Golgi→RE; inhibición de COPI=bloqueo del transporte Golgi→RE (retrógrado), sin afectar el transporte RE→Golgi. ¿Qué conclusión es más adecuada?", "options": ["COPI y COPII median direcciones de transporte específicas y no intercambiables: COPII para el transporte anterógrado (RE→Golgi) y COPI para el retrógrado (Golgi→RE)", "COPI y COPII cumplen exactamente la misma función en el transporte vesicular", "La inhibición de cualquiera de las dos cubiertas bloquea ambas direcciones de transporte por igual", "COPI media el transporte anterógrado y COPII el retrógrado, según estos datos", "Ninguna de las dos cubiertas tiene relación con la dirección del transporte vesicular"], "correct": 0, "exp": "El patrón de resultados (cada inhibición afecta específicamente una sola dirección de transporte) confirma la especificidad direccional de cada tipo de cubierta vesicular, sin superposición de función entre ellas."}, {"skill": "PROC", "q": "Se midió el porcentaje de una proteína reportera (que normalmente permanece en el citoplasma) localizada en el núcleo tras fusionarla con una secuencia candidata a NLS: proteína original=2% en núcleo; proteína fusionada con la secuencia candidata=88% en núcleo. ¿Qué conclusión es más adecuada?", "options": ["La secuencia candidata funciona efectivamente como una señal de localización nuclear (NLS), ya que su fusión incrementa drásticamente la proporción de la proteína reportera localizada en el núcleo", "La secuencia candidata impide que la proteína reportera ingrese al núcleo", "La fusión con la secuencia candidata no tiene ningún efecto sobre la localización de la proteína reportera", "Ambas versiones de la proteína muestran el mismo porcentaje de localización nuclear", "La secuencia candidata degrada por completo la proteína reportera antes de que pueda ser localizada"], "correct": 0, "exp": "El marcado aumento en la proporción de proteína localizada en el núcleo tras fusionar la secuencia candidata (de 2% a 88%) es evidencia experimental sólida de que dicha secuencia funciona como una señal de localización nuclear."}, {"skill": "PROC", "q": "Se comparó la eficiencia del transporte nuclear en células con el ciclo normal de Ran-GTP/Ran-GDP (transporte eficiente, direccional) y en células con una mutación que impide la hidrólisis de GTP por Ran (transporte ineficiente, sin direccionalidad clara). ¿Qué conclusión es más adecuada?", "options": ["El ciclo de hidrólisis de GTP por Ran es necesario para mantener la eficiencia y direccionalidad del transporte a través de los poros nucleares", "La mutación que impide la hidrólisis de GTP mejora la eficiencia del transporte nuclear", "El ciclo de Ran-GTP/Ran-GDP no tiene ninguna relación con el transporte nuclear", "Ambos grupos experimentales muestran resultados equivalentes en eficiencia y direccionalidad de transporte", "El transporte nuclear ocurre de forma completamente independiente de cualquier proteína reguladora"], "correct": 0, "exp": "La pérdida de eficiencia y direccionalidad del transporte al alterar el ciclo de Ran es consistente con el rol central de este gradiente molecular en proporcionar la energía y direccionalidad al sistema de transporte nuclear."}, {"skill": "PROC", "q": "Se midió el nivel de estrés celular (acumulación de proteínas mal plegadas) tras inducir estrés del retículo endoplásmico en células con UPR funcional (nivel de estrés que disminuye progresivamente tras el pico inicial) y con UPR inhibida (nivel de estrés que se mantiene elevado de forma sostenida). ¿Qué conclusión es más adecuada?", "options": ["La vía UPR contribuye efectivamente a reducir el estrés del retículo endoplásmico tras su activación, ya que su inhibición impide la recuperación observada en el grupo con la vía funcional", "La inhibición de la vía UPR mejora la capacidad de la célula para reducir el estrés del retículo endoplásmico", "La vía UPR no tiene ningún efecto sobre el nivel de estrés del retículo endoplásmico", "Ambos grupos experimentales muestran el mismo patrón de recuperación del estrés celular", "El estrés del retículo endoplásmico no puede ser inducido experimentalmente de ninguna forma"], "correct": 0, "exp": "La diferencia en la trayectoria del nivel de estrés entre ambos grupos (recuperación en el grupo con UPR funcional, estrés sostenido en el grupo inhibido) confirma el rol protector de esta vía de respuesta celular."}, {"skill": "PROC", "q": "Se comparó la afinidad de unión de una proteína a su receptor celular en su forma normalmente glicosilada (alta afinidad) y con la glicosilación experimentalmente eliminada (afinidad considerablemente reducida). ¿Qué conclusión es más adecuada?", "options": ["La glicosilación de la proteína contribuye significativamente a su reconocimiento y unión eficiente al receptor celular específico", "La eliminación de la glicosilación aumenta la afinidad de unión al receptor", "La glicosilación no tiene ninguna relación con el reconocimiento de la proteína por su receptor", "Ambas versiones de la proteína muestran exactamente la misma afinidad de unión", "La proteína sin glicosilación se une con mayor eficiencia a cualquier receptor celular"], "correct": 0, "exp": "La reducción de afinidad tras eliminar la glicosilación evidencia que este tipo de modificación postraduccional cumple un rol funcional relevante en el reconocimiento molecular por el receptor específico."}, {"skill": "EVAL", "q": "Un estudio concluyó que 'la secuencia KDEL impide por completo que cualquier proteína pueda salir del retículo endoplásmico' basándose en el alto porcentaje de retención observado (95%). ¿Qué crítica es más pertinente?", "options": ["La conclusión es correcta, ya que un porcentaje del 95% equivale a una retención completa y absoluta", "Un porcentaje de retención del 95%, aunque alto, no equivale a un bloqueo completo (100%); una pequeña proporción de la proteína igualmente logra escapar, lo que sugiere que el mecanismo de retención es eficiente pero no absoluto", "El 5% restante de proteína no tiene ninguna relevancia biológica que deba considerarse", "La secuencia KDEL bloquea completamente cualquier posibilidad de transporte vesicular", "No es necesario distinguir entre una retención parcial y una retención completa en este contexto"], "correct": 1, "exp": "Un resultado experimental de 95% de retención, aunque indica un mecanismo eficiente, no debe generalizarse como 'impide por completo'; la precisión en la comunicación de resultados cuantitativos es importante para no exagerar el alcance real de un hallazgo."}, {"skill": "EVAL", "q": "Una investigación concluyó que 'la SRP es el único mecanismo posible para dirigir cualquier proteína hacia el retículo endoplásmico' basándose en su rol en el direccionamiento cotraduccional de proteínas de secreción. ¿Qué crítica es más pertinente?", "options": ["La conclusión es correcta porque la SRP es el único mecanismo de direccionamiento proteico conocido en la célula", "Existen mecanismos de translocación postraduccional (independientes de la SRP) para ciertas proteínas que también llegan al retículo endoplásmico; afirmar que la SRP es 'el único mecanismo posible' ignora esta evidencia adicional documentada en la literatura celular", "El retículo endoplásmico no puede recibir proteínas mediante ningún otro mecanismo aparte de la SRP", "La SRP no tiene ninguna relación real con el direccionamiento de proteínas hacia el retículo endoplásmico", "Todas las proteínas que llegan al retículo endoplásmico deben pasar obligatoriamente por el mismo mecanismo de la SRP, sin ninguna excepción"], "correct": 1, "exp": "Aunque la vía dependiente de SRP es la mejor caracterizada y la principal para muchas proteínas de secreción, existen rutas alternativas (translocación postraduccional) documentadas; afirmar exclusividad absoluta no está respaldado por la evidencia biológica completa."}, {"skill": "EVAL", "q": "Un estudio sobre COPI y COPII utilizó un solo tipo celular para concluir que 'la especificidad direccional de estas cubiertas vesiculares es universal en todos los tipos de célula eucarionte, sin ninguna excepción'. ¿Qué crítica es más pertinente?", "options": ["Un solo tipo celular es siempre representativo de todos los tipos celulares eucariontes existentes", "Generalizar a partir de un solo tipo celular a 'todos los tipos de célula eucarionte, sin ninguna excepción' excede lo que ese estudio específico puede respaldar; se requeriría verificar el patrón en una diversidad más amplia de tipos celulares y organismos", "No es necesario verificar el patrón en más de un tipo celular para esta generalización", "La especificidad direccional de COPI y COPII nunca ha sido documentada en ningún tipo celular", "Todos los tipos celulares presentan mecanismos de transporte vesicular completamente distintos entre sí"], "correct": 1, "exp": "Generalizar un hallazgo obtenido en un solo tipo celular a 'todos los tipos celulares, sin ninguna excepción' es una sobregeneralización que requeriría verificación adicional en una muestra más amplia y diversa antes de sostenerse con ese nivel de certeza."}, {"skill": "EVAL", "q": "Una publicación afirmó que 'cualquier secuencia de aminoácidos rica en lisina y arginina funciona automáticamente como señal de localización nuclear (NLS)' basándose en que la NLS clásica contiene estos aminoácidos. ¿Qué crítica es más pertinente?", "options": ["La afirmación es correcta porque cualquier secuencia con esos aminoácidos cumple automáticamente la función de NLS", "No toda secuencia rica en lisina y arginina funciona necesariamente como NLS; el contexto estructural específico y el reconocimiento por las importinas son factores adicionales necesarios, por lo que la sola composición de aminoácidos no garantiza la función de señal de localización nuclear", "Las importinas no participan en el reconocimiento de ninguna secuencia NLS", "La composición de aminoácidos no tiene ninguna relación con la función de una secuencia NLS", "Todas las proteínas celulares poseen automáticamente una secuencia funcional de NLS"], "correct": 1, "exp": "Aunque la NLS clásica es rica en aminoácidos básicos (lisina, arginina), no toda secuencia con esa composición general funciona automáticamente como señal; el reconocimiento específico por las importinas depende de un contexto estructural más preciso que la sola composición de aminoácidos."}, {"skill": "EVAL", "q": "Un estudio concluyó que 'la vía UPR siempre logra revertir completamente cualquier nivel de estrés del retículo endoplásmico' basándose en la recuperación observada tras un estrés moderado inducido experimentalmente. ¿Qué crítica es más pertinente?", "options": ["La conclusión es correcta porque la vía UPR siempre logra revertir cualquier nivel de estrés celular, sin ninguna excepción", "Generalizar la efectividad observada bajo un nivel de estrés moderado a 'cualquier nivel de estrés' ignora que, ante un estrés celular muy severo y prolongado, la vía UPR puede ser insuficiente y activar en su lugar mecanismos de muerte celular programada, en lugar de lograr una recuperación completa", "La vía UPR nunca logra reducir el estrés del retículo endoplásmico bajo ninguna condición", "El nivel de estrés inducido experimentalmente no tiene ninguna relación con la efectividad de la vía UPR", "No es necesario considerar distintos niveles de estrés para evaluar la efectividad de la vía UPR"], "correct": 1, "exp": "La respuesta UPR tiene límites funcionales conocidos: ante estrés muy severo o prolongado, la célula puede activar vías de muerte celular programada en lugar de lograr la recuperación completa observada bajo condiciones de estrés moderado; generalizar sin considerar esa condicionalidad es un error."}, {"skill": "EVAL", "q": "Una investigación concluyó que 'la glicosilación es completamente irrelevante para la función de cualquier proteína' basándose en que una proteína específica mantuvo su actividad enzimática básica tras eliminar su glicosilación. ¿Qué crítica es más pertinente?", "options": ["La conclusión es correcta porque la actividad enzimática es el único aspecto relevante de la función de cualquier proteína", "Que la actividad enzimática básica se mantenga tras eliminar la glicosilación no implica que esta modificación sea irrelevante para otros aspectos funcionales de esa proteína (como su reconocimiento por receptores, estabilidad o direccionamiento celular), que no fueron evaluados en el estudio descrito", "La glicosilación nunca tiene ningún efecto sobre ninguna proteína celular", "Todas las proteínas celulares pierden completamente su función al ser glicosiladas", "No es necesario evaluar otros aspectos funcionales de una proteína además de su actividad enzimática básica"], "correct": 1, "exp": "Evaluar un solo aspecto funcional (actividad enzimática básica) no permite generalizar sobre 'la función' completa de una proteína; la glicosilación puede ser relevante para otros aspectos (reconocimiento, estabilidad, direccionamiento) no evaluados en ese estudio particular."}, {"skill": "COM", "q": "Un estudiante debe explicar por qué la secuencia KDEL permite que ciertas proteínas permanezcan en el retículo endoplásmico a pesar de ser transportadas ocasionalmente hacia el Golgi. ¿Explicación más precisa?", "options": ["La secuencia KDEL impide por completo que la proteína salga del retículo endoplásmico bajo cualquier circunstancia", "Cuando una proteína con la secuencia KDEL escapa ocasionalmente hacia el Golgi, receptores específicos en ese organelo reconocen dicha secuencia y median su retorno mediante transporte vesicular retrógrado (mediado por COPI) de vuelta al retículo endoplásmico, manteniendo así su localización residente", "La secuencia KDEL convierte a la proteína en un componente estructural del aparato de Golgi", "Las proteínas con secuencia KDEL nunca son transportadas fuera del retículo endoplásmico bajo ninguna circunstancia", "El retículo endoplásmico no posee ningún mecanismo de recuperación de proteínas residentes"], "correct": 1, "exp": "La explicación completa debe incluir el mecanismo de 'escape y recuperación': la proteína puede salir ocasionalmente, pero es reconocida y devuelta activamente mediante un sistema de receptores y transporte retrógrado específico."}, {"skill": "COM", "q": "Al explicar el rol de la partícula de reconocimiento de señal (SRP) en la síntesis de proteínas de secreción, ¿cuál es la explicación más precisa?", "options": ["La SRP reconoce la secuencia señal del péptido naciente durante la traducción, deteniendo temporalmente la síntesis y dirigiendo al complejo ribosoma-ARNm hacia un receptor específico en la membrana del retículo endoplásmico rugoso, donde la síntesis continúa y la proteína es translocada hacia el interior del organelo", "La SRP sintetiza directamente la proteína de secreción, sin necesidad de ribosomas", "La SRP participa únicamente en la degradación de proteínas mal plegadas", "La SRP se encuentra exclusivamente en el núcleo celular, sin ninguna relación con el retículo endoplásmico", "La SRP transporta proteínas ya completamente sintetizadas desde el citoplasma hacia el retículo endoplásmico"], "correct": 0, "exp": "La explicación completa debe describir el mecanismo cotraduccional: reconocimiento de la secuencia señal durante la síntesis, pausa de la traducción, direccionamiento hacia el receptor de la membrana del RE, y reanudación de la síntesis con translocación simultánea."}, {"skill": "COM", "q": "Un estudiante debe explicar por qué el transporte vesicular entre el retículo endoplásmico y el Golgi requiere de dos tipos distintos de proteínas de cubierta (COPI y COPII) en lugar de una sola. ¿Explicación más precisa?", "options": ["Ambos tipos de cubierta cumplen exactamente la misma función, por lo que su existencia simultánea es redundante", "La existencia de dos tipos de cubierta especializados, cada uno específico para una dirección de transporte (COPII para el transporte anterógrado RE→Golgi, COPI para el retrógrado Golgi→RE), permite un control molecular preciso de la direccionalidad del tráfico vesicular, evitando que las proteínas se muevan de forma desordenada entre ambos organelos", "COPI y COPII participan únicamente en el transporte hacia el núcleo celular", "Solo se requiere un tipo de cubierta vesicular para todo el tráfico entre RE y Golgi, y COPI es una estructura sin ninguna función real", "La dirección del transporte vesicular no depende del tipo de cubierta utilizada"], "correct": 1, "exp": "La especialización de cada tipo de cubierta para una dirección específica de transporte es un mecanismo molecular que asegura el orden y la direccionalidad correcta del tráfico vesicular entre organelos, evitando un movimiento caótico o indiferenciado."}, {"skill": "COM", "q": "Al explicar por qué las proteínas destinadas al núcleo celular requieren de una secuencia de localización nuclear (NLS) en lugar de ingresar libremente a través de los poros nucleares, ¿cuál es la explicación más precisa?", "options": ["Los poros nucleares permiten el paso libre de cualquier proteína, sin importar su tamaño o secuencia", "Dado que muchas proteínas destinadas al núcleo son demasiado grandes para atravesar libremente los poros nucleares por difusión simple, requieren de un mecanismo de transporte activo y selectivo, mediado por el reconocimiento específico de la secuencia NLS por proteínas transportadoras (importinas), que asegura que solo las proteínas apropiadas ingresen al núcleo", "La secuencia NLS impide que cualquier proteína pueda ingresar al núcleo celular", "Todas las proteínas celulares, sin excepción, requieren de una secuencia NLS para poder existir dentro de la célula", "El transporte hacia el núcleo ocurre siempre de forma pasiva, sin ningún tipo de selectividad"], "correct": 1, "exp": "La necesidad de un sistema de reconocimiento específico (NLS-importina) surge de la limitación de tamaño para la difusión simple a través de los poros y de la necesidad de mantener un control selectivo sobre qué proteínas ingresan al núcleo."}, {"skill": "COM", "q": "Un estudiante debe explicar por qué el gradiente de Ran-GTP/Ran-GDP entre el núcleo y el citoplasma es esencial para la direccionalidad del transporte nuclear, y no solo para su ocurrencia. ¿Explicación más precisa?", "options": ["El gradiente de Ran no tiene ninguna relación con la dirección del transporte, solo con su velocidad", "Sin un gradiente direccional de Ran-GTP (alto en el núcleo) y Ran-GDP (alto en el citoplasma), el sistema de importinas y exportinas no tendría una señal molecular que determine hacia qué compartimento debe dirigirse cada carga transportada, por lo que el transporte perdería su direccionalidad neta, aunque potencialmente aún pudiera ocurrir de forma menos ordenada", "El transporte nuclear no requiere de ningún gradiente molecular para ser direccional", "Ran-GTP y Ran-GDP se encuentran siempre en la misma concentración en ambos compartimentos celulares", "El gradiente de Ran solo afecta el transporte de moléculas pequeñas, no el de proteínas grandes"], "correct": 1, "exp": "La explicación central debe distinguir entre la ocurrencia del transporte y su direccionalidad neta: el gradiente de Ran es lo que confiere una dirección preferencial al sistema, más allá de la simple capacidad de las importinas/exportinas de unirse a su carga."}, {"skill": "COM", "q": "Al explicar por qué la respuesta a proteínas mal plegadas (UPR) reduce temporalmente la síntesis general de proteínas en lugar de solo eliminar las proteínas mal plegadas existentes, ¿cuál es la explicación más precisa?", "options": ["Reducir la síntesis general de proteínas disminuye la carga de nuevas proteínas que ingresan al retículo endoplásmico, dando tiempo a la célula para procesar (mediante chaperonas) o degradar las proteínas mal plegadas ya acumuladas, evitando que el problema empeore mientras se restaura la homeostasis del organelo", "La reducción de la síntesis proteica no tiene ninguna relación con el control del estrés del retículo endoplásmico", "La UPR elimina directamente todas las proteínas mal plegadas sin afectar la síntesis general de proteínas", "La UPR aumenta la síntesis general de proteínas para compensar las proteínas mal plegadas", "La reducción de la síntesis proteica ocurre de forma completamente independiente del estado del retículo endoplásmico"], "correct": 0, "exp": "La estrategia de reducir la síntesis general de proteínas, en combinación con el aumento de chaperonas, es una respuesta integrada que busca aliviar la sobrecarga del retículo endoplásmico mientras se resuelve la acumulación existente de proteínas mal plegadas."}, {"skill": "PLAN", "q": "Para investigar si distintas proteínas de secreción requieren tiempos distintos para completar la vía RE→Golgi→exterior, ¿cuál es el diseño experimental más adecuado?", "options": ["Realizar experimentos de pulso-caza con marcaje radiactivo para varias proteínas de secreción distintas, bajo el mismo protocolo experimental, y comparar el tiempo que tarda cada una en aparecer en el exterior celular", "Medir el tiempo de una sola proteína y asumir que todas las demás proteínas de secreción tardan exactamente lo mismo", "No es necesario comparar distintas proteínas para responder esta pregunta", "Usar protocolos experimentales distintos para cada proteína evaluada", "Medir solo la cantidad final de proteína secretada, sin ningún seguimiento temporal"], "correct": 0, "exp": "Aplicar el mismo protocolo de pulso-caza a distintas proteínas permite comparar de forma válida sus tiempos de tránsito a través de la vía de secreción, evaluando si existen diferencias entre ellas."}, {"skill": "PROC", "q": "Se comparó el tiempo de tránsito por la vía de secreción de dos proteínas: proteína A (pequeña, poco glicosilada)=25 min hasta el exterior; proteína B (grande, muy glicosilada)=70 min hasta el exterior. ¿Qué conclusión es más adecuada?", "options": ["El tamaño y grado de glicosilación de una proteína podrían relacionarse con el tiempo que requiere para completar su tránsito a través de la vía de secreción, siendo mayor en proteínas más grandes y con mayor modificación", "El tamaño y la glicosilación de una proteína no tienen ninguna relación con su tiempo de tránsito por la vía de secreción", "La proteína más pequeña siempre requiere más tiempo que la proteína más grande para ser secretada", "Ambas proteínas completan la vía de secreción exactamente en el mismo tiempo", "El tiempo de tránsito depende únicamente del color de la proteína, no de sus propiedades estructurales"], "correct": 0, "exp": "La diferencia observada en tiempo de tránsito, asociada a diferencias de tamaño y grado de modificación (glicosilación), sugiere una posible relación entre estas propiedades estructurales y la duración del procesamiento en la vía de secreción."}, {"skill": "EVAL", "q": "Un estudio concluyó que 'todas las proteínas de secreción tardan exactamente el mismo tiempo en completar la vía de secreción' basándose en el análisis de una sola proteína modelo. ¿Qué crítica es más pertinente?", "options": ["La conclusión es válida porque una sola proteína modelo es suficiente para representar a todas las proteínas de secreción existentes", "Generalizar el tiempo de tránsito de una sola proteína a 'todas las proteínas de secreción' ignora que factores como el tamaño, la complejidad de plegamiento y el grado de glicosilación pueden variar considerablemente entre proteínas distintas, afectando su tiempo de procesamiento", "El tiempo de tránsito por la vía de secreción es idéntico para cualquier tipo de proteína, sin ninguna excepción", "No es necesario considerar las propiedades estructurales de una proteína para estimar su tiempo de tránsito", "Todas las proteínas de secreción tienen exactamente el mismo tamaño y grado de glicosilación"], "correct": 1, "exp": "Las diferencias estructurales entre proteínas (tamaño, plegamiento, glicosilación) pueden influir en su tiempo de procesamiento; generalizar a partir de una sola proteína modelo no captura esa variabilidad conocida."}, {"skill": "EVAL", "q": "Una investigación afirmó que 'el retículo endoplásmico rugoso y el aparato de Golgi son estructuralmente idénticos, solo que reciben nombres distintos según su posición en la célula'. ¿Qué error se identifica en esta afirmación?", "options": ["La afirmación es correcta, ya que ambos organelos son exactamente la misma estructura vista desde ángulos distintos", "El retículo endoplásmico rugoso y el aparato de Golgi son estructuralmente distintos: el primero posee ribosomas adheridos y forma parte de un sistema membranoso continuo con la envoltura nuclear, mientras el segundo está compuesto por cisternas apiladas independientes especializadas en modificación y empaquetamiento, sin ribosomas adheridos", "El aparato de Golgi posee ribosomas adheridos, igual que el retículo rugoso", "Ambos organelos cumplen exactamente la misma función dentro de la célula", "El retículo endoplásmico rugoso no forma parte del sistema de endomembranas celular"], "correct": 1, "exp": "Confundir dos organelos con estructuras y funciones bioquímicamente distintas (presencia/ausencia de ribosomas, continuidad con la envoltura nuclear, tipo de modificaciones que realizan) como si fueran 'la misma estructura con distinto nombre' es un error conceptual significativo."}, {"skill": "COM", "q": "Un estudiante debe explicar por qué el tiempo de tránsito de una proteína a través de la vía de secreción puede variar según sus características estructurales. ¿Explicación más precisa?", "options": ["Todas las proteínas, sin importar su tamaño o modificaciones, tardan exactamente el mismo tiempo en completar la vía de secreción", "Proteínas más grandes o que requieren un mayor grado de modificación (como glicosilación extensa) pueden necesitar más tiempo para ser correctamente procesadas y empaquetadas en cada etapa de la vía (retículo, Golgi, vesículas) antes de completar su tránsito hacia el exterior celular", "El tiempo de tránsito depende únicamente del color de la proteína analizada", "Las proteínas más pequeñas siempre requieren más tiempo que las proteínas más grandes", "El tamaño de una proteína no tiene ninguna relación con su procesamiento en la vía de secreción"], "correct": 1, "exp": "La explicación adecuada relaciona las propiedades estructurales de la proteína (tamaño, grado de modificación necesaria) con la duración de las distintas etapas de procesamiento que debe atravesar en la vía de secreción."}, {"skill": "COM", "q": "Al explicar la diferencia funcional y estructural entre el retículo endoplásmico rugoso y el aparato de Golgi a un compañero, ¿cuál es la explicación más precisa?", "options": ["El retículo endoplásmico rugoso, con ribosomas adheridos, es el sitio de síntesis inicial de proteínas de secreción y de membrana; el aparato de Golgi, formado por cisternas apiladas sin ribosomas, recibe estas proteínas para modificarlas progresivamente y empaquetarlas en vesículas dirigidas a su destino final", "Ambos organelos cumplen exactamente la misma función de síntesis proteica", "El aparato de Golgi sintetiza las proteínas desde cero, sin participación del retículo endoplásmico", "El retículo endoplásmico rugoso se encarga del empaquetamiento final de las proteínas, mientras el Golgi las sintetiza", "Ninguno de los dos organelos participa en el procesamiento de proteínas de secreción"], "correct": 0, "exp": "La explicación completa distingue claramente las funciones secuenciales de ambos organelos dentro de la vía de secreción: síntesis inicial (retículo rugoso) y modificación/empaquetamiento posterior (Golgi)."}];
+
+let currentQuiz = [];
+let currentIndex = 0;
+let answered = false;
+let userAnswers = [];
+let scoreBySkill = {};
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function buildQuiz(){
+  let selected = [];
+  SKILL_ORDER.forEach(skillKey=>{
+    const pool = QUESTION_BANK.filter(q=>q.skill===skillKey);
+    const picked = shuffle(pool).slice(0,PICK_PER_SKILL);
+    selected = selected.concat(picked);
+  });
+  selected = shuffle(selected);
+  return selected.map(orig=>{
+    const idxArr = [0,1,2,3,4];
+    const shuffledIdx = shuffle(idxArr);
+    const newOptions = shuffledIdx.map(i=>orig.options[i]);
+    const newCorrect = shuffledIdx.indexOf(orig.correct);
+    return { skill: orig.skill, question: orig.q, options: newOptions, correct: newCorrect, exp: orig.exp };
+  });
+}
+
+function startQuiz(){
+  currentQuiz = buildQuiz();
+  currentIndex = 0;
+  answered = false;
+  userAnswers = [];
+  scoreBySkill = {};
+  SKILL_ORDER.forEach(s=>scoreBySkill[s]={correct:0,total:0});
+  document.getElementById('start-screen').classList.add('hidden');
+  document.getElementById('dashboard-screen').classList.add('hidden');
+  document.getElementById('review-screen').classList.add('hidden');
+  document.getElementById('quiz-screen').classList.remove('hidden');
+  renderQuestion();
+}
+
+function renderQuestion(){
+  answered = false;
+  const q = currentQuiz[currentIndex];
+  const total = currentQuiz.length;
+  document.getElementById('progress-fill').style.width = ((currentIndex)/total*100)+'%';
+  document.getElementById('progress-label').textContent = (currentIndex+1)+' / '+total;
+  document.getElementById('skill-tag').textContent = SKILL_NAMES[q.skill];
+  document.getElementById('qnum').textContent = 'Pregunta '+(currentIndex+1);
+  document.getElementById('question-text').textContent = q.question;
+
+  const optsDiv = document.getElementById('options');
+  optsDiv.innerHTML = '';
+  q.options.forEach((opt, i)=>{
+    const btn = document.createElement('button');
+    btn.className = 'option';
+    btn.innerHTML = '<span class="letter">'+LETTERS[i]+')</span><span>'+opt+'</span>';
+    btn.onclick = ()=>selectOption(i);
+    optsDiv.appendChild(btn);
+  });
+
+  document.getElementById('feedback').classList.add('hidden');
+  document.getElementById('next-btn').classList.add('hidden');
+}
+
+function selectOption(i){
+  if(answered) return;
+  answered = true;
+  const q = currentQuiz[currentIndex];
+  const correct = q.correct;
+  const options = document.querySelectorAll('#options .option');
+  options.forEach((opt, idx)=>{
+    opt.classList.add('locked');
+    if(idx===correct) opt.classList.add('correct');
+    else if(idx===i) opt.classList.add('incorrect');
+    else opt.classList.add('dim');
+  });
+
+  const isCorrect = (i===correct);
+  scoreBySkill[q.skill].total++;
+  if(isCorrect) scoreBySkill[q.skill].correct++;
+
+  userAnswers.push({ skill:q.skill, question:q.question, options:q.options, correctIdx:correct, chosenIdx:i, exp:q.exp, isCorrect });
+
+  const fb = document.getElementById('feedback');
+  fb.classList.remove('hidden');
+  fb.classList.toggle('wrong', !isCorrect);
+  fb.innerHTML = '<span class="pista-label">'+(isCorrect ? '✓ Correcto — Pista' : '✕ Incorrecto — Pista')+'</span>'+
+    '<strong>Respuesta correcta: '+LETTERS[correct]+') '+q.options[correct]+'</strong><br><br>'+q.exp;
+
+  document.getElementById('next-btn').classList.remove('hidden');
+}
+
+function nextQuestion(){
+  currentIndex++;
+  if(currentIndex >= currentQuiz.length){
+    showDashboard();
+  } else {
+    renderQuestion();
+  }
+}
+
+function showDashboard(){
+  document.getElementById('quiz-screen').classList.add('hidden');
+  document.getElementById('dashboard-screen').classList.remove('hidden');
+
+  const totalCorrect = userAnswers.filter(a=>a.isCorrect).length;
+  const totalQ = userAnswers.length;
+  document.getElementById('score-total').innerHTML = totalCorrect+'<span>/'+totalQ+'</span>';
+  const pct = Math.round((totalCorrect/totalQ)*100);
+  document.getElementById('score-caption').textContent = pct+'% de logro general';
+
+  const barsDiv = document.getElementById('skill-bars');
+  barsDiv.innerHTML = '';
+  const weakSkills = [];
+  const strongSkills = [];
+
+  SKILL_ORDER.forEach(skillKey=>{
+    const s = scoreBySkill[skillKey];
+    const skillPct = s.total>0 ? Math.round((s.correct/s.total)*100) : 0;
+    let color = 'var(--accent-coral)';
+    if(skillPct>=75) color='var(--accent-sage)';
+    else if(skillPct>=50) color='var(--accent-amber)';
+
+    const row = document.createElement('div');
+    row.className='skill-bar-row';
+    row.innerHTML = '<div class="skill-bar-head"><span class="name">'+SKILL_NAMES[skillKey]+'</span><span class="frac">'+s.correct+'/'+s.total+'</span></div>'+
+      '<div class="skill-bar-track"><div class="skill-bar-fill" style="width:'+skillPct+'%;background:'+color+';"></div></div>';
+    barsDiv.appendChild(row);
+
+    if(skillPct<75) weakSkills.push({name:SKILL_NAMES[skillKey], pct:skillPct});
+    else strongSkills.push(SKILL_NAMES[skillKey]);
+  });
+
+  const improveBox = document.getElementById('improve-box');
+  const improveList = document.getElementById('improve-list');
+  improveList.innerHTML='';
+  if(weakSkills.length>0){
+    improveBox.classList.remove('hidden');
+    weakSkills.sort((a,b)=>a.pct-b.pct).forEach(w=>{
+      const li = document.createElement('li');
+      li.innerHTML = '<strong>'+w.name+'</strong> ('+w.pct+'%) — refuerza con más ejercicios de este tipo de habilidad, revisando las pistas de las preguntas falladas.';
+      improveList.appendChild(li);
+    });
+  } else {
+    improveBox.classList.add('hidden');
+  }
+
+  const strongBox = document.getElementById('strong-box');
+  const strongText = document.getElementById('strong-text');
+  if(strongSkills.length>0){
+    strongBox.classList.remove('hidden');
+    strongText.textContent = strongSkills.join(', ') + '. Buen dominio, mantén la práctica con nuevos intentos.';
+  } else {
+    strongBox.classList.add('hidden');
+  }
+}
+
+function restartQuiz(){ startQuiz(); }
+
+function reviewAnswers(){
+  document.getElementById('dashboard-screen').classList.add('hidden');
+  const rev = document.getElementById('review-screen');
+  rev.classList.remove('hidden');
+  let html = '<p class="eyebrow">Revisión de respuestas</p>';
+  userAnswers.forEach((a, i)=>{
+    html += '<div style="margin-bottom:22px;padding-bottom:18px;border-bottom:1px solid var(--line);">'+
+      '<span class="skill-tag">'+SKILL_NAMES[a.skill]+'</span>'+
+      '<p class="question-text" style="font-size:16px;">'+(i+1)+'. '+a.question+'</p>'+
+      '<p style="font-size:14px;color:'+(a.isCorrect?'var(--accent-sage)':'var(--accent-coral)')+';margin:0 0 6px;">'+
+        (a.isCorrect ? '✓ Respondiste correctamente' : '✕ Tu respuesta: '+LETTERS[a.chosenIdx]+') '+a.options[a.chosenIdx])+
+      '</p>'+
+      '<p style="font-size:14px;color:var(--text-muted);margin:0 0 8px;">Correcta: '+LETTERS[a.correctIdx]+') '+a.options[a.correctIdx]+'</p>'+
+      '<div class="feedback" style="margin-top:6px;"><span class="pista-label">Pista</span>'+a.exp+'</div>'+
+    '</div>';
+  });
+  html += '<div class="actions"><button class="btn" onclick="restartQuiz(); document.getElementById(\'review-screen\').classList.add(\'hidden\');">Repetir con nuevas preguntas</button></div>';
+  rev.innerHTML = html;
+}
+</script>
+</body>
+</html>

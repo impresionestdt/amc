@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PAES Biología · Clase 6 · Membrana Plasmática y Modelo de Mosaico Fluido (Nivel Básico)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Source+Sans+3:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-deep:#0f2027;
+    --bg-panel:#15303a;
+    --bg-panel-2:#1b3a45;
+    --accent-amber:#e8a33d;
+    --accent-sage:#6fa88a;
+    --accent-coral:#e4572e;
+    --text-light:#f3ede1;
+    --text-muted:#a9c0c2;
+    --line:#2a4750;
+    --radius:14px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:radial-gradient(circle at 15% -10%, #1c4552 0%, var(--bg-deep) 55%) fixed;
+    color:var(--text-light);
+    font-family:'Source Sans 3', system-ui, sans-serif;
+    min-height:100vh;
+    padding:32px 16px 64px;
+  }
+  .wrap{max-width:820px;margin:0 auto;}
+  .eyebrow{font-family:'JetBrains Mono', monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent-amber);margin:0 0 8px;}
+  h1{font-family:'Fraunces', serif;font-weight:600;font-size:clamp(26px,4vw,38px);line-height:1.1;margin:0 0 6px;color:var(--text-light);}
+  .sub{color:var(--text-muted);font-size:15px;margin:0 0 28px;max-width:60ch;}
+  .card{background:linear-gradient(180deg, var(--bg-panel) 0%, var(--bg-panel-2) 100%);border:1px solid var(--line);border-radius:var(--radius);padding:28px;box-shadow:0 20px 40px -20px rgba(0,0,0,.5);}
+  #start-screen ul{color:var(--text-muted);font-size:14.5px;line-height:1.7;padding-left:20px;margin:18px 0 26px;}
+  #start-screen li{margin-bottom:4px;}
+  .btn{font-family:'Source Sans 3', sans-serif;font-weight:700;font-size:15px;border:none;border-radius:999px;padding:14px 30px;cursor:pointer;background:var(--accent-amber);color:#20140a;transition:transform .15s ease, box-shadow .15s ease;box-shadow:0 8px 20px -8px rgba(0,0,0,.35);}
+  .btn:hover{transform:translateY(-1px);}
+  .btn:active{transform:translateY(0);}
+  .btn.ghost{background:transparent;color:var(--text-muted);border:1.5px solid var(--line);box-shadow:none;}
+  .progress-row{display:flex;align-items:center;gap:14px;margin-bottom:18px;}
+  .progress-track{flex:1;height:6px;border-radius:99px;background:var(--line);overflow:hidden;}
+  .progress-fill{height:100%;background:linear-gradient(90deg,var(--accent-sage),var(--accent-amber));border-radius:99px;transition:width .3s ease;}
+  .progress-label{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--text-muted);white-space:nowrap;}
+  .skill-tag{display:inline-block;font-family:'JetBrains Mono', monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--bg-deep);background:var(--accent-sage);padding:5px 11px;border-radius:999px;margin-bottom:14px;}
+  .qnum{color:var(--text-muted);font-size:13px;font-family:'JetBrains Mono',monospace;margin-bottom:6px;}
+  .question-text{font-family:'Fraunces', serif;font-weight:500;font-size:19px;line-height:1.45;margin:0 0 22px;}
+  .options{display:flex;flex-direction:column;gap:10px;}
+  .option{display:flex;align-items:flex-start;gap:12px;text-align:left;background:rgba(255,255,255,.03);border:1.5px solid var(--line);border-radius:10px;padding:13px 15px;cursor:pointer;color:var(--text-light);font-size:14.5px;line-height:1.4;transition:border-color .15s, background .15s;}
+  .option:hover:not(.locked){border-color:var(--accent-amber);}
+  .option .letter{font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--accent-amber);flex-shrink:0;}
+  .option.correct{border-color:var(--accent-sage);background:rgba(111,168,138,.14);}
+  .option.incorrect{border-color:var(--accent-coral);background:rgba(228,87,46,.14);}
+  .option.locked{cursor:default;}
+  .option.dim{opacity:.45;}
+  .feedback{margin-top:18px;padding:16px 18px;border-radius:10px;background:rgba(255,255,255,.04);border-left:4px solid var(--accent-sage);font-size:14px;line-height:1.6;color:var(--text-muted);}
+  .feedback.wrong{border-left-color:var(--accent-coral);}
+  .feedback strong{color:var(--text-light);}
+  .feedback .pista-label{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent-amber);display:block;margin-bottom:6px;}
+  .nav-row{display:flex;justify-content:flex-end;margin-top:22px;}
+  .score-hero{text-align:center;padding:10px 0 26px;}
+  .score-big{font-family:'Fraunces',serif;font-weight:700;font-size:56px;color:var(--accent-amber);line-height:1;}
+  .score-big span{font-size:24px;color:var(--text-muted);font-weight:500;}
+  .score-caption{color:var(--text-muted);font-size:14px;margin-top:6px;}
+  .skill-bars{display:flex;flex-direction:column;gap:16px;margin:22px 0 8px;}
+  .skill-bar-head{display:flex;justify-content:space-between;font-size:13.5px;margin-bottom:6px;}
+  .skill-bar-head .name{font-weight:600;}
+  .skill-bar-head .frac{font-family:'JetBrains Mono',monospace;color:var(--text-muted);}
+  .skill-bar-track{height:10px;border-radius:99px;background:var(--line);overflow:hidden;}
+  .skill-bar-fill{height:100%;border-radius:99px;}
+  .improve-box{margin-top:26px;background:rgba(228,87,46,.08);border:1px solid rgba(228,87,46,.35);border-radius:10px;padding:18px 20px;}
+  .improve-box h3{font-family:'Fraunces',serif;font-size:16px;margin:0 0 10px;color:var(--accent-coral);}
+  .improve-box ul{margin:0;padding-left:20px;color:var(--text-light);font-size:14px;line-height:1.75;}
+  .strong-box{margin-top:14px;background:rgba(111,168,138,.08);border:1px solid rgba(111,168,138,.35);border-radius:10px;padding:18px 20px;}
+  .strong-box h3{font-family:'Fraunces',serif;font-size:16px;margin:0 0 10px;color:var(--accent-sage);}
+  .strong-box p{margin:0;color:var(--text-light);font-size:14px;line-height:1.6;}
+  .actions{display:flex;gap:12px;margin-top:28px;flex-wrap:wrap;}
+  .hidden{display:none !important;}
+  footer{text-align:center;color:var(--text-muted);font-size:12px;margin-top:26px;opacity:.6;}
+</style>
+</head>
+<body> <div style="float: left; margin-right: 25px; margin-bottom: 25px;"><img src="Logo_AMC.png" alt="Logo" style="max-width: 150px;"></div>
+<div class="wrap">
+  <p class="eyebrow">PAES · Ciencias — Módulo Biología Común · Nivel Básico</p>
+  <h1>Membrana Plasmática y Modelo de Mosaico Fluido</h1>
+  <p class="sub">Eje 1: Organización, estructura y actividad celular — Sub-eje: Organelos celulares y membrana plasmática — Clase 6: Membrana Plasmática y Modelo de Mosaico Fluido</p>
+
+  <div class="card" id="start-screen">
+    <p class="eyebrow" style="margin-bottom:14px;">Antes de comenzar</p>
+    <p style="color:var(--text-muted);font-size:14.5px;line-height:1.6;">Este quiz evalúa nivel <strong style='color:var(--text-light);'>básico</strong>, con 20 preguntas (4 por cada habilidad PAES), extraídas al azar de un banco amplio. Cada intento genera una versión distinta.</p>
+    <ul>
+      <li>Observar y plantear preguntas</li>
+      <li>Planificar y conducir una investigación</li>
+      <li>Procesar y analizar la evidencia</li>
+      <li>Evaluar</li>
+      <li>Comunicar</li>
+    </ul>
+    <button class="btn" onclick="startQuiz()">Comenzar quiz</button>
+  </div>
+
+  <div class="card hidden" id="quiz-screen">
+    <div class="progress-row">
+      <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+      <div class="progress-label" id="progress-label">1 / 20</div>
+    </div>
+    <span class="skill-tag" id="skill-tag"></span>
+    <p class="qnum" id="qnum"></p>
+    <p class="question-text" id="question-text"></p>
+    <div class="options" id="options"></div>
+    <div class="feedback hidden" id="feedback"></div>
+    <div class="nav-row">
+      <button class="btn hidden" id="next-btn" onclick="nextQuestion()">Siguiente →</button>
+    </div>
+  </div>
+
+  <div class="card hidden" id="dashboard-screen">
+    <p class="eyebrow">Resultados</p>
+    <div class="score-hero">
+      <div class="score-big" id="score-total">0<span>/20</span></div>
+      <p class="score-caption" id="score-caption">Puntaje global</p>
+    </div>
+    <div class="skill-bars" id="skill-bars"></div>
+    <div class="improve-box hidden" id="improve-box">
+      <h3>Puntos a mejorar</h3>
+      <ul id="improve-list"></ul>
+    </div>
+    <div class="strong-box hidden" id="strong-box">
+      <h3>Habilidades consolidadas</h3>
+      <p id="strong-text"></p>
+    </div>
+    <div class="actions">
+      <button class="btn" onclick="restartQuiz()">Repetir con nuevas preguntas</button>
+      <button class="btn ghost" onclick="reviewAnswers()">Revisar mis respuestas</button>
+    </div>
+  </div>
+
+  <div class="card hidden" id="review-screen"></div>
+
+  <footer>Banco de 40 preguntas · nivel básico · Clase 6 de 30 · basado en el temario DEMRE PAES Ciencias — Biología Común</footer>
+</div>
+
+<script>
+const SKILL_NAMES = {"OBS": "Observar y plantear preguntas", "PLAN": "Planificar y conducir una investigación", "PROC": "Procesar y analizar la evidencia", "EVAL": "Evaluar", "COM": "Comunicar"};
+const SKILL_ORDER = ["OBS", "PLAN", "PROC", "EVAL", "COM"];
+const LETTERS = ["A","B","C","D","E"];
+const PICK_PER_SKILL = 4;
+
+const QUESTION_BANK = [{"skill": "OBS", "q": "Un estudiante observa que sustancias liposolubles (como el etanol) atraviesan fácilmente la membrana celular, mientras que sustancias muy polares (como la glucosa) lo hacen con mayor dificultad. ¿Pregunta más pertinente?", "options": ["¿La composición lipídica de la membrana plasmática determina la facilidad de paso de sustancias según su polaridad?", "¿Todas las sustancias, sin importar su polaridad, atraviesan la membrana con la misma facilidad?", "¿La glucosa es una sustancia liposoluble, igual que el etanol?", "¿La membrana plasmática está compuesta exclusivamente por proteínas, sin ningún lípido?", "¿El etanol no puede atravesar ninguna membrana biológica?"], "correct": 0, "exp": "La bicapa lipídica, con su núcleo hidrofóbico, favorece el paso de sustancias liposolubles y dificulta el de sustancias polares, lo que explica la diferencia de permeabilidad observada."}, {"skill": "OBS", "q": "Se observa que ciertas proteínas de membrana permanecen fijas en una región específica de la célula, mientras otras se desplazan lateralmente con relativa libertad dentro de la bicapa lipídica. ¿Pregunta más pertinente?", "options": ["¿Existen mecanismos que restringen el movimiento lateral de algunas proteínas de membrana, a diferencia de la fluidez general que permite el desplazamiento de otras?", "¿Todas las proteínas de membrana están completamente fijas, sin ningún tipo de movimiento?", "¿La bicapa lipídica impide cualquier tipo de movimiento de las proteínas asociadas?", "¿Las proteínas de membrana nunca pueden desplazarse lateralmente bajo ninguna circunstancia?", "¿El movimiento de las proteínas de membrana no tiene ninguna relación con la estructura de la bicapa lipídica?"], "correct": 0, "exp": "La observación de proteínas con distinto grado de movilidad lateral es consistente con el modelo de mosaico fluido, donde algunas proteínas pueden anclarse al citoesqueleto u otras estructuras, restringiendo su movimiento respecto a otras más libres."}, {"skill": "OBS", "q": "Un investigador nota que la fluidez de la membrana celular disminuye notoriamente cuando la temperatura baja considerablemente, volviéndose más rígida y menos flexible. ¿Pregunta más pertinente?", "options": ["¿La temperatura influye en el estado físico de los lípidos de membrana, afectando su fluidez general?", "¿La fluidez de la membrana aumenta siempre que disminuye la temperatura?", "¿La temperatura no tiene ninguna relación con las propiedades físicas de la membrana celular?", "¿La membrana celular se solidifica completamente y deja de existir a bajas temperaturas?", "¿Solo las proteínas de membrana son sensibles a los cambios de temperatura, no los lípidos?"], "correct": 0, "exp": "La temperatura afecta el estado físico de los fosfolípidos de membrana: a menor temperatura, las cadenas de ácidos grasos se empaquetan más compactamente, reduciendo la fluidez de la membrana."}, {"skill": "OBS", "q": "Se observa que la membrana plasmática de las células presenta cadenas de carbohidratos unidas a proteínas y lípidos específicamente en su cara externa (glucocálix), ausentes en la cara interna orientada hacia el citoplasma. ¿Pregunta más pertinente?", "options": ["¿La distribución asimétrica de carbohidratos en la cara externa de la membrana cumple funciones específicas relacionadas con el reconocimiento celular?", "¿El glucocálix se encuentra distribuido de forma idéntica en ambas caras de la membrana?", "¿Los carbohidratos de membrana no cumplen ninguna función relacionada con el reconocimiento celular?", "¿La cara interna de la membrana posee mayor cantidad de carbohidratos que la externa?", "¿El glucocálix está compuesto exclusivamente por proteínas, sin ningún carbohidrato?"], "correct": 0, "exp": "La ubicación específica del glucocálix (carbohidratos) en la cara externa de la membrana es consistente con su función en el reconocimiento celular, la comunicación intercelular y la protección de la superficie celular."}, {"skill": "OBS", "q": "Un estudiante observa que la membrana celular contiene colesterol intercalado entre los fosfolípidos, y que su proporción varía según el tipo celular analizado. ¿Pregunta más pertinente?", "options": ["¿La cantidad de colesterol presente en la membrana se relaciona con la regulación de su fluidez según las necesidades funcionales de cada tipo celular?", "¿El colesterol es un tipo de proteína integral de membrana?", "¿Todas las células, sin excepción, poseen exactamente la misma cantidad de colesterol en su membrana?", "¿El colesterol impide por completo cualquier movimiento de los fosfolípidos de membrana?", "¿La presencia de colesterol no tiene ninguna relación con las propiedades físicas de la membrana?"], "correct": 0, "exp": "La variación en la proporción de colesterol entre distintos tipos celulares es consistente con su función moduladora de la fluidez de membrana, ajustada según las necesidades específicas de cada célula."}, {"skill": "OBS", "q": "Se observa que ciertas proteínas de membrana forman canales o poros específicos que permiten el paso selectivo de iones, mientras que otras proteínas de membrana no cumplen esta función. ¿Pregunta más precisa?", "options": ["¿La diversidad estructural y funcional de las proteínas de membrana explica por qué algunas actúan como canales selectivos para el paso de sustancias específicas?", "¿Todas las proteínas de membrana cumplen exactamente la misma función de canal iónico?", "¿Los iones atraviesan la membrana exclusivamente a través de la bicapa lipídica, sin participación de proteínas?", "¿Las proteínas de membrana nunca participan en el transporte de sustancias?", "¿Los canales proteicos permiten el paso de cualquier sustancia sin ninguna selectividad?"], "correct": 0, "exp": "La existencia de proteínas de membrana especializadas (canales) junto con otras proteínas de función distinta refleja la diversidad estructural y funcional de las proteínas de membrana, cada una cumpliendo un rol particular."}, {"skill": "OBS", "q": "Un investigador observa que células de distintos tejidos poseen proteínas de membrana específicas que actúan como receptores para determinadas hormonas, mientras otras células carecen de esos receptores particulares. ¿Pregunta más precisa?", "options": ["¿La presencia selectiva de receptores hormonales específicos en la membrana determina qué células pueden responder a una hormona particular?", "¿Todas las células del organismo poseen exactamente los mismos receptores de membrana, sin ninguna diferencia?", "¿Las hormonas pueden ingresar a cualquier célula sin necesidad de ningún receptor específico?", "¿Los receptores de membrana no tienen ninguna relación con la respuesta celular a las hormonas?", "¿La ausencia de un receptor específico no afecta la capacidad de una célula de responder a una hormona?"], "correct": 0, "exp": "La presencia selectiva de receptores específicos en la membrana de ciertas células (y su ausencia en otras) explica por qué solo determinadas células pueden responder a una hormona particular, un concepto central en la comunicación celular."}, {"skill": "OBS", "q": "Se observa que la membrana celular de un glóbulo rojo se deforma temporalmente al pasar por capilares muy estrechos, recuperando su forma original una vez que sale de ellos. ¿Pregunta más precisa?", "options": ["¿La fluidez y flexibilidad características de la membrana celular, en conjunto con el citoesqueleto asociado, permiten esta deformación reversible sin dañar la integridad celular?", "¿La membrana celular es una estructura completamente rígida que nunca puede deformarse?", "¿La deformación observada indica que la membrana se rompe por completo al pasar por el capilar?", "¿La recuperación de la forma original no tiene ninguna relación con las propiedades de la membrana?", "¿Los glóbulos rojos no poseen ninguna membrana plasmática?"], "correct": 0, "exp": "La naturaleza fluida de la bicapa lipídica, junto con el citoesqueleto de soporte asociado a la membrana, permite que la célula se deforme temporalmente ante fuerzas externas y recupere su forma original sin sufrir daño."}, {"skill": "PLAN", "q": "Para comprobar experimentalmente que la fluidez de la membrana disminuye a bajas temperaturas, ¿cuál es el procedimiento adecuado?", "options": ["Medir un indicador de fluidez de membrana (por ejemplo, mediante sondas fluorescentes específicas) en muestras idénticas de membrana a distintas temperaturas controladas, y comparar los resultados obtenidos en cada condición", "Medir la fluidez en una sola temperatura, sin ninguna comparación", "Usar membranas de distinto origen celular para cada temperatura evaluada", "No es necesario ningún método de medición específico para evaluar la fluidez de membrana", "Calentar la membrana a una temperatura extrema única, sin evaluar ningún otro punto de comparación"], "correct": 0, "exp": "Medir un indicador cuantificable de fluidez en la misma muestra bajo distintas temperaturas controladas permite establecer de forma experimental la relación entre ambas variables."}, {"skill": "PLAN", "q": "Un estudiante desea investigar si una sustancia específica atraviesa la membrana celular principalmente por difusión a través de la bicapa lipídica, o si requiere de una proteína transportadora. ¿Cuál es el diseño experimental adecuado?", "options": ["Comparar la velocidad de paso de la sustancia en una membrana con proteínas transportadoras funcionales frente a una membrana artificial (liposoma) compuesta únicamente por lípidos, sin ninguna proteína, bajo las mismas condiciones de concentración", "Medir la velocidad de paso solo en la membrana celular completa, sin ningún tipo de comparación", "No es necesario ningún grupo de comparación para esta pregunta", "Usar concentraciones distintas de la sustancia para cada tipo de membrana evaluado", "Comparar dos membranas celulares idénticas, sin ninguna diferencia en su composición proteica"], "correct": 0, "exp": "Comparar el paso de la sustancia en presencia y ausencia de proteínas transportadoras (usando un liposoma artificial como control sin proteínas) permite determinar si el paso requiere específicamente de mediación proteica."}, {"skill": "PLAN", "q": "Para determinar si la proporción de colesterol en la membrana afecta su fluidez, ¿cuál es el diseño experimental más adecuado?", "options": ["Preparar membranas artificiales con distintas proporciones conocidas de colesterol, manteniendo igual el resto de la composición lipídica, y medir un indicador de fluidez en cada una bajo las mismas condiciones de temperatura", "Usar una sola proporción de colesterol y asumir el resultado para todas las demás proporciones posibles", "Variar simultáneamente el colesterol y la temperatura sin poder aislar el efecto de cada variable", "No es necesario mantener constante el resto de la composición lipídica entre las muestras", "Medir solo la cantidad de colesterol presente, sin evaluar ningún indicador de fluidez"], "correct": 0, "exp": "Mantener constante todo lo demás excepto la proporción de colesterol (variable de interés) permite atribuir de forma válida cualquier cambio observado en la fluidez específicamente a esta variable."}, {"skill": "PLAN", "q": "Se desea investigar si el glucocálix (carbohidratos de membrana) participa en el reconocimiento célula-célula. ¿Cuál es el diseño experimental adecuado?", "options": ["Comparar la capacidad de reconocimiento y adhesión entre células con el glucocálix intacto frente a células tratadas con una enzima que elimina específicamente los carbohidratos de superficie, bajo las mismas condiciones experimentales", "Comparar células de tipos completamente distintos, sin ningún control sobre la variable de interés", "No es necesario ningún grupo de comparación para esta pregunta", "Medir solo el tamaño celular, sin evaluar ningún indicador de reconocimiento o adhesión", "Eliminar simultáneamente todos los componentes de la membrana sin poder aislar el efecto específico del glucocálix"], "correct": 0, "exp": "Comparar la capacidad de reconocimiento entre células con y sin glucocálix intacto, manteniendo todo lo demás constante, permite establecer de forma rigurosa el rol específico de estos carbohidratos en el reconocimiento celular."}, {"skill": "PLAN", "q": "Un investigador desea determinar si una proteína específica de membrana actúa como receptor de una determinada hormona. ¿Cuál es el diseño experimental adecuado?", "options": ["Comparar la respuesta celular a la hormona en células que expresan la proteína candidata frente a células que no la expresan (o donde ha sido experimentalmente eliminada), bajo la misma exposición a la hormona", "Comparar la respuesta celular sin ningún grupo que carezca de la proteína candidata", "No es necesario ningún grupo de comparación para esta pregunta", "Exponer las células a distintas hormonas simultáneamente sin poder aislar el efecto de una sola", "Medir solo la cantidad de proteína presente, sin evaluar la respuesta celular a la hormona"], "correct": 0, "exp": "Comparar la respuesta a la hormona entre células con y sin la proteína candidata, bajo la misma exposición hormonal, permite establecer de forma experimental si esa proteína específica es necesaria para la respuesta observada."}, {"skill": "PLAN", "q": "Para investigar si la deformabilidad de la membrana del glóbulo rojo depende de su citoesqueleto asociado, ¿cuál es el diseño experimental adecuado?", "options": ["Comparar el grado de deformación y recuperación de forma en glóbulos rojos con citoesqueleto de membrana normal frente a glóbulos rojos con este citoesqueleto experimentalmente alterado, aplicando la misma fuerza mecánica en ambos casos", "Aplicar la fuerza mecánica solo a glóbulos rojos con citoesqueleto alterado, sin ningún grupo control", "No es necesario ningún grupo control para esta pregunta", "Medir solo el tamaño del glóbulo rojo, sin evaluar su capacidad de deformación", "Usar tipos celulares completamente distintos para cada condición evaluada"], "correct": 0, "exp": "Comparar la deformabilidad entre condiciones con y sin citoesqueleto funcional, bajo la misma fuerza mecánica aplicada, permite establecer de forma experimental el rol de esta estructura en la capacidad de deformación reversible de la membrana."}, {"skill": "PLAN", "q": "Se desea determinar si distintas sustancias atraviesan la membrana celular con distinta facilidad según su tamaño molecular. ¿Cuál es el diseño experimental adecuado?", "options": ["Comparar la velocidad de paso a través de la membrana de sustancias de tamaño molecular conocido y creciente, manteniendo constantes las demás propiedades relevantes (como la polaridad), bajo las mismas condiciones experimentales", "Comparar sustancias con tamaño y polaridad muy distintos simultáneamente, sin poder aislar el efecto del tamaño molecular", "No es necesario variar el tamaño molecular para responder esta pregunta", "Medir el paso de una sola sustancia y generalizar el resultado a cualquier otro tamaño molecular", "Usar condiciones experimentales distintas para cada sustancia evaluada"], "correct": 0, "exp": "Mantener constantes las demás propiedades relevantes (como la polaridad) y variar sistemáticamente solo el tamaño molecular permite aislar específicamente el efecto de esta variable sobre la velocidad de paso a través de la membrana."}, {"skill": "PLAN", "q": "Un estudiante desea investigar si la fluidez de la membrana afecta la movilidad lateral de una proteína específica dentro de ella. ¿Cuál es el diseño experimental adecuado?", "options": ["Medir la movilidad lateral de la proteína marcada mediante microscopía en membranas con distinto grado de fluidez (por ejemplo, a distintas temperaturas o proporciones de colesterol), comparando los resultados obtenidos en cada condición", "Medir la movilidad de la proteína en una sola condición de fluidez, sin ninguna comparación", "No es necesario variar la fluidez de la membrana para esta pregunta", "Usar proteínas distintas para cada condición de fluidez evaluada", "Medir solo la cantidad de proteína presente, sin evaluar su movilidad lateral"], "correct": 0, "exp": "Comparar la movilidad lateral de la misma proteína marcada bajo distintas condiciones de fluidez de membrana permite establecer de forma experimental la relación entre ambas variables."}, {"skill": "PROC", "q": "Se midió la velocidad de paso a través de la membrana de tres sustancias con distinta polaridad: sustancia muy polar=paso lento; sustancia moderadamente polar=paso intermedio; sustancia apolar (liposoluble)=paso rápido. ¿Qué conclusión es más adecuada?", "options": ["La velocidad de paso a través de la membrana se relaciona inversamente con la polaridad de la sustancia, siendo mayor para sustancias apolares y menor para sustancias muy polares", "La velocidad de paso es mayor para sustancias muy polares que para sustancias apolares", "La polaridad de una sustancia no tiene ninguna relación con su velocidad de paso a través de la membrana", "Todas las sustancias, sin importar su polaridad, atraviesan la membrana exactamente a la misma velocidad", "Las sustancias apolares no pueden atravesar la membrana bajo ninguna circunstancia"], "correct": 0, "exp": "El patrón observado (mayor velocidad de paso para sustancias apolares, menor para las muy polares) es consistente con la naturaleza hidrofóbica del núcleo de la bicapa lipídica, que favorece el paso de sustancias liposolubles."}, {"skill": "PROC", "q": "Se comparó un indicador de fluidez de membrana a distintas temperaturas: 10°C=baja fluidez; 25°C=fluidez intermedia; 37°C=alta fluidez. ¿Qué tendencia revelan estos datos?", "options": ["La fluidez de la membrana aumenta a medida que aumenta la temperatura, dentro del rango evaluado", "La fluidez de la membrana disminuye a medida que aumenta la temperatura", "La temperatura no tiene ninguna relación con la fluidez de la membrana celular", "La fluidez de la membrana es idéntica en las tres temperaturas evaluadas", "La membrana se solidifica completamente a 37°C, según estos datos"], "correct": 0, "exp": "Los datos muestran una relación positiva y consistente entre temperatura y fluidez de membrana dentro del rango evaluado, reflejando el efecto de la energía térmica sobre el estado físico de los fosfolípidos."}, {"skill": "PROC", "q": "Se comparó la fluidez de membranas artificiales con distinta proporción de colesterol a una misma temperatura moderada: sin colesterol=fluidez alta; colesterol moderado=fluidez intermedia; colesterol alto=fluidez baja. ¿Qué conclusión es más adecuada?", "options": ["A mayor proporción de colesterol, menor es la fluidez de la membrana a esta temperatura moderada, consistente con su función de rigidizar la membrana en estas condiciones", "A mayor proporción de colesterol, mayor es la fluidez de la membrana", "La proporción de colesterol no tiene ninguna relación con la fluidez de la membrana", "Todas las membranas, sin importar su contenido de colesterol, presentan exactamente la misma fluidez", "El colesterol elimina por completo la fluidez de cualquier membrana, sin importar su proporción"], "correct": 0, "exp": "La relación inversa observada entre proporción de colesterol y fluidez a temperatura moderada es consistente con el efecto rigidizante del colesterol sobre la membrana en ese rango de temperatura."}, {"skill": "PROC", "q": "Se midió la capacidad de reconocimiento y adhesión entre células con glucocálix intacto (alta capacidad de reconocimiento) y células tratadas con una enzima que elimina los carbohidratos de superficie (capacidad de reconocimiento considerablemente reducida). ¿Qué conclusión es más adecuada?", "options": ["El glucocálix contribuye significativamente a la capacidad de reconocimiento y adhesión celular, ya que su eliminación reduce notoriamente esta función", "La eliminación del glucocálix mejora la capacidad de reconocimiento celular", "El glucocálix no tiene ninguna relación con el reconocimiento o adhesión celular", "Ambos grupos de células muestran exactamente la misma capacidad de reconocimiento", "La capacidad de reconocimiento celular depende únicamente del núcleo, sin relación con la membrana"], "correct": 0, "exp": "La marcada reducción de la capacidad de reconocimiento tras eliminar el glucocálix confirma experimentalmente el rol funcional de estos carbohidratos de superficie en este proceso celular."}, {"skill": "PROC", "q": "Se comparó la respuesta celular a una hormona específica en células que expresan su receptor de membrana correspondiente (respuesta positiva) y en células que no expresan ese receptor (sin respuesta, a pesar de la misma exposición hormonal). ¿Qué conclusión es más adecuada?", "options": ["La presencia del receptor específico de membrana es necesaria para que la célula responda a esa hormona particular", "La ausencia del receptor específico aumenta la respuesta celular a la hormona", "La presencia del receptor no tiene ninguna relación con la capacidad de respuesta celular a la hormona", "Ambos grupos celulares muestran exactamente la misma respuesta a la hormona", "Las hormonas pueden generar respuesta celular sin necesidad de ningún receptor específico"], "correct": 0, "exp": "La ausencia de respuesta en células sin el receptor específico, frente a la respuesta positiva en células que sí lo expresan, confirma la necesidad de este receptor de membrana para la respuesta hormonal observada."}, {"skill": "PROC", "q": "Se midió el grado de deformación y posterior recuperación de forma en glóbulos rojos con citoesqueleto de membrana normal (recuperación completa) y con este citoesqueleto experimentalmente alterado (recuperación incompleta o deficiente), bajo la misma fuerza mecánica aplicada. ¿Qué conclusión es más adecuada?", "options": ["El citoesqueleto asociado a la membrana contribuye significativamente a la capacidad de recuperación de forma del glóbulo rojo tras una deformación mecánica", "La alteración del citoesqueleto mejora la capacidad de recuperación de forma del glóbulo rojo", "El citoesqueleto de membrana no tiene ninguna relación con la capacidad de deformación y recuperación celular", "Ambos grupos experimentales muestran exactamente la misma capacidad de recuperación de forma", "La deformación de la membrana ocurre de forma completamente independiente de cualquier estructura celular"], "correct": 0, "exp": "La deficiente recuperación de forma en glóbulos rojos con citoesqueleto alterado, en comparación con la recuperación completa en condiciones normales, confirma el rol funcional de esta estructura en la capacidad de deformación reversible de la membrana."}, {"skill": "PROC", "q": "Se comparó la velocidad de paso a través de la membrana de moléculas de distinto tamaño, manteniendo constante su polaridad: molécula pequeña=paso rápido; molécula mediana=paso intermedio; molécula grande=paso lento o nulo sin transportador específico. ¿Qué conclusión es más adecuada?", "options": ["El tamaño molecular influye en la velocidad de paso a través de la membrana, siendo más lento o restringido para moléculas de mayor tamaño", "El tamaño molecular no tiene ninguna relación con la velocidad de paso a través de la membrana", "Las moléculas de mayor tamaño siempre atraviesan la membrana con mayor rapidez que las de menor tamaño", "Todas las moléculas, sin importar su tamaño, atraviesan la membrana exactamente a la misma velocidad", "Las moléculas grandes atraviesan la membrana únicamente por difusión simple, sin necesidad de ningún transportador"], "correct": 0, "exp": "La relación observada (menor velocidad de paso para moléculas de mayor tamaño) es consistente con las limitaciones físicas de la bicapa lipídica para permitir el paso de moléculas grandes por difusión simple, requiriendo mecanismos de transporte específico."}, {"skill": "PROC", "q": "Se midió la movilidad lateral de una proteína de membrana marcada en distintas condiciones de fluidez: baja fluidez (baja temperatura)=movilidad lenta; alta fluidez (temperatura fisiológica)=movilidad rápida. ¿Qué conclusión es más adecuada?", "options": ["La movilidad lateral de las proteínas de membrana se relaciona positivamente con el grado de fluidez de la bicapa lipídica en la que se encuentran insertas", "La movilidad lateral de las proteínas es independiente de la fluidez de la membrana", "A menor fluidez de membrana, mayor es la movilidad lateral de las proteínas insertas en ella", "Todas las proteínas de membrana presentan exactamente la misma movilidad, sin importar la fluidez del entorno", "Las proteínas de membrana nunca pueden desplazarse lateralmente bajo ninguna condición"], "correct": 0, "exp": "La relación positiva entre fluidez de membrana y movilidad lateral de las proteínas insertas es consistente con el modelo de mosaico fluido, donde el estado físico de los lípidos que rodean a una proteína influye en su capacidad de desplazamiento."}, {"skill": "EVAL", "q": "Un estudiante concluye que 'todas las sustancias, sin excepción, atraviesan la membrana celular con la misma facilidad' basándose en la observación de una sola sustancia liposoluble. ¿Qué crítica es más pertinente?", "options": ["La conclusión es válida porque una sola sustancia es representativa de todas las demás sustancias existentes", "La generalización ignora que sustancias con distinta polaridad y tamaño molecular atraviesan la membrana con distinta facilidad, según principios bien establecidos de permeabilidad selectiva; observar una sola sustancia liposoluble no permite esta generalización", "Todas las sustancias son igualmente liposolubles, sin ninguna excepción", "La polaridad de una sustancia no tiene ninguna relación con su capacidad de atravesar la membrana", "No es necesario considerar otras sustancias para hacer esta generalización"], "correct": 1, "exp": "La permeabilidad selectiva de la membrana varía considerablemente según las propiedades de cada sustancia (polaridad, tamaño); generalizar a partir de una sola sustancia observada ignora esa variabilidad bien documentada."}, {"skill": "EVAL", "q": "Una investigación concluyó que 'el colesterol siempre aumenta la fluidez de cualquier membrana, en cualquier condición de temperatura' basándose en un solo experimento a temperatura ambiente moderada. ¿Qué crítica es más sólida?", "options": ["La conclusión es correcta porque el colesterol siempre tiene exactamente el mismo efecto sobre la fluidez de membrana, sin importar la temperatura", "El efecto del colesterol sobre la fluidez de membrana depende de la temperatura: a temperaturas moderadas tiende a rigidizar la membrana (reduciendo fluidez), mientras que a bajas temperaturas puede evitar un empaquetamiento excesivo (aumentando fluidez relativa); generalizar un efecto único 'en cualquier condición' a partir de un solo experimento no es válido", "El colesterol nunca tiene ningún efecto sobre la fluidez de la membrana, sin importar la condición", "La temperatura no tiene ninguna relación con el efecto del colesterol sobre la membrana", "No es necesario considerar distintas condiciones de temperatura para esta generalización"], "correct": 1, "exp": "El colesterol tiene un efecto modulador dual sobre la fluidez de membrana que depende de la temperatura; generalizar un único efecto 'en cualquier condición' a partir de un solo experimento a una temperatura específica no está respaldado por el conocimiento bioquímico más amplio sobre esta molécula."}, {"skill": "EVAL", "q": "Un estudio concluyó que 'la ausencia de respuesta celular a una hormona en cierto tipo celular se debe siempre a la falta del receptor específico', sin descartar otras posibles causas (como una vía de señalización interna defectuosa). ¿Qué crítica es más pertinente?", "options": ["La conclusión es correcta porque la única causa posible de ausencia de respuesta celular a una hormona es la falta del receptor específico", "La ausencia de respuesta celular podría deberse a otras causas además de la falta del receptor (por ejemplo, una vía de señalización interna defectuosa a pesar de tener el receptor presente); atribuir la causa exclusivamente a la ausencia del receptor sin descartar otras posibilidades es una conclusión apresurada", "La vía de señalización interna nunca puede afectar la respuesta celular a una hormona", "No es necesario considerar otras posibles causas de ausencia de respuesta hormonal", "Todas las células que carecen de respuesta hormonal necesariamente carecen del receptor correspondiente"], "correct": 1, "exp": "Existen múltiples puntos posibles de falla en una vía de señalización celular (receptor, transducción interna, respuesta efectora); atribuir la causa exclusivamente a uno de ellos sin evaluar los demás es una conclusión que no considera explicaciones alternativas plausibles."}, {"skill": "EVAL", "q": "Una publicación afirmó que 'el glucocálix es una estructura idéntica en composición y función en cualquier tipo celular del organismo', basándose en su observación en un solo tipo celular. ¿Qué crítica es más pertinente?", "options": ["La afirmación es correcta porque el glucocálix es exactamente igual en todos los tipos celulares del organismo", "La composición específica del glucocálix (tipos de carbohidratos presentes) puede variar entre distintos tipos celulares, relacionándose con funciones de reconocimiento específicas de cada tejido; generalizar su identidad exacta a partir de un solo tipo celular no está respaldado por esa única observación", "El glucocálix no existe en la mayoría de los tipos celulares del organismo", "La composición del glucocálix no tiene ninguna relación con la función celular específica de cada tejido", "No es necesario considerar otros tipos celulares para esta generalización"], "correct": 1, "exp": "La composición específica del glucocálix puede variar según el tipo celular y su función particular de reconocimiento; generalizar una identidad exacta y universal a partir de la observación de un solo tipo celular es una sobregeneralización."}, {"skill": "EVAL", "q": "Un estudio sobre deformabilidad de membrana concluyó que 'cualquier célula del organismo puede deformarse y recuperar su forma exactamente igual que un glóbulo rojo', basándose únicamente en el estudio de este tipo celular. ¿Qué crítica es más pertinente?", "options": ["La conclusión es válida porque todas las células del organismo poseen exactamente las mismas propiedades mecánicas que el glóbulo rojo", "Distintos tipos celulares presentan diferencias en su citoesqueleto y composición de membrana que determinan capacidades de deformación distintas; generalizar el comportamiento específico del glóbulo rojo (especializado en esta función) a 'cualquier célula del organismo' no está respaldado sin evidencia adicional de otros tipos celulares", "El glóbulo rojo es el único tipo celular capaz de deformarse en todo el organismo", "La capacidad de deformación celular no tiene ninguna relación con el citoesqueleto de membrana", "No es necesario considerar otros tipos celulares para esta generalización"], "correct": 1, "exp": "El glóbulo rojo posee adaptaciones estructurales especializadas para la deformación (necesarias para atravesar capilares estrechos); generalizar esa capacidad particular a cualquier célula del organismo, sin evidencia adicional, ignora la diversidad de propiedades mecánicas entre distintos tipos celulares."}, {"skill": "EVAL", "q": "Una investigación afirmó que 'la temperatura es el único factor que determina la fluidez de la membrana celular', ignorando el efecto conocido del colesterol y del grado de saturación de los ácidos grasos. ¿Qué crítica es más pertinente?", "options": ["La afirmación es correcta porque la temperatura es efectivamente el único factor relevante para la fluidez de membrana", "Existen otros factores bien documentados que también influyen en la fluidez de membrana, como la proporción de colesterol y el grado de saturación de los ácidos grasos de los fosfolípidos; afirmar que la temperatura es 'el único factor' ignora esta evidencia adicional", "El colesterol y el grado de saturación de los ácidos grasos nunca tienen ningún efecto sobre la fluidez de membrana", "La fluidez de membrana es una propiedad fija que nunca puede ser modificada por ningún factor", "No es necesario considerar otros factores además de la temperatura para esta afirmación"], "correct": 1, "exp": "La fluidez de membrana es una propiedad multifactorial que depende de la temperatura, la composición lipídica (grado de saturación) y la proporción de colesterol; reducir su determinación a un único factor ignora el conocimiento bioquímico más completo sobre esta propiedad."}, {"skill": "EVAL", "q": "Un estudio concluyó que 'los canales proteicos de membrana permiten el paso de cualquier sustancia sin ninguna selectividad', basándose en la observación de que permiten el paso de un ion específico. ¿Qué crítica es más pertinente?", "options": ["La conclusión es correcta porque cualquier canal proteico permite el paso de cualquier sustancia sin ninguna restricción", "Los canales proteicos suelen ser altamente selectivos, permitiendo el paso preferente de un tipo específico de sustancia (por ejemplo, un ion particular) y restringiendo el de otras; generalizar 'sin ninguna selectividad' a partir de la observación de un solo tipo de sustancia que sí atraviesa el canal es una conclusión no respaldada por esos mismos datos", "Los canales proteicos nunca permiten el paso de ninguna sustancia bajo ninguna circunstancia", "La selectividad de un canal proteico no tiene ninguna relación con su estructura molecular", "No es necesario evaluar otras sustancias para determinar la selectividad de un canal proteico"], "correct": 1, "exp": "Observar que un canal permite el paso de una sustancia específica no implica que carezca de selectividad; de hecho, la mayoría de los canales proteicos son altamente selectivos, y para evaluar correctamente esa selectividad se requeriría comparar el paso de múltiples sustancias distintas."}, {"skill": "EVAL", "q": "Una publicación afirmó que 'las proteínas de membrana con movimiento lateral restringido no cumplen ninguna función relevante', asumiendo que solo las proteínas móviles son funcionalmente importantes. ¿Qué crítica es más pertinente?", "options": ["La afirmación es correcta porque solo las proteínas con movimiento libre pueden cumplir alguna función relevante en la célula", "Las proteínas con movimiento lateral restringido (por ejemplo, ancladas al citoesqueleto) pueden cumplir funciones igualmente importantes, como mantener una localización estable necesaria para procesos de adhesión celular, formación de uniones intercelulares o anclaje estructural; la restricción de movimiento no implica ausencia de función", "Las proteínas de membrana ancladas al citoesqueleto nunca cumplen ninguna función biológica", "El movimiento lateral es el único criterio relevante para determinar la función de una proteína de membrana", "No es necesario considerar la función de las proteínas con movimiento restringido"], "correct": 1, "exp": "Asumir que solo la movilidad implica funcionalidad ignora que la restricción de movimiento (anclaje) puede ser precisamente el mecanismo que permite a ciertas proteínas cumplir funciones específicas, como mantener uniones estables entre células."}, {"skill": "COM", "q": "Un estudiante debe explicar por qué el modelo de la membrana celular se denomina 'mosaico fluido'. ¿Explicación más precisa?", "options": ["El término 'mosaico' hace referencia a la distribución heterogénea de distintos componentes (fosfolípidos, proteínas, colesterol, carbohidratos) en la membrana, mientras 'fluido' refleja la capacidad de estos componentes de moverse lateralmente dentro de la bicapa, dando una estructura dinámica y no estática", "El término 'mosaico fluido' hace referencia únicamente al color de la membrana observado al microscopio", "La membrana celular es una estructura completamente rígida y estática, sin ningún componente móvil", "El término 'fluido' se refiere a que la membrana está compuesta exclusivamente por agua", "Todos los componentes de la membrana se distribuyen de forma homogénea y uniforme, sin ningún patrón de mosaico"], "correct": 0, "exp": "La explicación completa debe abordar ambos términos: la heterogeneidad de componentes distribuidos (mosaico) y su capacidad de movimiento dentro de la estructura (fluido), características centrales del modelo."}, {"skill": "COM", "q": "Al explicar por qué la membrana plasmática es selectivamente permeable (permite el paso de algunas sustancias pero no de otras libremente), ¿cuál es la explicación más precisa?", "options": ["La estructura de la bicapa lipídica, con su núcleo hidrofóbico, favorece el paso de sustancias liposolubles y pequeñas, mientras dificulta el paso de sustancias polares o de gran tamaño, que requieren de proteínas de transporte específicas para atravesarla", "La membrana plasmática permite el paso libre de cualquier sustancia, sin ninguna restricción", "La selectividad de la membrana se debe únicamente al color de sus componentes", "La membrana plasmática bloquea por completo el paso de cualquier sustancia, sin ninguna excepción", "La permeabilidad de la membrana no tiene ninguna relación con su composición química"], "correct": 0, "exp": "La explicación correcta relaciona la estructura química de la bicapa lipídica (núcleo hidrofóbico) con el comportamiento diferencial de paso según las propiedades específicas de cada sustancia (polaridad, tamaño)."}, {"skill": "COM", "q": "Un estudiante debe explicar la función del glucocálix en el reconocimiento celular. ¿Explicación más precisa?", "options": ["Las cadenas de carbohidratos que forman el glucocálix, ubicadas en la superficie externa de la célula, actúan como marcadores específicos que permiten a otras células o moléculas reconocer e identificar a esa célula particular, participando en procesos como la adhesión celular y la respuesta inmune", "El glucocálix no cumple ninguna función relacionada con el reconocimiento celular", "El glucocálix se encuentra ubicado en la cara interna de la membrana, orientada hacia el citoplasma", "Los carbohidratos de membrana bloquean por completo cualquier proceso de reconocimiento celular", "El glucocálix está compuesto exclusivamente por lípidos, sin ningún carbohidrato"], "correct": 0, "exp": "La explicación adecuada relaciona la ubicación específica (superficie externa) y composición (carbohidratos) del glucocálix con su función de servir como 'etiqueta' de identificación celular reconocible por otras células o moléculas."}, {"skill": "COM", "q": "Al explicar por qué el colesterol se considera un componente 'regulador' de la fluidez de membrana, en lugar de simplemente un componente estructural más, ¿cuál es la explicación más precisa?", "options": ["El colesterol modula (ajusta) el grado de fluidez de la membrana según la temperatura, evitando que se vuelva excesivamente fluida a temperaturas altas o excesivamente rígida a temperaturas bajas, cumpliendo así una función activa de regulación más que solo estructural", "El colesterol no tiene ninguna función relacionada con la fluidez de la membrana", "El colesterol es idéntico en función a los fosfolípidos de membrana", "El colesterol siempre aumenta la fluidez de la membrana, sin importar la temperatura", "La fluidez de la membrana no puede ser regulada por ningún componente celular"], "correct": 0, "exp": "El término 'regulador' refleja la capacidad del colesterol de ajustar la fluidez de membrana según las condiciones de temperatura, en lugar de simplemente ocupar un espacio estructural fijo dentro de la bicapa."}, {"skill": "COM", "q": "Un estudiante debe explicar por qué distintos tipos celulares pueden responder de forma diferente a la misma hormona circulante en el organismo. ¿Explicación más precisa?", "options": ["Solo las células que expresan el receptor específico para esa hormona en su membrana son capaces de reconocerla y generar una respuesta celular; las células que carecen de ese receptor específico no responden a la hormona, aunque esté presente en el medio", "Todas las células del organismo responden exactamente igual a cualquier hormona circulante", "La respuesta celular a una hormona no depende de ningún receptor específico de membrana", "Las hormonas ingresan libremente a cualquier célula, generando siempre la misma respuesta", "La presencia de receptores de membrana no tiene ninguna relación con la especificidad de la respuesta hormonal"], "correct": 0, "exp": "La explicación central es que la especificidad de la respuesta hormonal depende de la expresión selectiva de receptores específicos en la membrana de determinadas células, lo que explica por qué no todas las células responden de la misma manera a una misma hormona."}, {"skill": "COM", "q": "Al explicar por qué la membrana del glóbulo rojo puede deformarse temporalmente al pasar por capilares estrechos sin romperse, ¿cuál es la explicación más precisa?", "options": ["La combinación de la fluidez de la bicapa lipídica con una red de proteínas del citoesqueleto asociada a la cara interna de la membrana proporciona flexibilidad y soporte estructural simultáneamente, permitiendo que la célula se deforme de manera reversible sin perder su integridad", "La membrana del glóbulo rojo es completamente rígida, por lo que nunca puede deformarse", "La deformación de la membrana siempre resulta en la ruptura de la célula", "El citoesqueleto de membrana no tiene ninguna relación con la capacidad de deformación celular", "Los glóbulos rojos no poseen ninguna membrana plasmática que los delimite"], "correct": 0, "exp": "La explicación adecuada combina dos elementos: la fluidez inherente de la bicapa lipídica y el soporte estructural del citoesqueleto asociado, cuya combinación permite la deformación reversible característica de esta célula."}, {"skill": "COM", "q": "Un estudiante debe explicar por qué las proteínas integrales de membrana suelen presentar regiones hidrofóbicas e hidrofílicas en su estructura. ¿Explicación más precisa?", "options": ["Las regiones hidrofóbicas de la proteína interactúan favorablemente con el núcleo hidrofóbico de la bicapa lipídica donde se insertan, mientras las regiones hidrofílicas quedan expuestas hacia el medio acuoso (citoplasma o exterior celular), permitiendo que la proteína se inserte establemente en la membrana", "Las proteínas de membrana están formadas exclusivamente por regiones hidrofóbicas, sin ninguna región hidrofílica", "La composición de la proteína no tiene ninguna relación con su capacidad de insertarse en la membrana", "Las regiones hidrofílicas de la proteína interactúan directamente con el núcleo de la bicapa lipídica", "Todas las proteínas de membrana tienen exactamente la misma composición de aminoácidos"], "correct": 0, "exp": "La distribución complementaria de regiones hidrofóbicas (dentro de la bicapa) e hidrofílicas (expuestas al medio acuoso) es lo que permite que una proteína integral se inserte de forma estable y funcional dentro de la estructura de la membrana."}, {"skill": "COM", "q": "Al explicar por qué la selectividad de la membrana según el tamaño molecular es funcionalmente importante para la célula, ¿cuál es la explicación más precisa?", "options": ["Restringir el paso libre de moléculas grandes permite a la célula controlar de forma más precisa qué sustancias específicas ingresan o salen, mediante mecanismos de transporte regulado (proteínas específicas), en lugar de permitir un intercambio descontrolado de cualquier sustancia sin importar su tamaño", "El tamaño molecular no tiene ninguna relación con la función de selectividad de la membrana", "Permitir el paso libre de cualquier molécula, sin importar su tamaño, sería más beneficioso para la célula", "La membrana celular no ejerce ningún control sobre el tamaño de las moléculas que la atraviesan", "Las moléculas grandes siempre atraviesan la membrana con mayor facilidad que las moléculas pequeñas"], "correct": 0, "exp": "La explicación adecuada conecta la restricción física por tamaño con el beneficio funcional de mantener un control regulado sobre el intercambio de sustancias, en lugar de un intercambio descontrolado que comprometería la homeostasis celular."}];
+
+let currentQuiz = [];
+let currentIndex = 0;
+let answered = false;
+let userAnswers = [];
+let scoreBySkill = {};
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function buildQuiz(){
+  let selected = [];
+  SKILL_ORDER.forEach(skillKey=>{
+    const pool = QUESTION_BANK.filter(q=>q.skill===skillKey);
+    const picked = shuffle(pool).slice(0,PICK_PER_SKILL);
+    selected = selected.concat(picked);
+  });
+  selected = shuffle(selected);
+  return selected.map(orig=>{
+    const idxArr = [0,1,2,3,4];
+    const shuffledIdx = shuffle(idxArr);
+    const newOptions = shuffledIdx.map(i=>orig.options[i]);
+    const newCorrect = shuffledIdx.indexOf(orig.correct);
+    return { skill: orig.skill, question: orig.q, options: newOptions, correct: newCorrect, exp: orig.exp };
+  });
+}
+
+function startQuiz(){
+  currentQuiz = buildQuiz();
+  currentIndex = 0;
+  answered = false;
+  userAnswers = [];
+  scoreBySkill = {};
+  SKILL_ORDER.forEach(s=>scoreBySkill[s]={correct:0,total:0});
+  document.getElementById('start-screen').classList.add('hidden');
+  document.getElementById('dashboard-screen').classList.add('hidden');
+  document.getElementById('review-screen').classList.add('hidden');
+  document.getElementById('quiz-screen').classList.remove('hidden');
+  renderQuestion();
+}
+
+function renderQuestion(){
+  answered = false;
+  const q = currentQuiz[currentIndex];
+  const total = currentQuiz.length;
+  document.getElementById('progress-fill').style.width = ((currentIndex)/total*100)+'%';
+  document.getElementById('progress-label').textContent = (currentIndex+1)+' / '+total;
+  document.getElementById('skill-tag').textContent = SKILL_NAMES[q.skill];
+  document.getElementById('qnum').textContent = 'Pregunta '+(currentIndex+1);
+  document.getElementById('question-text').textContent = q.question;
+
+  const optsDiv = document.getElementById('options');
+  optsDiv.innerHTML = '';
+  q.options.forEach((opt, i)=>{
+    const btn = document.createElement('button');
+    btn.className = 'option';
+    btn.innerHTML = '<span class="letter">'+LETTERS[i]+')</span><span>'+opt+'</span>';
+    btn.onclick = ()=>selectOption(i);
+    optsDiv.appendChild(btn);
+  });
+
+  document.getElementById('feedback').classList.add('hidden');
+  document.getElementById('next-btn').classList.add('hidden');
+}
+
+function selectOption(i){
+  if(answered) return;
+  answered = true;
+  const q = currentQuiz[currentIndex];
+  const correct = q.correct;
+  const options = document.querySelectorAll('#options .option');
+  options.forEach((opt, idx)=>{
+    opt.classList.add('locked');
+    if(idx===correct) opt.classList.add('correct');
+    else if(idx===i) opt.classList.add('incorrect');
+    else opt.classList.add('dim');
+  });
+
+  const isCorrect = (i===correct);
+  scoreBySkill[q.skill].total++;
+  if(isCorrect) scoreBySkill[q.skill].correct++;
+
+  userAnswers.push({ skill:q.skill, question:q.question, options:q.options, correctIdx:correct, chosenIdx:i, exp:q.exp, isCorrect });
+
+  const fb = document.getElementById('feedback');
+  fb.classList.remove('hidden');
+  fb.classList.toggle('wrong', !isCorrect);
+  fb.innerHTML = '<span class="pista-label">'+(isCorrect ? '✓ Correcto — Pista' : '✕ Incorrecto — Pista')+'</span>'+
+    '<strong>Respuesta correcta: '+LETTERS[correct]+') '+q.options[correct]+'</strong><br><br>'+q.exp;
+
+  document.getElementById('next-btn').classList.remove('hidden');
+}
+
+function nextQuestion(){
+  currentIndex++;
+  if(currentIndex >= currentQuiz.length){
+    showDashboard();
+  } else {
+    renderQuestion();
+  }
+}
+
+function showDashboard(){
+  document.getElementById('quiz-screen').classList.add('hidden');
+  document.getElementById('dashboard-screen').classList.remove('hidden');
+
+  const totalCorrect = userAnswers.filter(a=>a.isCorrect).length;
+  const totalQ = userAnswers.length;
+  document.getElementById('score-total').innerHTML = totalCorrect+'<span>/'+totalQ+'</span>';
+  const pct = Math.round((totalCorrect/totalQ)*100);
+  document.getElementById('score-caption').textContent = pct+'% de logro general';
+
+  const barsDiv = document.getElementById('skill-bars');
+  barsDiv.innerHTML = '';
+  const weakSkills = [];
+  const strongSkills = [];
+
+  SKILL_ORDER.forEach(skillKey=>{
+    const s = scoreBySkill[skillKey];
+    const skillPct = s.total>0 ? Math.round((s.correct/s.total)*100) : 0;
+    let color = 'var(--accent-coral)';
+    if(skillPct>=75) color='var(--accent-sage)';
+    else if(skillPct>=50) color='var(--accent-amber)';
+
+    const row = document.createElement('div');
+    row.className='skill-bar-row';
+    row.innerHTML = '<div class="skill-bar-head"><span class="name">'+SKILL_NAMES[skillKey]+'</span><span class="frac">'+s.correct+'/'+s.total+'</span></div>'+
+      '<div class="skill-bar-track"><div class="skill-bar-fill" style="width:'+skillPct+'%;background:'+color+';"></div></div>';
+    barsDiv.appendChild(row);
+
+    if(skillPct<75) weakSkills.push({name:SKILL_NAMES[skillKey], pct:skillPct});
+    else strongSkills.push(SKILL_NAMES[skillKey]);
+  });
+
+  const improveBox = document.getElementById('improve-box');
+  const improveList = document.getElementById('improve-list');
+  improveList.innerHTML='';
+  if(weakSkills.length>0){
+    improveBox.classList.remove('hidden');
+    weakSkills.sort((a,b)=>a.pct-b.pct).forEach(w=>{
+      const li = document.createElement('li');
+      li.innerHTML = '<strong>'+w.name+'</strong> ('+w.pct+'%) — refuerza con más ejercicios de este tipo de habilidad, revisando las pistas de las preguntas falladas.';
+      improveList.appendChild(li);
+    });
+  } else {
+    improveBox.classList.add('hidden');
+  }
+
+  const strongBox = document.getElementById('strong-box');
+  const strongText = document.getElementById('strong-text');
+  if(strongSkills.length>0){
+    strongBox.classList.remove('hidden');
+    strongText.textContent = strongSkills.join(', ') + '. Buen dominio, mantén la práctica con nuevos intentos.';
+  } else {
+    strongBox.classList.add('hidden');
+  }
+}
+
+function restartQuiz(){ startQuiz(); }
+
+function reviewAnswers(){
+  document.getElementById('dashboard-screen').classList.add('hidden');
+  const rev = document.getElementById('review-screen');
+  rev.classList.remove('hidden');
+  let html = '<p class="eyebrow">Revisión de respuestas</p>';
+  userAnswers.forEach((a, i)=>{
+    html += '<div style="margin-bottom:22px;padding-bottom:18px;border-bottom:1px solid var(--line);">'+
+      '<span class="skill-tag">'+SKILL_NAMES[a.skill]+'</span>'+
+      '<p class="question-text" style="font-size:16px;">'+(i+1)+'. '+a.question+'</p>'+
+      '<p style="font-size:14px;color:'+(a.isCorrect?'var(--accent-sage)':'var(--accent-coral)')+';margin:0 0 6px;">'+
+        (a.isCorrect ? '✓ Respondiste correctamente' : '✕ Tu respuesta: '+LETTERS[a.chosenIdx]+') '+a.options[a.chosenIdx])+
+      '</p>'+
+      '<p style="font-size:14px;color:var(--text-muted);margin:0 0 8px;">Correcta: '+LETTERS[a.correctIdx]+') '+a.options[a.correctIdx]+'</p>'+
+      '<div class="feedback" style="margin-top:6px;"><span class="pista-label">Pista</span>'+a.exp+'</div>'+
+    '</div>';
+  });
+  html += '<div class="actions"><button class="btn" onclick="restartQuiz(); document.getElementById(\'review-screen\').classList.add(\'hidden\');">Repetir con nuevas preguntas</button></div>';
+  rev.innerHTML = html;
+}
+</script>
+</body>
+</html>

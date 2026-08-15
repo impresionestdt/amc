@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PAES Biología · Clase 7 · Mecanismos de Transporte a través de Membrana (Nivel Básico)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Source+Sans+3:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-deep:#0f2027;
+    --bg-panel:#15303a;
+    --bg-panel-2:#1b3a45;
+    --accent-amber:#e8a33d;
+    --accent-sage:#6fa88a;
+    --accent-coral:#e4572e;
+    --text-light:#f3ede1;
+    --text-muted:#a9c0c2;
+    --line:#2a4750;
+    --radius:14px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:radial-gradient(circle at 15% -10%, #1c4552 0%, var(--bg-deep) 55%) fixed;
+    color:var(--text-light);
+    font-family:'Source Sans 3', system-ui, sans-serif;
+    min-height:100vh;
+    padding:32px 16px 64px;
+  }
+  .wrap{max-width:820px;margin:0 auto;}
+  .eyebrow{font-family:'JetBrains Mono', monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent-amber);margin:0 0 8px;}
+  h1{font-family:'Fraunces', serif;font-weight:600;font-size:clamp(26px,4vw,38px);line-height:1.1;margin:0 0 6px;color:var(--text-light);}
+  .sub{color:var(--text-muted);font-size:15px;margin:0 0 28px;max-width:60ch;}
+  .card{background:linear-gradient(180deg, var(--bg-panel) 0%, var(--bg-panel-2) 100%);border:1px solid var(--line);border-radius:var(--radius);padding:28px;box-shadow:0 20px 40px -20px rgba(0,0,0,.5);}
+  #start-screen ul{color:var(--text-muted);font-size:14.5px;line-height:1.7;padding-left:20px;margin:18px 0 26px;}
+  #start-screen li{margin-bottom:4px;}
+  .btn{font-family:'Source Sans 3', sans-serif;font-weight:700;font-size:15px;border:none;border-radius:999px;padding:14px 30px;cursor:pointer;background:var(--accent-amber);color:#20140a;transition:transform .15s ease, box-shadow .15s ease;box-shadow:0 8px 20px -8px rgba(0,0,0,.35);}
+  .btn:hover{transform:translateY(-1px);}
+  .btn:active{transform:translateY(0);}
+  .btn.ghost{background:transparent;color:var(--text-muted);border:1.5px solid var(--line);box-shadow:none;}
+  .progress-row{display:flex;align-items:center;gap:14px;margin-bottom:18px;}
+  .progress-track{flex:1;height:6px;border-radius:99px;background:var(--line);overflow:hidden;}
+  .progress-fill{height:100%;background:linear-gradient(90deg,var(--accent-sage),var(--accent-amber));border-radius:99px;transition:width .3s ease;}
+  .progress-label{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--text-muted);white-space:nowrap;}
+  .skill-tag{display:inline-block;font-family:'JetBrains Mono', monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--bg-deep);background:var(--accent-sage);padding:5px 11px;border-radius:999px;margin-bottom:14px;}
+  .qnum{color:var(--text-muted);font-size:13px;font-family:'JetBrains Mono',monospace;margin-bottom:6px;}
+  .question-text{font-family:'Fraunces', serif;font-weight:500;font-size:19px;line-height:1.45;margin:0 0 22px;}
+  .options{display:flex;flex-direction:column;gap:10px;}
+  .option{display:flex;align-items:flex-start;gap:12px;text-align:left;background:rgba(255,255,255,.03);border:1.5px solid var(--line);border-radius:10px;padding:13px 15px;cursor:pointer;color:var(--text-light);font-size:14.5px;line-height:1.4;transition:border-color .15s, background .15s;}
+  .option:hover:not(.locked){border-color:var(--accent-amber);}
+  .option .letter{font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--accent-amber);flex-shrink:0;}
+  .option.correct{border-color:var(--accent-sage);background:rgba(111,168,138,.14);}
+  .option.incorrect{border-color:var(--accent-coral);background:rgba(228,87,46,.14);}
+  .option.locked{cursor:default;}
+  .option.dim{opacity:.45;}
+  .feedback{margin-top:18px;padding:16px 18px;border-radius:10px;background:rgba(255,255,255,.04);border-left:4px solid var(--accent-sage);font-size:14px;line-height:1.6;color:var(--text-muted);}
+  .feedback.wrong{border-left-color:var(--accent-coral);}
+  .feedback strong{color:var(--text-light);}
+  .feedback .pista-label{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent-amber);display:block;margin-bottom:6px;}
+  .nav-row{display:flex;justify-content:flex-end;margin-top:22px;}
+  .score-hero{text-align:center;padding:10px 0 26px;}
+  .score-big{font-family:'Fraunces',serif;font-weight:700;font-size:56px;color:var(--accent-amber);line-height:1;}
+  .score-big span{font-size:24px;color:var(--text-muted);font-weight:500;}
+  .score-caption{color:var(--text-muted);font-size:14px;margin-top:6px;}
+  .skill-bars{display:flex;flex-direction:column;gap:16px;margin:22px 0 8px;}
+  .skill-bar-head{display:flex;justify-content:space-between;font-size:13.5px;margin-bottom:6px;}
+  .skill-bar-head .name{font-weight:600;}
+  .skill-bar-head .frac{font-family:'JetBrains Mono',monospace;color:var(--text-muted);}
+  .skill-bar-track{height:10px;border-radius:99px;background:var(--line);overflow:hidden;}
+  .skill-bar-fill{height:100%;border-radius:99px;}
+  .improve-box{margin-top:26px;background:rgba(228,87,46,.08);border:1px solid rgba(228,87,46,.35);border-radius:10px;padding:18px 20px;}
+  .improve-box h3{font-family:'Fraunces',serif;font-size:16px;margin:0 0 10px;color:var(--accent-coral);}
+  .improve-box ul{margin:0;padding-left:20px;color:var(--text-light);font-size:14px;line-height:1.75;}
+  .strong-box{margin-top:14px;background:rgba(111,168,138,.08);border:1px solid rgba(111,168,138,.35);border-radius:10px;padding:18px 20px;}
+  .strong-box h3{font-family:'Fraunces',serif;font-size:16px;margin:0 0 10px;color:var(--accent-sage);}
+  .strong-box p{margin:0;color:var(--text-light);font-size:14px;line-height:1.6;}
+  .actions{display:flex;gap:12px;margin-top:28px;flex-wrap:wrap;}
+  .hidden{display:none !important;}
+  footer{text-align:center;color:var(--text-muted);font-size:12px;margin-top:26px;opacity:.6;}
+</style>
+</head>
+<body> <div style="float: left; margin-right: 25px; margin-bottom: 25px;"><img src="Logo_AMC.png" alt="Logo" style="max-width: 150px;"></div>
+<div class="wrap">
+  <p class="eyebrow">PAES · Ciencias — Módulo Biología Común · Nivel Básico</p>
+  <h1>Mecanismos de Transporte a través de Membrana</h1>
+  <p class="sub">Eje 1: Organización, estructura y actividad celular — Sub-eje: Organelos celulares y membrana plasmática — Clase 7: Mecanismos de Transporte a través de Membrana</p>
+
+  <div class="card" id="start-screen">
+    <p class="eyebrow" style="margin-bottom:14px;">Antes de comenzar</p>
+    <p style="color:var(--text-muted);font-size:14.5px;line-height:1.6;">Este quiz evalúa nivel <strong style='color:var(--text-light);'>básico</strong>, con 20 preguntas (4 por cada habilidad PAES), extraídas al azar de un banco amplio. Cada intento genera una versión distinta.</p>
+    <ul>
+      <li>Observar y plantear preguntas</li>
+      <li>Planificar y conducir una investigación</li>
+      <li>Procesar y analizar la evidencia</li>
+      <li>Evaluar</li>
+      <li>Comunicar</li>
+    </ul>
+    <button class="btn" onclick="startQuiz()">Comenzar quiz</button>
+  </div>
+
+  <div class="card hidden" id="quiz-screen">
+    <div class="progress-row">
+      <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+      <div class="progress-label" id="progress-label">1 / 20</div>
+    </div>
+    <span class="skill-tag" id="skill-tag"></span>
+    <p class="qnum" id="qnum"></p>
+    <p class="question-text" id="question-text"></p>
+    <div class="options" id="options"></div>
+    <div class="feedback hidden" id="feedback"></div>
+    <div class="nav-row">
+      <button class="btn hidden" id="next-btn" onclick="nextQuestion()">Siguiente →</button>
+    </div>
+  </div>
+
+  <div class="card hidden" id="dashboard-screen">
+    <p class="eyebrow">Resultados</p>
+    <div class="score-hero">
+      <div class="score-big" id="score-total">0<span>/20</span></div>
+      <p class="score-caption" id="score-caption">Puntaje global</p>
+    </div>
+    <div class="skill-bars" id="skill-bars"></div>
+    <div class="improve-box hidden" id="improve-box">
+      <h3>Puntos a mejorar</h3>
+      <ul id="improve-list"></ul>
+    </div>
+    <div class="strong-box hidden" id="strong-box">
+      <h3>Habilidades consolidadas</h3>
+      <p id="strong-text"></p>
+    </div>
+    <div class="actions">
+      <button class="btn" onclick="restartQuiz()">Repetir con nuevas preguntas</button>
+      <button class="btn ghost" onclick="reviewAnswers()">Revisar mis respuestas</button>
+    </div>
+  </div>
+
+  <div class="card hidden" id="review-screen"></div>
+
+  <footer>Banco de 40 preguntas · nivel básico · Clase 7 de 30 · basado en el temario DEMRE PAES Ciencias — Biología Común</footer>
+</div>
+
+<script>
+const SKILL_NAMES = {"OBS": "Observar y plantear preguntas", "PLAN": "Planificar y conducir una investigación", "PROC": "Procesar y analizar la evidencia", "EVAL": "Evaluar", "COM": "Comunicar"};
+const SKILL_ORDER = ["OBS", "PLAN", "PROC", "EVAL", "COM"];
+const LETTERS = ["A","B","C","D","E"];
+const PICK_PER_SKILL = 4;
+
+const QUESTION_BANK = [{"skill": "OBS", "q": "Un estudiante coloca glóbulos rojos en agua destilada (sin ninguna sal disuelta) y observa, al microscopio, que las células aumentan de tamaño y algunas terminan estallando. ¿Pregunta más pertinente?", "options": ["¿El ingreso de agua hacia el interior de la célula, por un medio con menor concentración de solutos que el citoplasma, explica el aumento de tamaño y la ruptura observada?", "¿La salida de agua desde el citoplasma hacia el medio explica el aumento de tamaño observado?", "¿El agua destilada impide cualquier tipo de movimiento de agua a través de la membrana?", "¿Los glóbulos rojos no poseen ninguna membrana permeable al agua?", "¿El aumento de tamaño se debe a la entrada de sales desde el agua destilada hacia la célula?"], "correct": 0, "exp": "El agua destilada, al no contener solutos, constituye un medio hipotónico respecto al citoplasma; el agua ingresa a la célula por ósmosis, provocando su hinchamiento y, en casos extremos, su ruptura (lisis)."}, {"skill": "OBS", "q": "Se observa que una célula vegetal colocada en una solución muy concentrada de sal (hipertónica) reduce el tamaño de su citoplasma, separándose visiblemente de la pared celular. ¿Pregunta más pertinente?", "options": ["¿La salida de agua desde el citoplasma hacia el medio externo, más concentrado, explica la separación observada entre la membrana y la pared celular?", "¿El ingreso de agua hacia la célula explica la separación observada entre membrana y pared celular?", "¿La pared celular impide cualquier cambio en el volumen del citoplasma?", "¿La solución hipertónica no tiene ninguna relación con el movimiento de agua en la célula?", "¿La célula vegetal no posee ninguna membrana plasmática que pueda separarse de la pared?"], "correct": 0, "exp": "En un medio hipertónico, el agua sale de la célula por ósmosis hacia el medio externo más concentrado, provocando que el citoplasma se contraiga y se separe de la pared celular (plasmólisis)."}, {"skill": "OBS", "q": "Un investigador observa que la glucosa ingresa a ciertas células mucho más rápido de lo esperado por simple difusión a través de la bicapa lipídica, y que este ingreso se satura cuando la concentración de glucosa es muy alta. ¿Pregunta más pertinente?", "options": ["¿El ingreso de glucosa está mediado por proteínas transportadoras específicas (difusión facilitada), cuya cantidad limitada explicaría la saturación observada a altas concentraciones?", "¿La glucosa atraviesa la membrana exclusivamente por difusión simple a través de la bicapa lipídica?", "¿La saturación observada indica que la glucosa deja de ser necesaria para la célula a altas concentraciones?", "¿El ingreso de glucosa no tiene ninguna relación con ninguna proteína de membrana?", "¿La velocidad de ingreso de glucosa es independiente de su concentración externa?"], "correct": 0, "exp": "La saturación del transporte a altas concentraciones es una característica típica de la difusión facilitada, mediada por un número limitado de proteínas transportadoras que pueden saturarse cuando todas están ocupadas."}, {"skill": "OBS", "q": "Se observa que una célula mantiene una concentración de sodio mucho menor en su interior que en el líquido extracelular, y que este gradiente se mantiene incluso quitando la fuente externa de energía celular durante un corto tiempo, hasta que las reservas de ATP se agotan. ¿Pregunta más precisa?", "options": ["¿El mantenimiento de este gradiente de sodio requiere del gasto continuo de energía celular (ATP), consistente con un mecanismo de transporte activo?", "¿El gradiente de sodio se mantiene sin ningún gasto de energía celular, incluso de forma indefinida?", "¿La bomba de sodio y potasio no participa en el mantenimiento de este gradiente?", "¿El sodio se mueve siempre a favor de su gradiente de concentración, sin ningún gasto energético?", "¿El agotamiento de ATP no tiene ninguna relación con el mantenimiento de gradientes iónicos celulares?"], "correct": 0, "exp": "Que el gradiente se pierda al agotarse el ATP es evidencia de que su mantenimiento depende del gasto continuo de energía celular, característica central del transporte activo (como la bomba de sodio y potasio)."}, {"skill": "OBS", "q": "Un estudiante observa, mediante microscopía, que un glóbulo blanco extiende su membrana alrededor de una bacteria, envolviéndola por completo hasta incorporarla dentro de una vesícula en su citoplasma. ¿Pregunta más precisa?", "options": ["¿Este proceso corresponde a fagocitosis, un mecanismo de transporte que permite a la célula incorporar partículas grandes mediante la formación de una vesícula a partir de la membrana plasmática?", "¿La bacteria atraviesa directamente la bicapa lipídica sin necesidad de ningún mecanismo de transporte especial?", "¿Este proceso corresponde a difusión simple de la bacteria a través de la membrana?", "¿La incorporación de la bacteria no requiere de ningún gasto energético por parte del glóbulo blanco?", "¿Este proceso corresponde a ósmosis, ya que involucra el movimiento de una partícula hacia el interior celular?"], "correct": 0, "exp": "La fagocitosis es un tipo de endocitosis mediante el cual la célula envuelve partículas grandes (como bacterias) con su membrana plasmática, formando una vesícula que las incorpora al citoplasma."}, {"skill": "OBS", "q": "Se observa que una célula secretora libera al exterior una vesícula cargada de proteínas mediante la fusión de la membrana de esa vesícula con la membrana plasmática. ¿Pregunta más precisa?", "options": ["¿Este proceso corresponde a exocitosis, un mecanismo mediante el cual la célula libera al exterior el contenido de una vesícula al fusionarse con la membrana plasmática?", "¿Este proceso corresponde a difusión simple del contenido de la vesícula hacia el exterior celular?", "¿La fusión de membranas observada indica que la célula está siendo fagocitada?", "¿Este proceso no requiere de ningún gasto energético por parte de la célula secretora?", "¿La vesícula ingresa nuevamente al citoplasma tras fusionarse con la membrana plasmática?"], "correct": 0, "exp": "La exocitosis es el mecanismo mediante el cual una vesícula intracelular se fusiona con la membrana plasmática, liberando su contenido al exterior de la célula, comúnmente utilizado para la secreción de proteínas."}, {"skill": "OBS", "q": "Un investigador coloca una célula vegetal en una solución con concentración de solutos similar a la de su citoplasma (isotónica) y observa que el tamaño celular no cambia significativamente. ¿Pregunta más precisa?", "options": ["¿La ausencia de cambio de tamaño se relaciona con que no existe un movimiento neto de agua cuando las concentraciones a ambos lados de la membrana son similares?", "¿La célula pierde por completo su capacidad de intercambiar agua en una solución isotónica?", "¿El movimiento de agua es máximo cuando las concentraciones a ambos lados de la membrana son iguales?", "¿Una solución isotónica siempre provoca la ruptura de la célula vegetal?", "¿La ausencia de cambio de tamaño indica que la célula carece de membrana plasmática permeable al agua?"], "correct": 0, "exp": "En una solución isotónica, la concentración de solutos es similar dentro y fuera de la célula, por lo que no existe un movimiento neto de agua y el tamaño celular se mantiene relativamente estable."}, {"skill": "OBS", "q": "Se observa que ciertas proteínas de membrana forman canales que permiten el paso de iones a favor de su gradiente de concentración, sin ningún gasto aparente de energía por parte de la célula. ¿Pregunta más precisa?", "options": ["¿El paso de iones a través de estos canales corresponde a un mecanismo de transporte pasivo, que no requiere gasto energético porque ocurre a favor del gradiente de concentración?", "¿El paso de iones a través de estos canales requiere siempre del gasto de una molécula de ATP?", "¿Estos canales transportan iones en contra de su gradiente de concentración?", "¿El transporte a través de canales proteicos no tiene ninguna relación con el gradiente de concentración del ion?", "¿Estos canales corresponden a un mecanismo de endocitosis?"], "correct": 0, "exp": "El movimiento de sustancias a favor de su gradiente de concentración (de mayor a menor concentración), sin gasto de energía celular, es característico del transporte pasivo, ya sea por difusión simple o facilitada mediante canales."}, {"skill": "PLAN", "q": "Para comprobar experimentalmente que una célula colocada en agua destilada se hincha por ósmosis, ¿cuál es el procedimiento más adecuado?", "options": ["Medir el tamaño de la célula antes y después de sumergirla en agua destilada, comparando ambos valores bajo el mismo método de observación", "Medir el tamaño de la célula solo después de sumergirla en agua destilada, sin ninguna medición previa", "No es necesario ningún tipo de medición para comprobar este fenómeno", "Sumergir la célula en una solución hipertónica en lugar de agua destilada", "Medir solo el peso del recipiente con agua, sin observar la célula directamente"], "correct": 0, "exp": "Comparar el tamaño de la misma célula antes y después de la exposición al agua destilada, bajo condiciones de observación estandarizadas, permite comprobar experimentalmente el cambio de volumen asociado al ingreso de agua por ósmosis."}, {"skill": "PLAN", "q": "Un estudiante desea investigar si el ingreso de una sustancia específica a la célula requiere de una proteína transportadora (transporte mediado) o si ocurre por simple difusión a través de la bicapa. ¿Cuál es el diseño experimental adecuado?", "options": ["Medir la velocidad de ingreso de la sustancia a distintas concentraciones externas, y evaluar si existe un punto de saturación (indicativo de transporte mediado) o si la velocidad aumenta de forma indefinidamente proporcional (indicativo de difusión simple)", "Medir la velocidad de ingreso solo a una concentración externa, sin ninguna variación", "No es necesario variar la concentración externa para responder esta pregunta", "Asumir el tipo de transporte sin realizar ninguna medición experimental", "Medir solo el tamaño de la célula, sin evaluar la velocidad de ingreso de la sustancia"], "correct": 0, "exp": "Evaluar si la velocidad de ingreso se satura a concentraciones altas (transporte mediado, con proteínas limitadas) o si sigue aumentando indefinidamente (difusión simple) es el criterio experimental clásico para distinguir entre ambos mecanismos."}, {"skill": "PLAN", "q": "Para determinar si el mantenimiento de un gradiente de sodio a través de la membrana requiere del gasto de energía celular (ATP), ¿cuál es el diseño experimental adecuado?", "options": ["Comparar el gradiente de sodio en células con producción normal de ATP frente a células donde la producción de ATP ha sido experimentalmente bloqueada, bajo las mismas condiciones iniciales", "Comparar solo células con producción normal de ATP, sin ningún grupo con esta producción bloqueada", "No es necesario ningún grupo de comparación para esta pregunta", "Medir solo la concentración de sodio en un único momento, sin ningún seguimiento temporal", "Bloquear simultáneamente todos los procesos celulares sin poder aislar el efecto específico de la producción de ATP"], "correct": 0, "exp": "Comparar el gradiente de sodio entre condiciones con y sin producción de ATP, bajo las mismas condiciones iniciales, permite establecer de forma experimental si su mantenimiento depende del gasto energético celular."}, {"skill": "PLAN", "q": "Se desea investigar si la fagocitosis de bacterias por un glóbulo blanco requiere del gasto de energía celular. ¿Cuál es el diseño experimental más adecuado?", "options": ["Comparar la capacidad de fagocitosis de glóbulos blancos con producción normal de energía celular frente a glóbulos blancos con esta producción experimentalmente bloqueada, bajo la misma exposición a bacterias", "Comparar solo glóbulos blancos con producción normal de energía, sin ningún grupo con esta producción bloqueada", "No es necesario ningún grupo de comparación para esta pregunta", "Medir solo el tamaño del glóbulo blanco, sin evaluar su capacidad de fagocitosis", "Exponer los glóbulos blancos a distintos tipos de bacterias simultáneamente sin ningún control apropiado"], "correct": 0, "exp": "Comparar la capacidad de fagocitosis entre condiciones con y sin producción de energía celular, bajo la misma exposición a bacterias, permite establecer de forma experimental si este proceso requiere gasto energético."}, {"skill": "PLAN", "q": "Un investigador desea determinar si distintas células vegetales muestran el mismo comportamiento (plasmólisis) al ser expuestas a una solución hipertónica. ¿Cuál es el diseño experimental adecuado?", "options": ["Exponer varias células vegetales de distinto origen a la misma solución hipertónica, bajo el mismo protocolo de observación, y comparar si todas presentan el fenómeno de plasmólisis", "Exponer una sola célula vegetal a la solución hipertónica y generalizar el resultado a todas las demás", "No es necesario comparar distintas células vegetales para esta pregunta", "Usar soluciones de distinta concentración para cada célula vegetal evaluada", "Observar las células sin ningún protocolo estandarizado de comparación"], "correct": 0, "exp": "Comparar el comportamiento de varias células vegetales bajo la misma condición experimental, con un protocolo estandarizado, permite establecer de forma válida si el fenómeno de plasmólisis es un patrón general o específico de un solo caso."}, {"skill": "PLAN", "q": "Para investigar si la velocidad de difusión facilitada de la glucosa depende de la cantidad de proteínas transportadoras presentes en la membrana, ¿cuál es el diseño experimental adecuado?", "options": ["Comparar la velocidad de ingreso de glucosa en células con distinta cantidad conocida de proteínas transportadoras (por ejemplo, mediante manipulación genética de su expresión), manteniendo igual la concentración externa de glucosa en cada caso", "Comparar la velocidad de ingreso solo en un tipo de célula, sin variar la cantidad de proteínas transportadoras", "No es necesario variar la cantidad de proteínas transportadoras para esta pregunta", "Usar concentraciones distintas de glucosa para cada célula evaluada", "Medir solo la cantidad de proteínas presentes, sin evaluar la velocidad de ingreso de glucosa"], "correct": 0, "exp": "Variar específicamente la cantidad de proteínas transportadoras, manteniendo constante la concentración externa de glucosa, permite establecer de forma experimental la relación entre ambas variables."}, {"skill": "PLAN", "q": "Se desea determinar si la exocitosis de una vesícula secretora requiere de la fusión física entre la membrana de la vesícula y la membrana plasmática. ¿Cuál es el diseño experimental adecuado?", "options": ["Comparar la liberación de contenido al exterior celular en condiciones donde la fusión de membranas ocurre normalmente frente a condiciones donde esta fusión ha sido experimentalmente bloqueada", "Comparar solo condiciones donde la fusión ocurre normalmente, sin ningún grupo con la fusión bloqueada", "No es necesario ningún grupo de comparación para esta pregunta", "Medir solo la cantidad de vesículas presentes, sin evaluar la liberación de su contenido", "Bloquear simultáneamente todos los procesos de transporte vesicular sin poder aislar el efecto específico de la fusión de membranas"], "correct": 0, "exp": "Comparar la liberación de contenido entre condiciones con y sin fusión de membranas permite establecer de forma experimental si este paso es efectivamente necesario para el proceso de exocitosis."}, {"skill": "PLAN", "q": "Un estudiante desea investigar si el tamaño de una célula colocada en una solución isotónica permanece estable a lo largo del tiempo. ¿Cuál es el procedimiento experimental adecuado?", "options": ["Medir el tamaño de la célula en distintos momentos (por ejemplo, cada 10 minutos) tras sumergirla en la solución isotónica, comparando los valores obtenidos a lo largo del tiempo", "Medir el tamaño de la célula solo en un momento único, sin ningún seguimiento temporal", "No es necesario ningún seguimiento temporal para esta pregunta", "Sumergir la célula en una solución hipotónica en lugar de isotónica", "Medir solo el volumen del recipiente con la solución, sin observar la célula directamente"], "correct": 0, "exp": "Realizar un seguimiento del tamaño celular a lo largo del tiempo, bajo condiciones isotónicas, permite comprobar experimentalmente si efectivamente se mantiene estable, como predice la teoría del equilibrio osmótico."}, {"skill": "PROC", "q": "Se midió el tamaño de un glóbulo rojo antes y después de sumergirlo en agua destilada: antes=tamaño normal; después=tamaño considerablemente mayor, con algunas células rotas. ¿Qué conclusión es más adecuada?", "options": ["El agua destilada, al ser un medio hipotónico respecto al citoplasma, provoca el ingreso de agua a la célula por ósmosis, aumentando su tamaño y causando la ruptura de algunas células", "El agua destilada provoca la salida de agua desde la célula, reduciendo su tamaño", "El agua destilada no tiene ningún efecto sobre el tamaño del glóbulo rojo", "El tamaño del glóbulo rojo permanece exactamente igual antes y después de la exposición al agua destilada", "La ruptura celular observada no tiene ninguna relación con el movimiento de agua"], "correct": 0, "exp": "El aumento de tamaño y la ruptura de algunas células son consistentes con el ingreso de agua por ósmosis desde un medio hipotónico (agua destilada) hacia el citoplasma, de mayor concentración de solutos."}, {"skill": "PROC", "q": "Se comparó el tamaño de una célula vegetal en una solución hipertónica (tamaño del citoplasma reducido, separado de la pared celular) y en una solución isotónica (tamaño normal, sin separación de la pared). ¿Qué conclusión es más adecuada?", "options": ["La solución hipertónica provoca la salida de agua desde la célula, reduciendo el tamaño del citoplasma y separándolo de la pared celular (plasmólisis), a diferencia de la solución isotónica", "La solución hipertónica provoca el ingreso de agua hacia la célula, aumentando su tamaño", "La solución isotónica provoca la salida de agua desde la célula, reduciendo su tamaño", "Ambas soluciones producen exactamente el mismo efecto sobre el tamaño celular", "El tipo de solución externa no tiene ninguna relación con el tamaño del citoplasma"], "correct": 0, "exp": "La reducción de tamaño y separación de la pared observada específicamente en la solución hipertónica, en contraste con la ausencia de cambio en la solución isotónica, es consistente con el fenómeno de plasmólisis por salida de agua."}, {"skill": "PROC", "q": "Se midió la velocidad de ingreso de glucosa a una célula a distintas concentraciones externas: baja=ingreso proporcional a la concentración; concentración alta=ingreso que se estabiliza sin seguir aumentando proporcionalmente (saturación). ¿Qué conclusión es más adecuada?", "options": ["El patrón de saturación observado a altas concentraciones es consistente con un mecanismo de transporte mediado por un número limitado de proteínas transportadoras (difusión facilitada)", "El patrón observado es consistente con difusión simple a través de la bicapa lipídica, sin ninguna proteína involucrada", "La velocidad de ingreso de glucosa no tiene ninguna relación con su concentración externa", "La saturación observada indica que la célula deja de necesitar glucosa a altas concentraciones", "La glucosa ingresa a la célula a una velocidad constante, sin importar su concentración externa"], "correct": 0, "exp": "El patrón de saturación a altas concentraciones es la evidencia experimental clásica que distingue el transporte mediado por proteínas (que se saturan) de la difusión simple (que no se satura, sino que aumenta proporcionalmente con la concentración)."}, {"skill": "PROC", "q": "Se comparó el gradiente de sodio a través de la membrana en células con producción normal de ATP (gradiente mantenido) y en células con la producción de ATP experimentalmente bloqueada (gradiente que se pierde progresivamente con el tiempo). ¿Qué conclusión es más adecuada?", "options": ["El mantenimiento del gradiente de sodio requiere del gasto continuo de energía celular (ATP), consistente con un mecanismo de transporte activo", "El bloqueo de la producción de ATP no tiene ningún efecto sobre el gradiente de sodio", "El gradiente de sodio se mantiene de forma indefinida, incluso sin ninguna producción de ATP", "Ambas condiciones experimentales muestran exactamente el mismo comportamiento del gradiente de sodio", "El gradiente de sodio se genera espontáneamente sin ningún tipo de transporte celular"], "correct": 0, "exp": "La pérdida progresiva del gradiente de sodio al bloquear la producción de ATP confirma experimentalmente que su mantenimiento depende del gasto continuo de energía celular, característica central del transporte activo."}, {"skill": "PROC", "q": "Se midió la capacidad de fagocitosis de glóbulos blancos con producción normal de energía celular (alta capacidad) y con esta producción experimentalmente bloqueada (capacidad considerablemente reducida). ¿Qué conclusión es más adecuada?", "options": ["La fagocitosis requiere del gasto de energía celular, ya que su bloqueo reduce drásticamente la capacidad de los glóbulos blancos de realizar este proceso", "El bloqueo de la producción de energía celular mejora la capacidad de fagocitosis", "La fagocitosis no tiene ninguna relación con el gasto de energía celular", "Ambas condiciones experimentales muestran exactamente la misma capacidad de fagocitosis", "Los glóbulos blancos no requieren de ningún tipo de energía para realizar ningún proceso celular"], "correct": 0, "exp": "La marcada reducción de la capacidad de fagocitosis al bloquear la producción de energía celular confirma que este proceso de transporte requiere gasto energético, siendo un tipo de transporte activo (endocitosis)."}, {"skill": "PROC", "q": "Se comparó el comportamiento (plasmólisis) de cinco tipos distintos de células vegetales expuestas a la misma solución hipertónica, bajo el mismo protocolo de observación, encontrando el mismo fenómeno de plasmólisis en las cinco muestras. ¿Qué conclusión es más adecuada?", "options": ["El fenómeno de plasmólisis en respuesta a una solución hipertónica parece ser un patrón consistente entre distintos tipos de células vegetales, bajo las mismas condiciones experimentales", "El fenómeno de plasmólisis es específico de un solo tipo de célula vegetal, sin ninguna generalidad", "Ninguna de las células vegetales analizadas mostró el fenómeno de plasmólisis", "La solución hipertónica no tiene ninguna relación con el comportamiento de las células vegetales analizadas", "Todas las células vegetales, sin excepción, son completamente inmunes a los cambios de concentración externa"], "correct": 0, "exp": "La observación consistente del mismo fenómeno en cinco tipos distintos de células vegetales, bajo el mismo protocolo experimental, respalda la conclusión de que la plasmólisis es un patrón general de respuesta a soluciones hipertónicas en este tipo de células."}, {"skill": "PROC", "q": "Se midió la velocidad de ingreso de glucosa en células con distinta cantidad de proteínas transportadoras, manteniendo igual la concentración externa de glucosa: baja cantidad de transportadores=ingreso lento; alta cantidad de transportadores=ingreso rápido. ¿Qué conclusión es más adecuada?", "options": ["La velocidad de ingreso de glucosa por difusión facilitada se relaciona positivamente con la cantidad de proteínas transportadoras presentes en la membrana", "La velocidad de ingreso de glucosa es independiente de la cantidad de proteínas transportadoras presentes", "A mayor cantidad de proteínas transportadoras, menor es la velocidad de ingreso de glucosa", "Todas las condiciones evaluadas muestran exactamente la misma velocidad de ingreso de glucosa", "La cantidad de proteínas transportadoras no tiene ninguna relación con el proceso de difusión facilitada"], "correct": 0, "exp": "La relación positiva observada entre cantidad de proteínas transportadoras y velocidad de ingreso de glucosa confirma experimentalmente el rol de estas proteínas como mediadoras del proceso de difusión facilitada."}, {"skill": "PROC", "q": "Se comparó la liberación de contenido al exterior celular en condiciones donde la fusión de membranas (vesícula-membrana plasmática) ocurre normalmente (liberación eficiente) y en condiciones donde esta fusión ha sido experimentalmente bloqueada (liberación prácticamente nula). ¿Qué conclusión es más adecuada?", "options": ["La fusión entre la membrana de la vesícula y la membrana plasmática es necesaria para la liberación eficiente de contenido al exterior celular mediante exocitosis", "El bloqueo de la fusión de membranas mejora la liberación de contenido al exterior celular", "La fusión de membranas no tiene ninguna relación con el proceso de exocitosis", "Ambas condiciones experimentales muestran exactamente la misma eficiencia de liberación de contenido", "La exocitosis puede ocurrir de forma completamente normal sin ningún tipo de fusión de membranas"], "correct": 0, "exp": "La marcada reducción de la liberación de contenido al bloquear la fusión de membranas confirma que este paso es un requisito necesario para el proceso de exocitosis."}, {"skill": "EVAL", "q": "Un estudiante concluye que 'toda sustancia que ingresa a una célula debe hacerlo mediante gasto de energía (transporte activo)' basándose en la observación de la fagocitosis de bacterias. ¿Qué crítica es más pertinente?", "options": ["La conclusión es correcta porque cualquier sustancia que ingresa a la célula requiere obligatoriamente del gasto de energía celular, sin ninguna excepción", "La generalización ignora la existencia de mecanismos de transporte pasivo (difusión simple, difusión facilitada, ósmosis) que no requieren gasto de energía celular, ya documentados en la literatura biológica; observar solo un ejemplo de transporte activo no permite esta generalización", "Ningún tipo de sustancia puede ingresar a una célula sin gasto de energía, bajo ninguna circunstancia", "El transporte pasivo no existe como mecanismo real de movimiento de sustancias a través de la membrana", "No es necesario considerar otros tipos de transporte celular para esta generalización"], "correct": 1, "exp": "Existen mecanismos de transporte pasivo bien documentados (difusión simple, facilitada, ósmosis) que no requieren gasto energético; generalizar a partir de un solo ejemplo de transporte activo (fagocitosis) ignora esa diversidad de mecanismos."}, {"skill": "EVAL", "q": "Una investigación concluyó que 'todas las células, sin excepción, sufren plasmólisis al ser expuestas a una solución hipertónica' basándose en el estudio de un solo tipo de célula vegetal. ¿Qué crítica es más sólida?", "options": ["La conclusión es correcta porque un solo tipo celular es representativo de cualquier tipo de célula existente", "La plasmólisis es un fenómeno específico de células con pared celular rígida (como las vegetales); las células animales, que carecen de pared celular, responden de forma distinta (crenación) ante una solución hipertónica, por lo que la generalización a 'todas las células, sin excepción' es incorrecta", "Las células animales también sufren plasmólisis exactamente igual que las células vegetales", "La pared celular no tiene ninguna relación con la respuesta de una célula a una solución hipertónica", "No es necesario distinguir entre células vegetales y animales para esta generalización"], "correct": 1, "exp": "El fenómeno de plasmólisis, que involucra la separación entre membrana y pared celular, es específico de células con pared celular rígida; las células animales (sin pared) responden de forma distinta (crenación) ante el mismo tipo de solución, lo que invalida la generalización a 'todas las células, sin excepción'."}, {"skill": "EVAL", "q": "Un estudio sobre difusión facilitada de glucosa concluyó que 'la saturación del transporte demuestra que la célula ya no necesita más glucosa', interpretando la saturación como una señal de falta de necesidad. ¿Qué crítica es más pertinente?", "options": ["La conclusión es correcta porque la saturación del transporte siempre indica que la célula ha alcanzado su necesidad máxima de esa sustancia", "La saturación del transporte refleja una limitación física del número de proteínas transportadoras disponibles, no necesariamente la necesidad metabólica de la célula; esta interpretación confunde un fenómeno de capacidad de transporte con la demanda fisiológica real de la sustancia", "La cantidad de proteínas transportadoras nunca tiene ninguna relación con la velocidad de transporte de una sustancia", "La célula nunca requiere de ninguna sustancia una vez que su transporte se satura", "No es necesario distinguir entre capacidad de transporte y necesidad metabólica para esta interpretación"], "correct": 1, "exp": "Confundir la saturación de un mecanismo de transporte (limitación física de proteínas disponibles) con la ausencia de necesidad metabólica de la célula es un error de interpretación; ambos son fenómenos conceptualmente distintos que no deben equipararse."}, {"skill": "EVAL", "q": "Una publicación afirmó que 'el agua siempre se mueve desde el interior hacia el exterior de la célula, sin ninguna excepción', basándose en la observación de plasmólisis en solución hipertónica. ¿Qué crítica es más pertinente?", "options": ["La afirmación es correcta porque el agua siempre sale de la célula, sin importar el tipo de solución en la que se encuentre", "La dirección del movimiento neto de agua depende de la concentración relativa entre el interior y el exterior de la célula: en un medio hipotónico, el agua ingresa a la célula (en lugar de salir), por lo que la generalización 'siempre... sin ninguna excepción' es incorrecta", "El agua nunca ingresa a ninguna célula bajo ninguna circunstancia", "La concentración del medio externo no tiene ninguna relación con la dirección del movimiento de agua", "No es necesario considerar distintos tipos de solución para esta generalización sobre el movimiento del agua"], "correct": 1, "exp": "La dirección del movimiento osmótico del agua depende del gradiente de concentración relativo (hipotónico, hipertónico o isotónico); generalizar a partir de una sola condición (hipertónica) ignora que en condiciones opuestas (hipotónicas) el agua se mueve en la dirección contraria."}, {"skill": "EVAL", "q": "Un estudio concluyó que 'la exocitosis y la endocitosis son exactamente el mismo proceso, solo que en direcciones opuestas, sin ninguna diferencia adicional relevante'. ¿Qué crítica es más pertinente?", "options": ["La conclusión es correcta porque ambos procesos son mecanismos idénticos, simplemente invertidos en su dirección", "Aunque ambos procesos comparten el uso de vesículas y membrana, cumplen funciones biológicas distintas (incorporación de material del exterior vs. liberación de material al exterior) y pueden involucrar mecanismos moleculares específicos distintos según el contexto (por ejemplo, distintos tipos de receptores o proteínas de fusión); reducirlos a 'exactamente el mismo proceso' simplifica en exceso su complejidad biológica", "La endocitosis y la exocitosis no tienen ninguna relación entre sí como procesos celulares", "Solo la endocitosis requiere del uso de vesículas, a diferencia de la exocitosis", "No es necesario considerar ninguna diferencia funcional adicional entre estos dos procesos"], "correct": 1, "exp": "Aunque comparten ciertos elementos estructurales (vesículas, membrana), presentar ambos procesos como 'exactamente el mismo, sin ninguna diferencia adicional relevante' ignora sus distintas funciones biológicas y posibles diferencias en la maquinaria molecular específica involucrada en cada uno."}, {"skill": "EVAL", "q": "Una investigación afirmó que 'la bomba de sodio y potasio transporta sodio y potasio en la misma dirección, ambos hacia el interior celular' basándose en una descripción incompleta del mecanismo. ¿Qué crítica es más pertinente?", "options": ["La afirmación es correcta porque la bomba de sodio y potasio transporta ambos iones en la misma dirección, hacia el interior de la célula", "La bomba de sodio y potasio transporta estos iones en direcciones opuestas: expulsa sodio hacia el exterior e incorpora potasio hacia el interior de la célula; describir ambos iones moviéndose en la misma dirección es un error en la descripción del mecanismo de esta proteína de transporte activo", "El potasio es expulsado hacia el exterior, mientras el sodio ingresa al interior celular, según el mecanismo correcto de esta bomba", "Esta bomba no transporta ningún ion a través de la membrana celular", "El sodio y el potasio no tienen ninguna relación con el funcionamiento de esta proteína de transporte"], "correct": 1, "exp": "La bomba de sodio y potasio es un ejemplo clásico de transporte activo que mueve simultáneamente sodio hacia el exterior y potasio hacia el interior de la célula, direcciones opuestas y ambas en contra de sus respectivos gradientes de concentración; describir ambos iones moviéndose en la misma dirección es un error conceptual."}, {"skill": "EVAL", "q": "Un estudio sobre osmosis en glóbulos rojos concluyó que 'cualquier célula, sin excepción, estalla al ser expuesta a agua destilada', basándose únicamente en la observación de glóbulos rojos. ¿Qué crítica es más pertinente?", "options": ["La conclusión es correcta porque cualquier célula del organismo, sin excepción, se comporta exactamente igual que un glóbulo rojo ante el agua destilada", "Las células vegetales, a diferencia de los glóbulos rojos (células animales sin pared celular), poseen una pared celular rígida que les brinda resistencia estructural frente a la entrada de agua, evitando que estallen de la misma manera; generalizar el comportamiento del glóbulo rojo a 'cualquier célula, sin excepción' ignora esta diferencia estructural importante", "Las células vegetales tampoco poseen ningún tipo de estructura que les brinde resistencia ante el ingreso de agua", "El agua destilada no tiene ningún efecto sobre ningún tipo de célula conocida", "No es necesario considerar la presencia de pared celular para esta generalización"], "correct": 1, "exp": "La presencia de pared celular en células vegetales les confiere resistencia estructural que evita la ruptura por ingreso excesivo de agua, a diferencia de los glóbulos rojos (sin pared); generalizar el comportamiento observado en un tipo celular a 'cualquier célula, sin excepción' ignora esta diferencia estructural fundamental."}, {"skill": "COM", "q": "Un estudiante debe explicar la diferencia entre transporte pasivo y transporte activo a través de la membrana celular. ¿Explicación más precisa?", "options": ["El transporte pasivo ocurre a favor del gradiente de concentración (de mayor a menor concentración) sin gasto de energía celular, mientras el transporte activo ocurre en contra del gradiente de concentración y requiere del gasto de energía celular (ATP)", "Ambos tipos de transporte requieren exactamente la misma cantidad de energía celular", "El transporte pasivo siempre ocurre en contra del gradiente de concentración", "El transporte activo nunca requiere de ningún gasto de energía celular", "No existe ninguna diferencia relevante entre transporte pasivo y transporte activo"], "correct": 0, "exp": "La distinción fundamental entre ambos tipos de transporte radica en la dirección respecto al gradiente de concentración (a favor vs. en contra) y en el requerimiento o no de gasto energético celular para llevarse a cabo."}, {"skill": "COM", "q": "Al explicar por qué una célula colocada en una solución hipotónica tiende a hincharse, ¿cuál es la explicación más precisa?", "options": ["Al haber menor concentración de solutos en el medio externo que en el citoplasma, el agua ingresa a la célula por ósmosis (desde la región de mayor concentración de agua hacia la de menor concentración), aumentando su volumen", "El agua sale de la célula hacia el medio externo en una solución hipotónica", "La solución hipotónica no tiene ninguna relación con el movimiento de agua en la célula", "La célula pierde solutos hacia el medio externo en una solución hipotónica, sin ningún movimiento de agua", "El tamaño celular permanece exactamente igual en cualquier tipo de solución externa"], "correct": 0, "exp": "La explicación adecuada relaciona la diferencia de concentración de solutos (menor en el medio externo hipotónico) con el movimiento neto de agua hacia el interior celular por ósmosis, lo que provoca el aumento de volumen observado."}, {"skill": "COM", "q": "Un estudiante debe explicar por qué la difusión facilitada, a diferencia de la difusión simple, puede saturarse a altas concentraciones de la sustancia transportada. ¿Explicación más precisa?", "options": ["La difusión facilitada depende de un número limitado de proteínas transportadoras específicas; cuando todas estas proteínas están ocupadas transportando la sustancia, no es posible aumentar más la velocidad de transporte, generando saturación, algo que no ocurre en la difusión simple, que no depende de proteínas limitadas", "La difusión simple también se satura de la misma manera que la difusión facilitada", "La difusión facilitada no requiere de ninguna proteína de membrana para ocurrir", "La saturación del transporte no tiene ninguna relación con la cantidad de proteínas transportadoras disponibles", "La difusión facilitada siempre transporta sustancias en contra de su gradiente de concentración"], "correct": 0, "exp": "La explicación central distingue el mecanismo dependiente de proteínas (difusión facilitada, con capacidad limitada y por tanto saturable) del mecanismo de paso directo a través de la bicapa lipídica (difusión simple, sin esa limitación)."}, {"skill": "COM", "q": "Al explicar por qué la bomba de sodio y potasio es un ejemplo de transporte activo, ¿cuál es la explicación más precisa?", "options": ["Esta proteína de membrana mueve sodio y potasio en contra de sus respectivos gradientes de concentración (expulsando sodio e incorporando potasio), un proceso que requiere del gasto directo de energía celular en forma de ATP", "Esta proteína mueve sodio y potasio a favor de sus gradientes de concentración, sin ningún gasto de energía", "La bomba de sodio y potasio es un ejemplo de difusión simple, sin ninguna relación con el transporte activo", "Esta proteína no participa en el movimiento de ningún ion a través de la membrana", "El transporte realizado por esta bomba no tiene ninguna relación con el gasto de ATP celular"], "correct": 0, "exp": "La explicación correcta identifica los dos elementos definitorios del transporte activo presentes en esta bomba: movimiento en contra del gradiente de concentración y requerimiento de gasto energético directo (ATP)."}, {"skill": "COM", "q": "Un estudiante debe explicar la diferencia entre fagocitosis y pinocitosis como mecanismos de endocitosis. ¿Explicación más precisa?", "options": ["La fagocitosis involucra la incorporación de partículas sólidas grandes (como bacterias) mediante la formación de una vesícula a partir de la membrana, mientras la pinocitosis involucra la incorporación de líquido y sustancias disueltas mediante vesículas de menor tamaño", "Ambos procesos son exactamente idénticos, sin ninguna diferencia relevante entre ellos", "La fagocitosis incorpora líquidos, mientras la pinocitosis incorpora partículas sólidas grandes", "Ninguno de los dos procesos requiere de la formación de una vesícula a partir de la membrana plasmática", "La pinocitosis es un mecanismo de transporte pasivo, a diferencia de la fagocitosis"], "correct": 0, "exp": "La distinción principal entre ambos tipos de endocitosis radica en el tipo de material incorporado: partículas sólidas grandes en la fagocitosis, versus líquido y sustancias disueltas en la pinocitosis, ambos mediante formación de vesículas."}, {"skill": "COM", "q": "Al explicar por qué la exocitosis es un proceso importante para las células secretoras (como las que producen enzimas digestivas), ¿cuál es la explicación más precisa?", "options": ["La exocitosis permite que las vesículas cargadas con las proteínas de secreción (como enzimas) se fusionen con la membrana plasmática, liberando su contenido al exterior celular, un paso necesario para que la célula pueda cumplir su función secretora", "La exocitosis impide que las células secretoras puedan liberar cualquier sustancia al exterior", "Las células secretoras no requieren de ningún mecanismo de transporte vesicular para funcionar", "La exocitosis es un proceso idéntico a la fagocitosis, sin ninguna diferencia funcional", "Las vesículas de secreción nunca se fusionan con la membrana plasmática de la célula"], "correct": 0, "exp": "La explicación adecuada conecta el mecanismo de exocitosis (fusión de vesícula con membrana plasmática) con su función biológica esencial: permitir la liberación regulada de sustancias de secreción hacia el exterior de la célula."}, {"skill": "COM", "q": "Un estudiante debe explicar por qué las células vegetales, a diferencia de los glóbulos rojos, no estallan al ser colocadas en una solución muy diluida (hipotónica). ¿Explicación más precisa?", "options": ["La pared celular rígida que rodea a las células vegetales resiste la presión generada por el ingreso de agua, evitando que la célula estalle, a diferencia de los glóbulos rojos, que carecen de esta estructura de soporte adicional", "Las células vegetales no poseen ninguna membrana permeable al agua", "El agua nunca ingresa a una célula vegetal bajo ninguna circunstancia", "La pared celular impide por completo cualquier ingreso de agua a la célula vegetal", "Los glóbulos rojos poseen una pared celular más resistente que las células vegetales"], "correct": 0, "exp": "La presencia de una pared celular rígida en las células vegetales, ausente en los glóbulos rojos, es la explicación estructural clave de por qué estas células resisten la presión osmótica sin estallar, alcanzando un estado de turgencia en lugar de romperse."}, {"skill": "COM", "q": "Al explicar por qué el transporte a favor del gradiente de concentración no requiere de gasto energético celular, mientras el transporte en contra del gradiente sí lo requiere, ¿cuál es la explicación más precisa?", "options": ["El movimiento a favor del gradiente ocurre de forma espontánea, liberando energía (de forma similar a como un objeto cae espontáneamente por acción de la gravedad), mientras el movimiento en contra del gradiente requiere de un aporte externo de energía para 'empujar' a la sustancia en la dirección contraria a su tendencia natural de movimiento", "El movimiento a favor del gradiente siempre requiere de mayor gasto energético que el movimiento en contra del gradiente", "El gasto de energía celular no tiene ninguna relación con la dirección del movimiento de una sustancia respecto a su gradiente", "Ambos tipos de movimiento (a favor y en contra del gradiente) requieren exactamente la misma cantidad de energía", "El concepto de gradiente de concentración no tiene ninguna relación con el gasto energético del transporte celular"], "correct": 0, "exp": "La analogía con un proceso espontáneo (como la caída de un objeto) ayuda a explicar por qué el movimiento a favor del gradiente no requiere energía adicional, mientras que ir en contra de esa tendencia natural requiere del aporte de energía externa (ATP), un principio fundamental de la termodinámica aplicado al transporte celular."}, {"skill": "EVAL", "q": "Una publicación afirmó que 'una célula colocada en una solución isotónica nunca presenta ningún tipo de movimiento de agua a través de su membrana', interpretando la ausencia de cambio de tamaño como ausencia total de movimiento de agua. ¿Qué crítica es más pertinente?", "options": ["La afirmación es correcta porque la ausencia de cambio de tamaño implica necesariamente que no existe ningún movimiento de agua en absoluto", "En una solución isotónica, el agua puede seguir moviéndose en ambas direcciones a través de la membrana (entrando y saliendo por difusión), pero de forma equilibrada, de modo que el movimiento neto es cero; esto es distinto de afirmar que 'no existe ningún tipo de movimiento', ya que el intercambio bidireccional sí ocurre, solo que balanceado", "El agua nunca se mueve a través de la membrana bajo ninguna condición de concentración externa", "La ausencia de cambio de tamaño celular indica que la membrana ha dejado de ser permeable al agua", "No es necesario distinguir entre movimiento neto y movimiento bidireccional para esta afirmación"], "correct": 1, "exp": "Confundir 'ausencia de movimiento neto' (lo que realmente ocurre en equilibrio isotónico, donde el tamaño no cambia) con 'ausencia total de movimiento' ignora que las moléculas de agua continúan atravesando la membrana en ambas direcciones de forma dinámica, simplemente en cantidades equivalentes."}];
+
+let currentQuiz = [];
+let currentIndex = 0;
+let answered = false;
+let userAnswers = [];
+let scoreBySkill = {};
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function buildQuiz(){
+  let selected = [];
+  SKILL_ORDER.forEach(skillKey=>{
+    const pool = QUESTION_BANK.filter(q=>q.skill===skillKey);
+    const picked = shuffle(pool).slice(0,PICK_PER_SKILL);
+    selected = selected.concat(picked);
+  });
+  selected = shuffle(selected);
+  return selected.map(orig=>{
+    const idxArr = [0,1,2,3,4];
+    const shuffledIdx = shuffle(idxArr);
+    const newOptions = shuffledIdx.map(i=>orig.options[i]);
+    const newCorrect = shuffledIdx.indexOf(orig.correct);
+    return { skill: orig.skill, question: orig.q, options: newOptions, correct: newCorrect, exp: orig.exp };
+  });
+}
+
+function startQuiz(){
+  currentQuiz = buildQuiz();
+  currentIndex = 0;
+  answered = false;
+  userAnswers = [];
+  scoreBySkill = {};
+  SKILL_ORDER.forEach(s=>scoreBySkill[s]={correct:0,total:0});
+  document.getElementById('start-screen').classList.add('hidden');
+  document.getElementById('dashboard-screen').classList.add('hidden');
+  document.getElementById('review-screen').classList.add('hidden');
+  document.getElementById('quiz-screen').classList.remove('hidden');
+  renderQuestion();
+}
+
+function renderQuestion(){
+  answered = false;
+  const q = currentQuiz[currentIndex];
+  const total = currentQuiz.length;
+  document.getElementById('progress-fill').style.width = ((currentIndex)/total*100)+'%';
+  document.getElementById('progress-label').textContent = (currentIndex+1)+' / '+total;
+  document.getElementById('skill-tag').textContent = SKILL_NAMES[q.skill];
+  document.getElementById('qnum').textContent = 'Pregunta '+(currentIndex+1);
+  document.getElementById('question-text').textContent = q.question;
+
+  const optsDiv = document.getElementById('options');
+  optsDiv.innerHTML = '';
+  q.options.forEach((opt, i)=>{
+    const btn = document.createElement('button');
+    btn.className = 'option';
+    btn.innerHTML = '<span class="letter">'+LETTERS[i]+')</span><span>'+opt+'</span>';
+    btn.onclick = ()=>selectOption(i);
+    optsDiv.appendChild(btn);
+  });
+
+  document.getElementById('feedback').classList.add('hidden');
+  document.getElementById('next-btn').classList.add('hidden');
+}
+
+function selectOption(i){
+  if(answered) return;
+  answered = true;
+  const q = currentQuiz[currentIndex];
+  const correct = q.correct;
+  const options = document.querySelectorAll('#options .option');
+  options.forEach((opt, idx)=>{
+    opt.classList.add('locked');
+    if(idx===correct) opt.classList.add('correct');
+    else if(idx===i) opt.classList.add('incorrect');
+    else opt.classList.add('dim');
+  });
+
+  const isCorrect = (i===correct);
+  scoreBySkill[q.skill].total++;
+  if(isCorrect) scoreBySkill[q.skill].correct++;
+
+  userAnswers.push({ skill:q.skill, question:q.question, options:q.options, correctIdx:correct, chosenIdx:i, exp:q.exp, isCorrect });
+
+  const fb = document.getElementById('feedback');
+  fb.classList.remove('hidden');
+  fb.classList.toggle('wrong', !isCorrect);
+  fb.innerHTML = '<span class="pista-label">'+(isCorrect ? '✓ Correcto — Pista' : '✕ Incorrecto — Pista')+'</span>'+
+    '<strong>Respuesta correcta: '+LETTERS[correct]+') '+q.options[correct]+'</strong><br><br>'+q.exp;
+
+  document.getElementById('next-btn').classList.remove('hidden');
+}
+
+function nextQuestion(){
+  currentIndex++;
+  if(currentIndex >= currentQuiz.length){
+    showDashboard();
+  } else {
+    renderQuestion();
+  }
+}
+
+function showDashboard(){
+  document.getElementById('quiz-screen').classList.add('hidden');
+  document.getElementById('dashboard-screen').classList.remove('hidden');
+
+  const totalCorrect = userAnswers.filter(a=>a.isCorrect).length;
+  const totalQ = userAnswers.length;
+  document.getElementById('score-total').innerHTML = totalCorrect+'<span>/'+totalQ+'</span>';
+  const pct = Math.round((totalCorrect/totalQ)*100);
+  document.getElementById('score-caption').textContent = pct+'% de logro general';
+
+  const barsDiv = document.getElementById('skill-bars');
+  barsDiv.innerHTML = '';
+  const weakSkills = [];
+  const strongSkills = [];
+
+  SKILL_ORDER.forEach(skillKey=>{
+    const s = scoreBySkill[skillKey];
+    const skillPct = s.total>0 ? Math.round((s.correct/s.total)*100) : 0;
+    let color = 'var(--accent-coral)';
+    if(skillPct>=75) color='var(--accent-sage)';
+    else if(skillPct>=50) color='var(--accent-amber)';
+
+    const row = document.createElement('div');
+    row.className='skill-bar-row';
+    row.innerHTML = '<div class="skill-bar-head"><span class="name">'+SKILL_NAMES[skillKey]+'</span><span class="frac">'+s.correct+'/'+s.total+'</span></div>'+
+      '<div class="skill-bar-track"><div class="skill-bar-fill" style="width:'+skillPct+'%;background:'+color+';"></div></div>';
+    barsDiv.appendChild(row);
+
+    if(skillPct<75) weakSkills.push({name:SKILL_NAMES[skillKey], pct:skillPct});
+    else strongSkills.push(SKILL_NAMES[skillKey]);
+  });
+
+  const improveBox = document.getElementById('improve-box');
+  const improveList = document.getElementById('improve-list');
+  improveList.innerHTML='';
+  if(weakSkills.length>0){
+    improveBox.classList.remove('hidden');
+    weakSkills.sort((a,b)=>a.pct-b.pct).forEach(w=>{
+      const li = document.createElement('li');
+      li.innerHTML = '<strong>'+w.name+'</strong> ('+w.pct+'%) — refuerza con más ejercicios de este tipo de habilidad, revisando las pistas de las preguntas falladas.';
+      improveList.appendChild(li);
+    });
+  } else {
+    improveBox.classList.add('hidden');
+  }
+
+  const strongBox = document.getElementById('strong-box');
+  const strongText = document.getElementById('strong-text');
+  if(strongSkills.length>0){
+    strongBox.classList.remove('hidden');
+    strongText.textContent = strongSkills.join(', ') + '. Buen dominio, mantén la práctica con nuevos intentos.';
+  } else {
+    strongBox.classList.add('hidden');
+  }
+}
+
+function restartQuiz(){ startQuiz(); }
+
+function reviewAnswers(){
+  document.getElementById('dashboard-screen').classList.add('hidden');
+  const rev = document.getElementById('review-screen');
+  rev.classList.remove('hidden');
+  let html = '<p class="eyebrow">Revisión de respuestas</p>';
+  userAnswers.forEach((a, i)=>{
+    html += '<div style="margin-bottom:22px;padding-bottom:18px;border-bottom:1px solid var(--line);">'+
+      '<span class="skill-tag">'+SKILL_NAMES[a.skill]+'</span>'+
+      '<p class="question-text" style="font-size:16px;">'+(i+1)+'. '+a.question+'</p>'+
+      '<p style="font-size:14px;color:'+(a.isCorrect?'var(--accent-sage)':'var(--accent-coral)')+';margin:0 0 6px;">'+
+        (a.isCorrect ? '✓ Respondiste correctamente' : '✕ Tu respuesta: '+LETTERS[a.chosenIdx]+') '+a.options[a.chosenIdx])+
+      '</p>'+
+      '<p style="font-size:14px;color:var(--text-muted);margin:0 0 8px;">Correcta: '+LETTERS[a.correctIdx]+') '+a.options[a.correctIdx]+'</p>'+
+      '<div class="feedback" style="margin-top:6px;"><span class="pista-label">Pista</span>'+a.exp+'</div>'+
+    '</div>';
+  });
+  html += '<div class="actions"><button class="btn" onclick="restartQuiz(); document.getElementById(\'review-screen\').classList.add(\'hidden\');">Repetir con nuevas preguntas</button></div>';
+  rev.innerHTML = html;
+}
+</script>
+</body>
+</html>

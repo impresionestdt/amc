@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PAES Biología · Clase 3 · Teoría Celular y Diversidad Celular (Nivel Intermedio)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Source+Sans+3:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-deep:#1a1030;
+    --bg-panel:#241a42;
+    --bg-panel-2:#2c2050;
+    --accent-amber:#f0a24b;
+    --accent-sage:#7fb88f;
+    --accent-coral:#e85c5c;
+    --text-light:#f3ede1;
+    --text-muted:#bdb0d6;
+    --line:#3c2f5c;
+    --radius:14px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:radial-gradient(circle at 15% -10%, #372a5c 0%, var(--bg-deep) 55%) fixed;
+    color:var(--text-light);
+    font-family:'Source Sans 3', system-ui, sans-serif;
+    min-height:100vh;
+    padding:32px 16px 64px;
+  }
+  .wrap{max-width:820px;margin:0 auto;}
+  .eyebrow{font-family:'JetBrains Mono', monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent-amber);margin:0 0 8px;}
+  h1{font-family:'Fraunces', serif;font-weight:600;font-size:clamp(26px,4vw,38px);line-height:1.1;margin:0 0 6px;color:var(--text-light);}
+  .sub{color:var(--text-muted);font-size:15px;margin:0 0 28px;max-width:60ch;}
+  .card{background:linear-gradient(180deg, var(--bg-panel) 0%, var(--bg-panel-2) 100%);border:1px solid var(--line);border-radius:var(--radius);padding:28px;box-shadow:0 20px 40px -20px rgba(0,0,0,.5);}
+  #start-screen ul{color:var(--text-muted);font-size:14.5px;line-height:1.7;padding-left:20px;margin:18px 0 26px;}
+  #start-screen li{margin-bottom:4px;}
+  .btn{font-family:'Source Sans 3', sans-serif;font-weight:700;font-size:15px;border:none;border-radius:999px;padding:14px 30px;cursor:pointer;background:var(--accent-amber);color:#2a1608;transition:transform .15s ease, box-shadow .15s ease;box-shadow:0 8px 20px -8px rgba(0,0,0,.35);}
+  .btn:hover{transform:translateY(-1px);}
+  .btn:active{transform:translateY(0);}
+  .btn.ghost{background:transparent;color:var(--text-muted);border:1.5px solid var(--line);box-shadow:none;}
+  .progress-row{display:flex;align-items:center;gap:14px;margin-bottom:18px;}
+  .progress-track{flex:1;height:6px;border-radius:99px;background:var(--line);overflow:hidden;}
+  .progress-fill{height:100%;background:linear-gradient(90deg,var(--accent-sage),var(--accent-amber));border-radius:99px;transition:width .3s ease;}
+  .progress-label{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--text-muted);white-space:nowrap;}
+  .skill-tag{display:inline-block;font-family:'JetBrains Mono', monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--bg-deep);background:var(--accent-sage);padding:5px 11px;border-radius:999px;margin-bottom:14px;}
+  .qnum{color:var(--text-muted);font-size:13px;font-family:'JetBrains Mono',monospace;margin-bottom:6px;}
+  .question-text{font-family:'Fraunces', serif;font-weight:500;font-size:19px;line-height:1.45;margin:0 0 22px;}
+  .options{display:flex;flex-direction:column;gap:10px;}
+  .option{display:flex;align-items:flex-start;gap:12px;text-align:left;background:rgba(255,255,255,.03);border:1.5px solid var(--line);border-radius:10px;padding:13px 15px;cursor:pointer;color:var(--text-light);font-size:14.5px;line-height:1.4;transition:border-color .15s, background .15s;}
+  .option:hover:not(.locked){border-color:var(--accent-amber);}
+  .option .letter{font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--accent-amber);flex-shrink:0;}
+  .option.correct{border-color:var(--accent-sage);background:rgba(111,168,138,.14);}
+  .option.incorrect{border-color:var(--accent-coral);background:rgba(228,87,46,.14);}
+  .option.locked{cursor:default;}
+  .option.dim{opacity:.45;}
+  .feedback{margin-top:18px;padding:16px 18px;border-radius:10px;background:rgba(255,255,255,.04);border-left:4px solid var(--accent-sage);font-size:14px;line-height:1.6;color:var(--text-muted);}
+  .feedback.wrong{border-left-color:var(--accent-coral);}
+  .feedback strong{color:var(--text-light);}
+  .feedback .pista-label{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent-amber);display:block;margin-bottom:6px;}
+  .nav-row{display:flex;justify-content:flex-end;margin-top:22px;}
+  .score-hero{text-align:center;padding:10px 0 26px;}
+  .score-big{font-family:'Fraunces',serif;font-weight:700;font-size:56px;color:var(--accent-amber);line-height:1;}
+  .score-big span{font-size:24px;color:var(--text-muted);font-weight:500;}
+  .score-caption{color:var(--text-muted);font-size:14px;margin-top:6px;}
+  .skill-bars{display:flex;flex-direction:column;gap:16px;margin:22px 0 8px;}
+  .skill-bar-head{display:flex;justify-content:space-between;font-size:13.5px;margin-bottom:6px;}
+  .skill-bar-head .name{font-weight:600;}
+  .skill-bar-head .frac{font-family:'JetBrains Mono',monospace;color:var(--text-muted);}
+  .skill-bar-track{height:10px;border-radius:99px;background:var(--line);overflow:hidden;}
+  .skill-bar-fill{height:100%;border-radius:99px;}
+  .improve-box{margin-top:26px;background:rgba(228,87,46,.08);border:1px solid rgba(228,87,46,.35);border-radius:10px;padding:18px 20px;}
+  .improve-box h3{font-family:'Fraunces',serif;font-size:16px;margin:0 0 10px;color:var(--accent-coral);}
+  .improve-box ul{margin:0;padding-left:20px;color:var(--text-light);font-size:14px;line-height:1.75;}
+  .strong-box{margin-top:14px;background:rgba(111,168,138,.08);border:1px solid rgba(111,168,138,.35);border-radius:10px;padding:18px 20px;}
+  .strong-box h3{font-family:'Fraunces',serif;font-size:16px;margin:0 0 10px;color:var(--accent-sage);}
+  .strong-box p{margin:0;color:var(--text-light);font-size:14px;line-height:1.6;}
+  .actions{display:flex;gap:12px;margin-top:28px;flex-wrap:wrap;}
+  .hidden{display:none !important;}
+  footer{text-align:center;color:var(--text-muted);font-size:12px;margin-top:26px;opacity:.6;}
+</style>
+</head>
+<body> <div style="float: left; margin-right: 25px; margin-bottom: 25px;"><img src="Logo_AMC.png" alt="Logo" style="max-width: 150px;"></div>
+<div class="wrap">
+  <p class="eyebrow">PAES · Ciencias — Módulo Biología Común · Nivel Intermedio</p>
+  <h1>Teoría Celular y Diversidad Celular</h1>
+  <p class="sub">Eje 1: Organización, estructura y actividad celular — Sub-eje: Biomoléculas organizadas y teoría celular — Clase 3: Teoría Celular y Diversidad Celular (Procarionte vs. Eucarionte)</p>
+
+  <div class="card" id="start-screen">
+    <p class="eyebrow" style="margin-bottom:14px;">Antes de comenzar</p>
+    <p style="color:var(--text-muted);font-size:14.5px;line-height:1.6;">Este quiz evalúa nivel <strong style='color:var(--text-light);'>intermedio</strong>, con 20 preguntas (4 por cada habilidad PAES), extraídas al azar de un banco amplio. Cada intento genera una versión distinta.</p>
+    <ul>
+      <li>Observar y plantear preguntas</li>
+      <li>Planificar y conducir una investigación</li>
+      <li>Procesar y analizar la evidencia</li>
+      <li>Evaluar</li>
+      <li>Comunicar</li>
+    </ul>
+    <button class="btn" onclick="startQuiz()">Comenzar quiz</button>
+  </div>
+
+  <div class="card hidden" id="quiz-screen">
+    <div class="progress-row">
+      <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+      <div class="progress-label" id="progress-label">1 / 20</div>
+    </div>
+    <span class="skill-tag" id="skill-tag"></span>
+    <p class="qnum" id="qnum"></p>
+    <p class="question-text" id="question-text"></p>
+    <div class="options" id="options"></div>
+    <div class="feedback hidden" id="feedback"></div>
+    <div class="nav-row">
+      <button class="btn hidden" id="next-btn" onclick="nextQuestion()">Siguiente →</button>
+    </div>
+  </div>
+
+  <div class="card hidden" id="dashboard-screen">
+    <p class="eyebrow">Resultados</p>
+    <div class="score-hero">
+      <div class="score-big" id="score-total">0<span>/20</span></div>
+      <p class="score-caption" id="score-caption">Puntaje global</p>
+    </div>
+    <div class="skill-bars" id="skill-bars"></div>
+    <div class="improve-box hidden" id="improve-box">
+      <h3>Puntos a mejorar</h3>
+      <ul id="improve-list"></ul>
+    </div>
+    <div class="strong-box hidden" id="strong-box">
+      <h3>Habilidades consolidadas</h3>
+      <p id="strong-text"></p>
+    </div>
+    <div class="actions">
+      <button class="btn" onclick="restartQuiz()">Repetir con nuevas preguntas</button>
+      <button class="btn ghost" onclick="reviewAnswers()">Revisar mis respuestas</button>
+    </div>
+  </div>
+
+  <div class="card hidden" id="review-screen"></div>
+
+  <footer>Banco de 40 preguntas · nivel intermedio · Clase 3 de 30 · basado en el temario DEMRE PAES Ciencias — Biología Común</footer>
+</div>
+
+<script>
+const SKILL_NAMES = {"OBS": "Observar y plantear preguntas", "PLAN": "Planificar y conducir una investigación", "PROC": "Procesar y analizar la evidencia", "EVAL": "Evaluar", "COM": "Comunicar"};
+const SKILL_ORDER = ["OBS", "PLAN", "PROC", "EVAL", "COM"];
+const LETTERS = ["A","B","C","D","E"];
+const PICK_PER_SKILL = 4;
+
+const QUESTION_BANK = [{"skill": "OBS", "q": "Se observa que las mitocondrias poseen su propio ADN circular (sin histonas), ribosomas de tipo procarionte y una doble membrana, características similares a las de una bacteria de vida libre. ¿Pregunta más precisa?", "options": ["¿Las mitocondrias son estructuras idénticas al núcleo celular?", "¿Estas similitudes respaldan la teoría endosimbiótica, que propone que las mitocondrias se originaron de bacterias ancestrales incorporadas por una célula huésped?", "¿Las mitocondrias no poseen ningún tipo de material genético propio?", "¿Todas las células, sin excepción, poseen mitocondrias con las mismas características?", "¿La doble membrana de la mitocondria indica que se originó directamente del núcleo?"], "correct": 1, "exp": "Las similitudes estructurales y genéticas entre mitocondrias y bacterias (ADN circular, ribosomas propios, doble membrana) constituyen evidencia central de la teoría endosimbiótica sobre el origen de estos organelos."}, {"skill": "OBS", "q": "Un investigador nota que algunos microorganismos que viven en ambientes extremos (fuentes hidrotermales, salinas) poseen membranas celulares con lípidos químicamente distintos a los de bacterias comunes, aunque comparten la ausencia de núcleo. ¿Pregunta más precisa?", "options": ["¿Estos microorganismos pertenecen a un dominio taxonómico distinto (Archaea) que, aunque procarionte como Bacteria, presenta diferencias bioquímicas fundamentales relacionadas con su adaptación a ambientes extremos?", "¿La ausencia de núcleo indica necesariamente que pertenecen al mismo dominio que las bacterias comunes?", "¿Los lípidos de membrana no tienen ninguna relación con la adaptación a ambientes extremos?", "¿Todos los procariontes poseen exactamente la misma composición de membrana?", "¿Estos microorganismos poseen núcleo delimitado por membrana, a diferencia de otras bacterias?"], "correct": 0, "exp": "Las diferencias bioquímicas de membrana, junto con la ausencia de núcleo, son consistentes con la clasificación en el dominio Archaea, distinto de Bacteria, ambos procariontes pero con historias evolutivas separadas."}, {"skill": "OBS", "q": "Se observa que la pared celular de una célula vegetal está compuesta principalmente por celulosa, mientras que la de una bacteria contiene peptidoglicano y la de un hongo contiene quitina. ¿Pregunta más precisa?", "options": ["¿Todas las paredes celulares, independientemente del organismo, tienen exactamente la misma composición química?", "¿La diversidad de composición química de la pared celular entre distintos grupos de organismos refleja distintas historias evolutivas y adaptaciones funcionales?", "¿La pared celular no cumple ninguna función de protección en ningún organismo?", "¿Los hongos poseen pared celular compuesta por celulosa, igual que las plantas?", "¿La presencia de pared celular es exclusiva de las bacterias?"], "correct": 1, "exp": "La diversidad química de la pared celular (celulosa, peptidoglicano, quitina) entre plantas, bacterias y hongos refleja adaptaciones evolutivas distintas para una función estructural convergente."}, {"skill": "OBS", "q": "Un estudiante observa que, en una célula eucarionte, el ADN mitocondrial se hereda casi exclusivamente por vía materna, a diferencia del ADN nuclear que proviene de ambos progenitores. ¿Pregunta más precisa?", "options": ["¿Este patrón de herencia se relaciona con el origen citoplasmático (y no nuclear) del ADN mitocondrial, heredado a través del citoplasma del óvulo?", "¿El ADN mitocondrial no se hereda de ningún progenitor?", "¿El ADN nuclear también se hereda exclusivamente por vía materna?", "¿La herencia materna del ADN mitocondrial contradice la teoría endosimbiótica?", "¿El ADN mitocondrial y el nuclear se heredan exactamente de la misma manera?"], "correct": 0, "exp": "Como las mitocondrias (y su ADN) provienen principalmente del citoplasma del óvulo durante la fecundación, el patrón de herencia materna del ADN mitocondrial es consistente con su origen citoplasmático."}, {"skill": "OBS", "q": "Se observa que ciertas bacterias poseen una segunda membrana externa además de la membrana plasmática (bacterias Gram negativas), mientras otras solo poseen una capa gruesa de peptidoglicano externo a la membrana plasmática (Gram positivas). ¿Pregunta más precisa?", "options": ["¿Todas las bacterias tienen exactamente la misma estructura de envoltura celular?", "¿La diferencia estructural en la envoltura celular (una o dos membranas) entre bacterias Gram negativas y Gram positivas se relaciona con diferencias funcionales, como su respuesta a antibióticos o su resistencia ambiental?", "¿La presencia de una membrana externa indica que la bacteria es en realidad eucarionte?", "¿El peptidoglicano no cumple ninguna función estructural en las bacterias?", "¿Las bacterias Gram positivas no poseen ningún tipo de pared celular?"], "correct": 1, "exp": "Las diferencias estructurales en la envoltura celular bacteriana (Gram positiva vs. negativa) tienen implicancias funcionales relevantes, incluyendo su susceptibilidad diferencial a ciertos antibióticos."}, {"skill": "OBS", "q": "Un investigador nota que los cloroplastos, al igual que las mitocondrias, poseen ADN circular propio y una doble membrana, y que ambos organelos se dividen de forma independiente del ciclo celular general mediante un proceso similar a la fisión binaria bacteriana. ¿Pregunta más precisa?", "options": ["¿Los cloroplastos y las mitocondrias comparten un origen evolutivo similar, ambos derivados de bacterias ancestrales incorporadas por endosimbiosis?", "¿Los cloroplastos no poseen ningún tipo de material genético propio?", "¿La división de cloroplastos y mitocondrias depende completamente de la división del núcleo celular?", "¿Todos los organelos celulares se dividen mediante fisión binaria?", "¿La doble membrana de estos organelos indica que se originaron del retículo endoplásmico?"], "correct": 0, "exp": "Las similitudes entre cloroplastos y mitocondrias (ADN propio, doble membrana, división autónoma similar a fisión binaria) respaldan que ambos se originaron por procesos endosimbióticos independientes."}, {"skill": "OBS", "q": "Se observa que algunos organismos unicelulares eucariontes (como ciertas amebas) carecen de mitocondrias funcionales típicas, presentando en su lugar organelos relacionados evolutivamente pero modificados (mitosomas). ¿Pregunta más precisa?", "options": ["¿La ausencia de mitocondrias típicas en estos organismos representa una pérdida evolutiva secundaria de un organelo derivado de un ancestro endosimbiótico común?", "¿Estos organismos no son eucariontes debido a la ausencia de mitocondrias típicas?", "¿La presencia de mitosomas indica que estos organismos nunca tuvieron mitocondrias en su historia evolutiva?", "¿Todos los eucariontes poseen exactamente el mismo tipo de mitocondria funcional?", "¿Los mitosomas son estructuras completamente independientes, sin ninguna relación evolutiva con las mitocondrias?"], "correct": 0, "exp": "La presencia de organelos relacionados (mitosomas) pero modificados en organismos sin mitocondrias típicas sugiere una pérdida o reducción evolutiva secundaria de un organelo ancestral común, no su ausencia original."}, {"skill": "OBS", "q": "Se observa que las arqueas comparten con los eucariontes ciertas similitudes en la maquinaria de replicación y transcripción del ADN, a pesar de ser procariontes como las bacterias. ¿Pregunta más precisa?", "options": ["¿Las arqueas podrían compartir un ancestro común más cercano con los eucariontes que con las bacterias, a pesar de compartir con estas últimas la ausencia de núcleo?", "¿Las arqueas poseen núcleo delimitado por membrana, igual que los eucariontes?", "¿Las similitudes en la maquinaria genética entre arqueas y eucariontes son evidencia de que las arqueas son en realidad eucariontes?", "¿Todas las bacterias comparten exactamente la misma maquinaria genética que las arqueas?", "¿Las arqueas no poseen ningún tipo de material genético?"], "correct": 0, "exp": "Estas similitudes moleculares apoyan modelos filogenéticos que sitúan a las arqueas como más cercanamente emparentadas con los eucariontes que con las bacterias, a pesar de compartir la organización procarionte."}, {"skill": "PLAN", "q": "Para investigar si las mitocondrias de una célula eucarionte comparten similitudes estructurales con bacterias de vida libre, ¿cuál es el diseño experimental más adecuado?", "options": ["Comparar únicamente el tamaño externo de mitocondrias y bacterias, sin evaluar otras características", "Comparar sistemáticamente características estructurales y moleculares específicas (tipo de ADN, presencia de ribosomas propios, tipo de membrana) entre mitocondrias aisladas y bacterias de vida libre, bajo los mismos criterios de análisis", "Asumir la similitud sin realizar ninguna comparación experimental", "Comparar mitocondrias con núcleos celulares en lugar de con bacterias", "Usar criterios de comparación distintos para las mitocondrias y para las bacterias"], "correct": 1, "exp": "Una comparación sistemática de múltiples características específicas (ADN, ribosomas, membrana) bajo los mismos criterios permite evaluar de forma rigurosa la hipótesis endosimbiótica."}, {"skill": "PLAN", "q": "Se desea determinar si una célula procarionte desconocida pertenece al dominio Bacteria o al dominio Archaea. ¿Cuál es el procedimiento experimental más adecuado?", "options": ["Medir únicamente el tamaño de la célula, sin ningún otro análisis", "Observar solo la forma externa de la célula al microscopio óptico", "Analizar la composición química de los lípidos de membrana y ciertas secuencias moleculares específicas (como el ARN ribosomal), comparándolas con perfiles conocidos de ambos dominios", "No es necesario ningún análisis molecular para esta clasificación", "Determinar el color de la colonia bacteriana en el medio de cultivo"], "correct": 2, "exp": "La clasificación entre Bacteria y Archaea, ambos procariontes morfológicamente similares, requiere de análisis moleculares específicos (composición lipídica, secuencias de ARN ribosomal) que reflejan sus diferencias bioquímicas fundamentales."}, {"skill": "PLAN", "q": "Para investigar si la herencia del ADN mitocondrial es efectivamente de origen materno en un organismo modelo, ¿cuál es el diseño experimental más adecuado?", "options": ["Secuenciar el ADN mitocondrial de la descendencia y compararlo con el de ambos progenitores por separado, en varias generaciones sucesivas, para verificar de cuál progenitor proviene consistentemente", "Secuenciar solo el ADN nuclear de la descendencia, sin analizar el ADN mitocondrial", "Comparar la descendencia con un solo progenitor, sin incluir al otro en el análisis", "No es necesario secuenciar el ADN para responder esta pregunta", "Analizar una sola generación sin ningún seguimiento posterior"], "correct": 0, "exp": "Comparar el ADN mitocondrial de la descendencia con el de ambos progenitores a lo largo de varias generaciones permite establecer de forma rigurosa el patrón de herencia (materna, paterna o biparental)."}, {"skill": "PLAN", "q": "Un investigador desea comprobar si la pared celular de distintos organismos (planta, bacteria, hongo) tiene composición química diferente. ¿Cuál es el diseño experimental adecuado?", "options": ["Observar solo el grosor aparente de la pared celular al microscopio, sin análisis químico", "Extraer y analizar químicamente (por ejemplo, mediante tinciones específicas o análisis bioquímico) la composición de la pared celular de cada organismo bajo el mismo protocolo, para comparar la presencia de celulosa, peptidoglicano o quitina", "Asumir la composición de cada pared celular sin realizar ningún análisis", "Comparar solo dos de los tres organismos, omitiendo uno de ellos", "Usar un protocolo de análisis distinto para cada tipo de organismo"], "correct": 1, "exp": "Solo mediante un análisis químico sistemático y comparable (mismo protocolo para los tres organismos) se puede determinar de forma rigurosa la composición específica de cada tipo de pared celular."}, {"skill": "PLAN", "q": "Para investigar si un organismo unicelular desconocido pertenece a Archaea (y no a Bacteria), controlando el efecto de la morfología aparente (que puede ser similar entre ambos dominios), ¿cuál es el diseño experimental más riguroso?", "options": ["Basarse únicamente en la forma y tamaño de la célula observada al microscopio óptico", "Realizar un análisis molecular de secuencias específicas (como el ARN ribosomal 16S) y de la composición lipídica de membrana, comparando los resultados con bases de datos de referencia de ambos dominios, sin depender de la morfología externa", "Asumir la clasificación basándose en el ambiente donde fue encontrado el organismo, sin ningún análisis adicional", "Usar exclusivamente pruebas de tinción de Gram, diseñadas específicamente para bacterias", "No es necesario ningún análisis adicional si la célula parece una bacteria común"], "correct": 1, "exp": "Dado que la morfología puede ser engañosa (procariontes de ambos dominios pueden verse similares al microscopio óptico), se requiere un análisis molecular específico que no dependa de la apariencia externa."}, {"skill": "PLAN", "q": "Se desea investigar si la pérdida de mitocondrias típicas en ciertos organismos unicelulares (con mitosomas) representa una pérdida evolutiva secundaria. ¿Cuál es el diseño experimental más adecuado?", "options": ["Comparar el genoma nuclear del organismo con mitosomas, buscando genes relacionados con función mitocondrial típica que puedan haber sido retenidos aunque el organelo se haya modificado, y contrastar con organismos emparentados que sí poseen mitocondrias típicas", "No es necesario ningún análisis genómico para esta pregunta", "Comparar solo la apariencia morfológica del organelo bajo el microscopio", "Asumir que el organismo nunca tuvo mitocondrias sin ningún análisis adicional", "Analizar únicamente organismos sin ningún parentesco cercano al de interés"], "correct": 0, "exp": "La presencia de genes de función mitocondrial en el genoma nuclear de organismos con mitosomas, junto con la comparación filogenética con parientes que sí tienen mitocondrias típicas, permite evaluar la hipótesis de pérdida evolutiva secundaria."}, {"skill": "PLAN", "q": "Para comparar la maquinaria de replicación del ADN entre una arquea, una bacteria y un eucarionte, ¿cuál es el diseño experimental más adecuado?", "options": ["Comparar solo la forma del cromosoma de cada organismo, sin analizar las proteínas involucradas en la replicación", "Identificar y comparar las proteínas específicas involucradas en la replicación del ADN (por ejemplo, tipo de ADN polimerasa) en los tres grupos, bajo un análisis molecular sistemático y comparable", "Asumir que los tres grupos poseen exactamente la misma maquinaria sin ningún análisis", "Analizar solo dos de los tres grupos taxonómicos mencionados", "No es necesario ningún análisis molecular para responder esta pregunta"], "correct": 1, "exp": "Comparar de forma sistemática las proteínas moleculares específicas involucradas en la replicación permite establecer relaciones evolutivas más precisas entre los tres dominios de la vida."}, {"skill": "PROC", "q": "Se comparó la composición de la membrana celular de arqueas y bacterias: arqueas presentan enlaces éter en sus lípidos; bacterias presentan enlaces éster. Además, ambos grupos carecen de núcleo delimitado por membrana. ¿Qué conclusión es más adecuada?", "options": ["Arqueas y bacterias son idénticas en todos los aspectos bioquímicos analizados", "A pesar de compartir la ausencia de núcleo (organización procarionte), arqueas y bacterias presentan diferencias bioquímicas fundamentales en la composición de sus membranas, consistente con su clasificación en dominios taxonómicos distintos", "Las arqueas poseen núcleo delimitado por membrana, a diferencia de las bacterias", "La composición de la membrana no tiene relación con la clasificación taxonómica de un organismo", "Solo las bacterias poseen lípidos de membrana en su estructura celular"], "correct": 1, "exp": "La diferencia en el tipo de enlace químico de los lípidos de membrana (éter en arqueas, éster en bacterias) es una de las evidencias bioquímicas centrales que sustentan la separación de ambos grupos en dominios distintos."}, {"skill": "PROC", "q": "Un análisis filogenético basado en secuencias de ARN ribosomal mostró que las arqueas comparten mayor similitud de secuencia con los eucariontes (75% de identidad en cierta región) que con las bacterias (55% de identidad en la misma región). ¿Qué interpretación es la más adecuada?", "options": ["Las arqueas son taxonómicamente idénticas a las bacterias según este análisis", "Estos datos son consistentes con un mayor parentesco evolutivo entre arqueas y eucariontes que entre arqueas y bacterias, a pesar de que arqueas y bacterias comparten la organización procarionte", "Las arqueas y los eucariontes son la misma categoría taxonómica según este análisis", "La similitud de secuencia no tiene ninguna relación con el parentesco evolutivo entre organismos", "Las bacterias presentan mayor parentesco con los eucariontes que las arqueas, según estos datos"], "correct": 1, "exp": "Una mayor similitud de secuencia molecular entre dos grupos es interpretada, en filogenia, como evidencia de mayor cercanía evolutiva, lo que en este caso vincula más estrechamente a arqueas y eucariontes."}, {"skill": "PROC", "q": "Se comparó el tamaño del genoma mitocondrial en distintos organismos eucariontes: humano=16,6 kb; levadura=86 kb; planta (Arabidopsis)=367 kb. Considerando que las bacterias de vida libre suelen tener genomas de varios miles de kb, ¿qué conclusión es más adecuada?", "options": ["El genoma mitocondrial de los eucariontes analizados es considerablemente más pequeño que el de una bacteria típica de vida libre, consistente con una reducción genómica ocurrida tras el evento endosimbiótico ancestral", "El genoma mitocondrial es siempre más grande que el genoma de cualquier bacteria de vida libre", "El tamaño del genoma mitocondrial es idéntico entre todos los eucariontes analizados", "La reducción del genoma mitocondrial contradice la teoría endosimbiótica", "Las mitocondrias no poseen ningún tipo de genoma propio según estos datos"], "correct": 0, "exp": "La marcada reducción de tamaño del genoma mitocondrial respecto a una bacteria típica es consistente con la pérdida y transferencia de genes al núcleo celular tras el establecimiento de la relación endosimbiótica ancestral."}, {"skill": "PROC", "q": "Se comparó la presencia de mitocondrias típicas y mitosomas en distintos linajes de organismos unicelulares eucariontes emparentados evolutivamente: linaje A=mitocondrias típicas; linaje B (relacionado)=mitosomas; linaje C (más relacionado con B)=mitosomas modificados. ¿Qué conclusión es más adecuada?", "options": ["Los linajes B y C, evolutivamente relacionados entre sí y sin mitocondrias típicas, sugieren un evento de pérdida o reducción evolutiva compartida de este organelo, posterior a la divergencia del linaje A", "Los tres linajes presentan exactamente la misma estructura mitocondrial", "El linaje A es el único que posee algún tipo de organelo relacionado con la producción de energía", "La presencia de mitosomas indica que estos linajes nunca tuvieron ancestros con mitocondrias típicas", "No existe ninguna relación evolutiva entre los tres linajes analizados"], "correct": 0, "exp": "El patrón filogenético (mitosomas compartidos entre linajes cercanos B y C) es consistente con una pérdida evolutiva compartida ocurrida en un ancestro común de ambos linajes, después de divergir del linaje A."}, {"skill": "PROC", "q": "Se comparó la susceptibilidad a un antibiótico que actúa sobre el peptidoglicano en bacterias Gram positivas (alta susceptibilidad) y Gram negativas (baja susceptibilidad), relacionándolo con la presencia de una membrana externa adicional en estas últimas. ¿Qué interpretación es la más adecuada?", "options": ["La membrana externa de las bacterias Gram negativas podría actuar como una barrera adicional que dificulta el acceso del antibiótico a su sitio de acción en el peptidoglicano, explicando la menor susceptibilidad observada", "La presencia de membrana externa no tiene ninguna relación con la susceptibilidad a antibióticos", "Las bacterias Gram positivas no poseen peptidoglicano en su estructura", "El antibiótico actúa con la misma eficacia en ambos tipos de bacterias, según estos datos", "Las bacterias Gram negativas no poseen ningún tipo de envoltura celular"], "correct": 0, "exp": "La estructura adicional (membrana externa) de las bacterias Gram negativas puede actuar como barrera física que reduce el acceso de ciertos antibióticos a su sitio de acción, explicando diferencias de susceptibilidad."}, {"skill": "PROC", "q": "Un estudio comparó la cantidad de genes de origen mitocondrial presentes actualmente en el núcleo celular de distintos organismos eucariontes, encontrando cientos de genes de este tipo en todos los casos analizados. ¿Qué interpretación es la más adecuada respecto al proceso endosimbiótico?", "options": ["Ninguno de estos genes tiene relación con el origen mitocondrial de la célula", "Este hallazgo es consistente con un proceso de transferencia génica endosimbiótica, donde genes originalmente presentes en el genoma de la bacteria ancestral fueron transferidos al núcleo de la célula huésped a lo largo de la evolución", "Los genes de origen mitocondrial presentes en el núcleo indican que las mitocondrias nunca fueron organismos independientes", "La transferencia de genes entre mitocondria y núcleo nunca ha ocurrido según la evidencia científica actual", "Todos los genes nucleares tienen origen mitocondrial según estos datos"], "correct": 1, "exp": "La presencia extendida de genes de origen mitocondrial en el genoma nuclear es una de las líneas de evidencia más sólidas del proceso de transferencia génica ocurrido tras el evento endosimbiótico ancestral."}, {"skill": "PROC", "q": "Se comparó el tipo de ARN polimerasa presente en bacterias (un solo tipo, relativamente simple), arqueas (similar en complejidad a la de eucariontes) y eucariontes (varios tipos complejos). ¿Qué conclusión es más adecuada?", "options": ["La complejidad de la maquinaria de transcripción de las arqueas se asemeja más a la de los eucariontes que a la de las bacterias, a pesar de que arqueas y bacterias comparten la organización procarionte", "Bacterias y arqueas poseen exactamente el mismo tipo de ARN polimerasa", "Los eucariontes poseen la maquinaria de transcripción más simple entre los tres grupos", "Las arqueas poseen la maquinaria de transcripción más simple entre los tres grupos comparados", "No existe ninguna diferencia relevante en la maquinaria de transcripción entre los tres grupos"], "correct": 0, "exp": "La similitud en la complejidad de la ARN polimerasa entre arqueas y eucariontes, a pesar de la organización procarionte compartida entre arqueas y bacterias, respalda el mayor parentesco evolutivo entre arqueas y eucariontes."}, {"skill": "EVAL", "q": "Un estudio concluyó que 'las mitocondrias no pueden haber tenido un origen bacteriano' basándose únicamente en que actualmente no pueden sobrevivir fuera de la célula huésped. ¿Qué crítica es más sólida a esta conclusión?", "options": ["La conclusión es correcta, ya que un organismo que fue independiente siempre debe mantener esa capacidad indefinidamente", "La incapacidad actual de las mitocondrias para vivir de forma independiente es consistente con una reducción evolutiva de su genoma tras millones de años de endosimbiosis, y no contradice necesariamente un origen bacteriano ancestral", "Las mitocondrias nunca han estado relacionadas evolutivamente con ningún tipo de bacteria", "La teoría endosimbiótica no cuenta con ninguna otra evidencia además de la capacidad de vida independiente", "Todas las bacterias, sin excepción, deben ser capaces de vivir de forma completamente independiente"], "correct": 1, "exp": "La pérdida de autonomía a lo largo de la evolución (por transferencia génica al núcleo) es un fenómeno esperado en una relación endosimbiótica muy antigua y estrecha, no evidencia en contra del origen bacteriano."}, {"skill": "EVAL", "q": "Una investigación afirma que 'las arqueas son bacterias' basándose únicamente en que ambas carecen de núcleo delimitado por membrana. ¿Qué crítica es más sólida?", "options": ["La afirmación es correcta porque la ausencia de núcleo es el único criterio relevante para la clasificación taxonómica", "Aunque ambas comparten la organización procarionte (ausencia de núcleo), presentan diferencias bioquímicas y moleculares fundamentales (lípidos de membrana, maquinaria genética) que sustentan su clasificación en dominios taxonómicos distintos", "Las arqueas poseen núcleo delimitado por membrana, a diferencia de las bacterias", "No existen diferencias bioquímicas relevantes entre arqueas y bacterias", "Todos los organismos sin núcleo pertenecen necesariamente a la misma categoría taxonómica"], "correct": 1, "exp": "La clasificación taxonómica moderna se basa en múltiples líneas de evidencia (bioquímica, molecular), no solo en la presencia/ausencia de núcleo; por eso arqueas y bacterias, aunque ambas procariontes, se consideran dominios distintos."}, {"skill": "EVAL", "q": "Un estudio sobre herencia mitocondrial analizó una sola familia y concluyó que 'el ADN mitocondrial se hereda exclusivamente por vía materna en todos los organismos, sin ninguna excepción'. ¿Qué crítica es más pertinente?", "options": ["La conclusión es válida y generalizable a cualquier especie sin ninguna excepción, dado que se estudió una familia completa", "Aunque la herencia materna del ADN mitocondrial es el patrón predominante en muchas especies, generalizar 'sin ninguna excepción' a partir de una sola familia (y sin considerar la diversidad de especies conocidas, algunas con excepciones documentadas) excede lo que esos datos permiten afirmar", "El ADN mitocondrial nunca se hereda de ningún progenitor", "No es necesario considerar otras especies para hacer esta generalización", "La herencia materna del ADN mitocondrial es exclusiva de los seres humanos"], "correct": 1, "exp": "Generalizar un patrón sin excepciones a partir de un solo caso de estudio, sin considerar la diversidad de especies conocidas (algunas con patrones de herencia mitocondrial distintos), constituye una sobregeneralización."}, {"skill": "EVAL", "q": "Una publicación afirma que 'los cloroplastos y las mitocondrias tienen exactamente el mismo origen evolutivo, ya que ambos poseen ADN propio'. ¿Qué crítica es más sólida?", "options": ["La afirmación es completamente correcta sin ningún matiz necesario", "Aunque ambos organelos comparten características generales asociadas a un origen endosimbiótico (ADN propio, doble membrana), corresponden a eventos endosimbióticos independientes y con bacterias ancestrales distintas (relacionadas con proteobacterias y cianobacterias, respectivamente)", "Los cloroplastos y las mitocondrias no tienen ningún tipo de origen evolutivo compartido", "Solo las mitocondrias poseen ADN propio entre estos dos organelos", "Los cloroplastos se originaron directamente a partir de las mitocondrias"], "correct": 1, "exp": "Compartir un mecanismo general (endosimbiosis) no implica que ambos organelos deriven del mismo evento o de la misma bacteria ancestral; la evidencia molecular indica orígenes independientes."}, {"skill": "EVAL", "q": "Un estudio concluyó que 'la presencia de mitosomas en un organismo demuestra que este linaje nunca tuvo mitocondrias' sin realizar ningún análisis del genoma nuclear en busca de genes de origen mitocondrial. ¿Qué crítica es más pertinente?", "options": ["La conclusión es válida sin necesidad de analizar el genoma nuclear del organismo", "La ausencia actual de mitocondrias típicas no descarta un origen ancestral con mitocondrias funcionales; sin un análisis del genoma nuclear en busca de genes de origen mitocondrial, la conclusión de 'nunca tuvo mitocondrias' es prematura y podría estar equivocada", "Los mitosomas son estructuras completamente independientes de cualquier proceso evolutivo mitocondrial", "No es necesario ningún análisis adicional para sostener esta conclusión", "Todos los organismos con mitosomas nunca tuvieron ancestros con mitocondrias típicas, por definición"], "correct": 1, "exp": "La presencia de genes de origen mitocondrial en el núcleo, sin haberse analizado, podría revelar que el organismo sí tuvo un ancestro con mitocondrias típicas que luego se perdieron o modificaron; omitir ese análisis deja la conclusión sin sustento suficiente."}, {"skill": "EVAL", "q": "Una investigación clasificó un microorganismo como bacteria basándose solo en su morfología (forma de bastón), sin realizar ningún análisis molecular. ¿Qué crítica metodológica es más sólida?", "options": ["La morfología es siempre suficiente para distinguir con certeza entre bacterias y arqueas", "Muchas arqueas presentan morfologías similares a las bacterias (forma de bastón, cocos, entre otras), por lo que la clasificación basada únicamente en morfología, sin análisis molecular, no permite distinguir con certeza entre ambos dominios procariontes", "No es necesario ningún análisis molecular para clasificar microorganismos procariontes", "Las arqueas nunca presentan morfologías similares a las de las bacterias", "La forma de bastón es exclusiva de las bacterias, nunca de las arqueas"], "correct": 1, "exp": "Dado que arqueas y bacterias pueden compartir morfologías similares, un análisis basado solo en la forma externa es insuficiente para una clasificación taxonómica rigurosa; se requiere evidencia molecular."}, {"skill": "COM", "q": "Un estudiante debe explicar la teoría endosimbiótica sobre el origen de las mitocondrias. ¿Explicación más precisa?", "options": ["Las mitocondrias se originaron por división espontánea del núcleo celular", "La teoría endosimbiótica propone que las mitocondrias se originaron a partir de bacterias de vida libre (probablemente proteobacterias) que fueron incorporadas por una célula huésped ancestral, estableciendo una relación de beneficio mutuo que se mantuvo evolutivamente", "Las mitocondrias nunca han estado relacionadas con ningún tipo de bacteria", "Todas las células, incluidas las bacterias, poseen mitocondrias típicas", "Las mitocondrias se originaron a partir del retículo endoplásmico rugoso"], "correct": 1, "exp": "La explicación correcta describe el mecanismo propuesto (incorporación de una bacteria ancestral por una célula huésped) y el tipo de relación resultante (endosimbiosis mutuamente beneficiosa) que dio origen a este organelo."}, {"skill": "COM", "q": "Al explicar por qué las arqueas, a pesar de ser procariontes, se clasifican en un dominio taxonómico separado de las bacterias, ¿cuál es la explicación más precisa?", "options": ["Las arqueas poseen núcleo delimitado por membrana, a diferencia de las bacterias", "Las arqueas y las bacterias son exactamente el mismo grupo taxonómico, sin ninguna diferencia relevante", "Aunque ambas comparten la ausencia de núcleo (organización procarionte), las arqueas presentan diferencias bioquímicas fundamentales (composición lipídica de membrana, maquinaria de replicación y transcripción similar a la de eucariontes) que justifican su clasificación en un dominio separado", "Las arqueas no poseen ningún tipo de membrana celular", "Las diferencias entre arqueas y bacterias se deben únicamente a su tamaño"], "correct": 2, "exp": "La clasificación en dominios separados (Bacteria, Archaea, Eukarya) se basa en evidencia bioquímica y molecular profunda, no solo en la organización estructural general (presencia/ausencia de núcleo)."}, {"skill": "COM", "q": "Un estudiante debe explicar por qué el ADN mitocondrial se hereda predominantemente por vía materna en la mayoría de los organismos. ¿Explicación más precisa?", "options": ["El ADN mitocondrial no se hereda de ningún progenitor en ningún organismo", "Las mitocondrias, y su ADN, provienen mayoritariamente del citoplasma del óvulo durante la fecundación, ya que el espermatozoide aporta principalmente material genético nuclear y sus propias mitocondrias suelen ser eliminadas o diluidas tras la fecundación", "El ADN mitocondrial se hereda exclusivamente por vía paterna", "El ADN mitocondrial y el ADN nuclear se heredan exactamente de la misma manera en todos los casos", "El óvulo no aporta ningún tipo de material citoplasmático a la célula fecundada"], "correct": 1, "exp": "El patrón de herencia materna del ADN mitocondrial se explica por el hecho de que el citoplasma (y por tanto las mitocondrias) del cigoto proviene mayoritariamente del óvulo, no del espermatozoide."}, {"skill": "COM", "q": "Al explicar por qué la composición de la pared celular (celulosa, peptidoglicano, quitina) varía entre plantas, bacterias y hongos, ¿cuál es la explicación más precisa?", "options": ["Todas las paredes celulares mencionadas tienen exactamente la misma composición química", "La diversidad de composición refleja adaptaciones evolutivas independientes en distintos linajes, donde cada grupo desarrolló un tipo particular de polímero estructural (celulosa en plantas, peptidoglicano en bacterias, quitina en hongos) para cumplir una función de soporte y protección análoga", "La pared celular no cumple ninguna función biológica relevante en ninguno de estos organismos", "Solo las plantas poseen pared celular entre los tres grupos mencionados", "La composición de la pared celular depende únicamente del tamaño del organismo"], "correct": 1, "exp": "Aunque la función general (soporte, protección) es análoga entre estos grupos, la composición química específica de cada tipo de pared celular refleja historias evolutivas independientes en linajes distintos."}, {"skill": "COM", "q": "Un estudiante debe explicar por qué la presencia de genes de origen mitocondrial en el núcleo celular no contradice, sino que respalda, la teoría endosimbiótica. ¿Explicación más precisa?", "options": ["La presencia de estos genes en el núcleo demuestra que las mitocondrias nunca tuvieron un genoma propio", "Estos genes contradicen completamente la teoría endosimbiótica y deberían descartarla", "A lo largo de la evolución, muchos genes originalmente presentes en el genoma de la bacteria ancestral fueron transferidos gradualmente al núcleo de la célula huésped (transferencia génica endosimbiótica), lo que explica por qué hoy se encuentran allí en lugar de en el genoma mitocondrial", "La transferencia de genes entre organelos y núcleo nunca ha sido documentada científicamente", "Todos los genes del núcleo celular tienen origen mitocondrial"], "correct": 2, "exp": "Lejos de contradecir la teoría, la transferencia génica endosimbiótica es un mecanismo evolutivo esperado y bien documentado que explica por qué el genoma mitocondrial actual es mucho más pequeño que el de una bacteria de vida libre."}, {"skill": "COM", "q": "Al explicar por qué la presencia de una membrana externa adicional en bacterias Gram negativas influye en su respuesta a ciertos antibióticos, ¿cuál es la explicación más precisa?", "options": ["La membrana externa no tiene ninguna función relacionada con la protección de la bacteria", "La membrana externa adicional puede actuar como una barrera física que dificulta el ingreso de ciertas moléculas de antibiótico hacia su sitio de acción, lo que puede conferir a las bacterias Gram negativas mayor resistencia frente a algunos tratamientos antibióticos en comparación con las Gram positivas", "Las bacterias Gram negativas no poseen peptidoglicano en su envoltura celular", "La membrana externa aumenta la susceptibilidad de la bacteria a cualquier tipo de antibiótico", "Las bacterias Gram positivas poseen una membrana externa adicional, a diferencia de las Gram negativas"], "correct": 1, "exp": "La estructura adicional de la envoltura celular Gram negativa constituye una barrera física extra que puede limitar el acceso de ciertos compuestos, lo que tiene implicancias clínicas relevantes en el uso de antibióticos."}, {"skill": "PLAN", "q": "Se desea investigar si dos especies de arqueas de ambientes distintos (uno muy salino, otro de alta temperatura) comparten adaptaciones similares en su membrana. ¿Diseño experimental más adecuado?", "options": ["Analizar y comparar la composición lipídica de membrana de ambas especies bajo el mismo protocolo analítico, relacionando los hallazgos con las condiciones específicas de cada ambiente", "Comparar solo la forma celular de ambas especies, sin ningún análisis bioquímico", "Asumir que ambas especies tienen la misma composición de membrana sin realizar ningún análisis", "Analizar la composición de membrana de una sola especie y generalizar el resultado a la otra", "Usar protocolos de análisis distintos para cada especie de arquea"], "correct": 0, "exp": "Comparar bajo el mismo protocolo analítico la composición lipídica de ambas especies permite relacionar de forma válida las adaptaciones bioquímicas con las condiciones ambientales específicas de cada una."}, {"skill": "PROC", "q": "Se comparó el grosor de la capa de peptidoglicano en bacterias Gram positivas (20-80 nm) y Gram negativas (2-3 nm, con membrana externa adicional). ¿Qué conclusión es más adecuada?", "options": ["Las bacterias Gram positivas presentan una capa de peptidoglicano considerablemente más gruesa que las Gram negativas, aunque estas últimas compensan con una estructura adicional (membrana externa) ausente en las primeras", "Las bacterias Gram negativas presentan mayor grosor de peptidoglicano que las Gram positivas", "Ambos tipos de bacterias presentan exactamente el mismo grosor de peptidoglicano", "Las bacterias Gram positivas no poseen peptidoglicano en su envoltura celular", "El grosor del peptidoglicano no tiene relación con la clasificación Gram de una bacteria"], "correct": 0, "exp": "La diferencia notoria de grosor de peptidoglicano (mucho mayor en Gram positivas) junto con la presencia de una membrana externa adicional en Gram negativas son las bases estructurales de la clasificación de Gram."}, {"skill": "EVAL", "q": "Un estudio concluyó que 'todas las bacterias Gram negativas son más patógenas que las Gram positivas' basándose solo en la presencia de su membrana externa adicional. ¿Crítica más pertinente?", "options": ["La conclusión es correcta porque la membrana externa siempre determina un mayor grado de patogenicidad", "La presencia de una estructura (membrana externa) no determina por sí sola el grado de patogenicidad de una bacteria, que depende de múltiples factores (toxinas, mecanismos de invasión, respuesta inmune del huésped, entre otros) no evaluados en este estudio", "Las bacterias Gram positivas nunca pueden ser patógenas", "La patogenicidad bacteriana depende únicamente de la clasificación de Gram", "No existen bacterias patógenas entre las Gram positivas conocidas"], "correct": 1, "exp": "La patogenicidad es un rasgo multifactorial que no puede inferirse únicamente a partir de una característica estructural como la presencia de membrana externa; se requiere evidencia adicional sobre mecanismos de virulencia."}, {"skill": "EVAL", "q": "Una investigación afirmó que 'la teoría endosimbiótica está completamente demostrada y no admite ninguna incertidumbre científica' basándose en las similitudes estructurales entre mitocondrias y bacterias. ¿Crítica más pertinente?", "options": ["La afirmación refleja adecuadamente el consenso científico, que en ciencia siempre es absoluto y sin incertidumbre", "Aunque la evidencia a favor de la teoría endosimbiótica es sólida y ampliamente aceptada, presentar cualquier teoría científica como 'completamente demostrada sin ninguna incertidumbre' no refleja la naturaleza provisional y siempre revisable del conocimiento científico", "No existe ninguna evidencia que respalde la teoría endosimbiótica", "La teoría endosimbiótica ha sido completamente refutada por la comunidad científica", "Las similitudes estructurales no aportan ningún tipo de evidencia científica"], "correct": 1, "exp": "Aun cuando una teoría cuente con fuerte respaldo empírico (como la endosimbiótica), afirmar que está 'completamente demostrada sin ninguna incertidumbre' no es consistente con la naturaleza provisional del conocimiento científico."}, {"skill": "COM", "q": "Un estudiante debe explicar por qué el análisis de secuencias de ARN ribosomal es una herramienta más confiable que la morfología para clasificar procariontes en dominios taxonómicos. ¿Explicación más precisa?", "options": ["La morfología celular es siempre suficiente y más confiable que cualquier análisis molecular", "El ARN ribosomal es una molécula presente en todos los organismos y evoluciona a una tasa relativamente constante, lo que permite comparar el grado de parentesco evolutivo entre organismos con mayor precisión que características morfológicas, que pueden converger por adaptación a ambientes similares sin indicar parentesco cercano", "El ARN ribosomal no está presente en las arqueas ni en las bacterias", "La morfología y el análisis molecular siempre arrojan exactamente el mismo resultado de clasificación", "No existe ninguna diferencia en la utilidad de ambos métodos de clasificación"], "correct": 1, "exp": "A diferencia de la morfología (que puede converger entre organismos no emparentados por adaptación similar), las secuencias moleculares como el ARN ribosomal reflejan de forma más directa las relaciones evolutivas profundas entre organismos."}, {"skill": "COM", "q": "Al explicar por qué la clasificación en tres dominios (Bacteria, Archaea, Eukarya) representó un cambio importante respecto al sistema clásico de solo procariontes y eucariontes, ¿cuál es la explicación más precisa?", "options": ["El sistema clásico y el de tres dominios son exactamente equivalentes, sin ninguna diferencia conceptual", "El sistema de tres dominios reconoce que, a pesar de compartir la organización procarionte (ausencia de núcleo), bacterias y arqueas son grupos evolutivamente tan distintos entre sí como cada uno lo es de los eucariontes, basándose en evidencia molecular profunda no capturada por la clasificación morfológica clásica", "La clasificación en tres dominios elimina por completo la categoría de organismos procariontes", "Solo los eucariontes fueron reclasificados en el sistema de tres dominios", "El sistema de tres dominios se basa únicamente en el tamaño celular de cada organismo"], "correct": 1, "exp": "El sistema de tres dominios representa un avance conceptual importante al reconocer, mediante evidencia molecular, que la distinción procarionte/eucarionte (basada en un solo criterio estructural) no refleja adecuadamente las relaciones evolutivas profundas entre los tres grupos."}];
+
+let currentQuiz = [];
+let currentIndex = 0;
+let answered = false;
+let userAnswers = [];
+let scoreBySkill = {};
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function buildQuiz(){
+  let selected = [];
+  SKILL_ORDER.forEach(skillKey=>{
+    const pool = QUESTION_BANK.filter(q=>q.skill===skillKey);
+    const picked = shuffle(pool).slice(0,PICK_PER_SKILL);
+    selected = selected.concat(picked);
+  });
+  selected = shuffle(selected);
+  return selected.map(orig=>{
+    const idxArr = [0,1,2,3,4];
+    const shuffledIdx = shuffle(idxArr);
+    const newOptions = shuffledIdx.map(i=>orig.options[i]);
+    const newCorrect = shuffledIdx.indexOf(orig.correct);
+    return { skill: orig.skill, question: orig.q, options: newOptions, correct: newCorrect, exp: orig.exp };
+  });
+}
+
+function startQuiz(){
+  currentQuiz = buildQuiz();
+  currentIndex = 0;
+  answered = false;
+  userAnswers = [];
+  scoreBySkill = {};
+  SKILL_ORDER.forEach(s=>scoreBySkill[s]={correct:0,total:0});
+  document.getElementById('start-screen').classList.add('hidden');
+  document.getElementById('dashboard-screen').classList.add('hidden');
+  document.getElementById('review-screen').classList.add('hidden');
+  document.getElementById('quiz-screen').classList.remove('hidden');
+  renderQuestion();
+}
+
+function renderQuestion(){
+  answered = false;
+  const q = currentQuiz[currentIndex];
+  const total = currentQuiz.length;
+  document.getElementById('progress-fill').style.width = ((currentIndex)/total*100)+'%';
+  document.getElementById('progress-label').textContent = (currentIndex+1)+' / '+total;
+  document.getElementById('skill-tag').textContent = SKILL_NAMES[q.skill];
+  document.getElementById('qnum').textContent = 'Pregunta '+(currentIndex+1);
+  document.getElementById('question-text').textContent = q.question;
+
+  const optsDiv = document.getElementById('options');
+  optsDiv.innerHTML = '';
+  q.options.forEach((opt, i)=>{
+    const btn = document.createElement('button');
+    btn.className = 'option';
+    btn.innerHTML = '<span class="letter">'+LETTERS[i]+')</span><span>'+opt+'</span>';
+    btn.onclick = ()=>selectOption(i);
+    optsDiv.appendChild(btn);
+  });
+
+  document.getElementById('feedback').classList.add('hidden');
+  document.getElementById('next-btn').classList.add('hidden');
+}
+
+function selectOption(i){
+  if(answered) return;
+  answered = true;
+  const q = currentQuiz[currentIndex];
+  const correct = q.correct;
+  const options = document.querySelectorAll('#options .option');
+  options.forEach((opt, idx)=>{
+    opt.classList.add('locked');
+    if(idx===correct) opt.classList.add('correct');
+    else if(idx===i) opt.classList.add('incorrect');
+    else opt.classList.add('dim');
+  });
+
+  const isCorrect = (i===correct);
+  scoreBySkill[q.skill].total++;
+  if(isCorrect) scoreBySkill[q.skill].correct++;
+
+  userAnswers.push({ skill:q.skill, question:q.question, options:q.options, correctIdx:correct, chosenIdx:i, exp:q.exp, isCorrect });
+
+  const fb = document.getElementById('feedback');
+  fb.classList.remove('hidden');
+  fb.classList.toggle('wrong', !isCorrect);
+  fb.innerHTML = '<span class="pista-label">'+(isCorrect ? '✓ Correcto — Pista' : '✕ Incorrecto — Pista')+'</span>'+
+    '<strong>Respuesta correcta: '+LETTERS[correct]+') '+q.options[correct]+'</strong><br><br>'+q.exp;
+
+  document.getElementById('next-btn').classList.remove('hidden');
+}
+
+function nextQuestion(){
+  currentIndex++;
+  if(currentIndex >= currentQuiz.length){
+    showDashboard();
+  } else {
+    renderQuestion();
+  }
+}
+
+function showDashboard(){
+  document.getElementById('quiz-screen').classList.add('hidden');
+  document.getElementById('dashboard-screen').classList.remove('hidden');
+
+  const totalCorrect = userAnswers.filter(a=>a.isCorrect).length;
+  const totalQ = userAnswers.length;
+  document.getElementById('score-total').innerHTML = totalCorrect+'<span>/'+totalQ+'</span>';
+  const pct = Math.round((totalCorrect/totalQ)*100);
+  document.getElementById('score-caption').textContent = pct+'% de logro general';
+
+  const barsDiv = document.getElementById('skill-bars');
+  barsDiv.innerHTML = '';
+  const weakSkills = [];
+  const strongSkills = [];
+
+  SKILL_ORDER.forEach(skillKey=>{
+    const s = scoreBySkill[skillKey];
+    const skillPct = s.total>0 ? Math.round((s.correct/s.total)*100) : 0;
+    let color = 'var(--accent-coral)';
+    if(skillPct>=75) color='var(--accent-sage)';
+    else if(skillPct>=50) color='var(--accent-amber)';
+
+    const row = document.createElement('div');
+    row.className='skill-bar-row';
+    row.innerHTML = '<div class="skill-bar-head"><span class="name">'+SKILL_NAMES[skillKey]+'</span><span class="frac">'+s.correct+'/'+s.total+'</span></div>'+
+      '<div class="skill-bar-track"><div class="skill-bar-fill" style="width:'+skillPct+'%;background:'+color+';"></div></div>';
+    barsDiv.appendChild(row);
+
+    if(skillPct<75) weakSkills.push({name:SKILL_NAMES[skillKey], pct:skillPct});
+    else strongSkills.push(SKILL_NAMES[skillKey]);
+  });
+
+  const improveBox = document.getElementById('improve-box');
+  const improveList = document.getElementById('improve-list');
+  improveList.innerHTML='';
+  if(weakSkills.length>0){
+    improveBox.classList.remove('hidden');
+    weakSkills.sort((a,b)=>a.pct-b.pct).forEach(w=>{
+      const li = document.createElement('li');
+      li.innerHTML = '<strong>'+w.name+'</strong> ('+w.pct+'%) — refuerza con más ejercicios de este tipo de habilidad, revisando las pistas de las preguntas falladas.';
+      improveList.appendChild(li);
+    });
+  } else {
+    improveBox.classList.add('hidden');
+  }
+
+  const strongBox = document.getElementById('strong-box');
+  const strongText = document.getElementById('strong-text');
+  if(strongSkills.length>0){
+    strongBox.classList.remove('hidden');
+    strongText.textContent = strongSkills.join(', ') + '. Buen dominio, mantén la práctica con nuevos intentos.';
+  } else {
+    strongBox.classList.add('hidden');
+  }
+}
+
+function restartQuiz(){ startQuiz(); }
+
+function reviewAnswers(){
+  document.getElementById('dashboard-screen').classList.add('hidden');
+  const rev = document.getElementById('review-screen');
+  rev.classList.remove('hidden');
+  let html = '<p class="eyebrow">Revisión de respuestas</p>';
+  userAnswers.forEach((a, i)=>{
+    html += '<div style="margin-bottom:22px;padding-bottom:18px;border-bottom:1px solid var(--line);">'+
+      '<span class="skill-tag">'+SKILL_NAMES[a.skill]+'</span>'+
+      '<p class="question-text" style="font-size:16px;">'+(i+1)+'. '+a.question+'</p>'+
+      '<p style="font-size:14px;color:'+(a.isCorrect?'var(--accent-sage)':'var(--accent-coral)')+';margin:0 0 6px;">'+
+        (a.isCorrect ? '✓ Respondiste correctamente' : '✕ Tu respuesta: '+LETTERS[a.chosenIdx]+') '+a.options[a.chosenIdx])+
+      '</p>'+
+      '<p style="font-size:14px;color:var(--text-muted);margin:0 0 8px;">Correcta: '+LETTERS[a.correctIdx]+') '+a.options[a.correctIdx]+'</p>'+
+      '<div class="feedback" style="margin-top:6px;"><span class="pista-label">Pista</span>'+a.exp+'</div>'+
+    '</div>';
+  });
+  html += '<div class="actions"><button class="btn" onclick="restartQuiz(); document.getElementById(\'review-screen\').classList.add(\'hidden\');">Repetir con nuevas preguntas</button></div>';
+  rev.innerHTML = html;
+}
+</script>
+</body>
+</html>

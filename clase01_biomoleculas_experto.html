@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PAES Biología · Biomoléculas Orgánicas (Experto)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Source+Sans+3:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-deep:#1c0f0f;
+    --bg-panel:#2a1414;
+    --bg-panel-2:#341a1a;
+    --accent-amber:#d9a441;
+    --accent-sage:#6a9c7a;
+    --accent-coral:#e2492f;
+    --text-light:#f3ede1;
+    --text-muted:#c9a8a0;
+    --line:#4a2626;
+    --radius:14px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:radial-gradient(circle at 15% -10%, #4a2222 0%, var(--bg-deep) 55%) fixed;
+    color:var(--text-light);
+    font-family:'Source Sans 3', system-ui, sans-serif;
+    min-height:100vh;
+    padding:32px 16px 64px;
+  }
+  .wrap{max-width:820px;margin:0 auto;}
+  .eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--accent-amber);
+    margin:0 0 8px;
+  }
+  h1{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:clamp(26px,4vw,38px);
+    line-height:1.1;
+    margin:0 0 6px;
+    color:var(--text-light);
+  }
+  .sub{color:var(--text-muted);font-size:15px;margin:0 0 28px;max-width:60ch;}
+  .card{
+    background:linear-gradient(180deg, var(--bg-panel) 0%, var(--bg-panel-2) 100%);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:28px;
+    box-shadow:0 20px 40px -20px rgba(0,0,0,.5);
+  }
+  #start-screen ul{color:var(--text-muted);font-size:14.5px;line-height:1.7;padding-left:20px;margin:18px 0 26px;}
+  #start-screen li{margin-bottom:4px;}
+  .btn{
+    font-family:'Source Sans 3', sans-serif;
+    font-weight:700;
+    font-size:15px;
+    border:none;
+    border-radius:999px;
+    padding:14px 30px;
+    cursor:pointer;
+    background:var(--accent-amber);
+    color:#26160a;
+    transition:transform .15s ease, box-shadow .15s ease;
+    box-shadow:0 8px 20px -8px rgba(217,164,65,.6);
+  }
+  .btn:hover{transform:translateY(-1px);box-shadow:0 12px 24px -8px rgba(217,164,65,.75);}
+  .btn:active{transform:translateY(0);}
+  .btn.secondary{background:transparent;color:var(--accent-amber);border:1.5px solid var(--accent-amber);box-shadow:none;}
+  .btn.ghost{background:transparent;color:var(--text-muted);border:1.5px solid var(--line);box-shadow:none;}
+  .progress-row{display:flex;align-items:center;gap:14px;margin-bottom:18px;}
+  .progress-track{flex:1;height:6px;border-radius:99px;background:var(--line);overflow:hidden;}
+  .progress-fill{height:100%;background:linear-gradient(90deg,var(--accent-sage),var(--accent-amber));border-radius:99px;transition:width .3s ease;}
+  .progress-label{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--text-muted);white-space:nowrap;}
+  .skill-tag{
+    display:inline-block;
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    color:var(--bg-deep);
+    background:var(--accent-sage);
+    padding:5px 11px;
+    border-radius:999px;
+    margin-bottom:14px;
+  }
+  .qnum{color:var(--text-muted);font-size:13px;font-family:'JetBrains Mono',monospace;margin-bottom:6px;}
+  .question-text{font-family:'Fraunces', serif;font-weight:500;font-size:19px;line-height:1.45;margin:0 0 22px;}
+  .options{display:flex;flex-direction:column;gap:10px;}
+  .option{
+    display:flex;align-items:flex-start;gap:12px;text-align:left;
+    background:rgba(255,255,255,.03);border:1.5px solid var(--line);border-radius:10px;
+    padding:13px 15px;cursor:pointer;color:var(--text-light);font-size:14.5px;line-height:1.4;
+    transition:border-color .15s, background .15s;
+  }
+  .option:hover:not(.locked){border-color:var(--accent-amber);background:rgba(217,164,65,.08);}
+  .option .letter{font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--accent-amber);flex-shrink:0;}
+  .option.correct{border-color:var(--accent-sage);background:rgba(106,156,122,.14);}
+  .option.incorrect{border-color:var(--accent-coral);background:rgba(226,73,47,.14);}
+  .option.locked{cursor:default;}
+  .option.dim{opacity:.45;}
+  .feedback{margin-top:18px;padding:16px 18px;border-radius:10px;background:rgba(255,255,255,.04);border-left:4px solid var(--accent-sage);font-size:14px;line-height:1.6;color:var(--text-muted);}
+  .feedback.wrong{border-left-color:var(--accent-coral);}
+  .feedback strong{color:var(--text-light);}
+  .feedback .pista-label{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent-amber);display:block;margin-bottom:6px;}
+  .nav-row{display:flex;justify-content:flex-end;margin-top:22px;}
+  .score-hero{text-align:center;padding:10px 0 26px;}
+  .score-big{font-family:'Fraunces',serif;font-weight:700;font-size:56px;color:var(--accent-amber);line-height:1;}
+  .score-big span{font-size:24px;color:var(--text-muted);font-weight:500;}
+  .score-caption{color:var(--text-muted);font-size:14px;margin-top:6px;}
+  .skill-bars{display:flex;flex-direction:column;gap:16px;margin:22px 0 8px;}
+  .skill-bar-head{display:flex;justify-content:space-between;font-size:13.5px;margin-bottom:6px;}
+  .skill-bar-head .name{font-weight:600;}
+  .skill-bar-head .frac{font-family:'JetBrains Mono',monospace;color:var(--text-muted);}
+  .skill-bar-track{height:10px;border-radius:99px;background:var(--line);overflow:hidden;}
+  .skill-bar-fill{height:100%;border-radius:99px;}
+  .improve-box{margin-top:26px;background:rgba(226,73,47,.08);border:1px solid rgba(226,73,47,.35);border-radius:10px;padding:18px 20px;}
+  .improve-box h3{font-family:'Fraunces',serif;font-size:16px;margin:0 0 10px;color:var(--accent-coral);}
+  .improve-box ul{margin:0;padding-left:20px;color:var(--text-light);font-size:14px;line-height:1.75;}
+  .strong-box{margin-top:14px;background:rgba(106,156,122,.08);border:1px solid rgba(106,156,122,.35);border-radius:10px;padding:18px 20px;}
+  .strong-box h3{font-family:'Fraunces',serif;font-size:16px;margin:0 0 10px;color:var(--accent-sage);}
+  .strong-box p{margin:0;color:var(--text-light);font-size:14px;line-height:1.6;}
+  .actions{display:flex;gap:12px;margin-top:28px;flex-wrap:wrap;}
+  .hidden{display:none !important;}
+  footer{text-align:center;color:var(--text-muted);font-size:12px;margin-top:26px;opacity:.6;}
+</style>
+</head>
+<body> <div style="float: left; margin-right: 25px; margin-bottom: 25px;"><img src="Logo_AMC.png" alt="Logo" style="max-width: 150px;"></div>
+<div class="wrap">
+  <p class="eyebrow">PAES · Ciencias — Módulo Biología Común · Nivel Experto</p>
+  <h1>Biomoléculas Orgánicas</h1>
+  <p class="sub">Eje 1: Organización, estructura y actividad celular — Sub-eje: Biomoléculas organizadas y teoría celular — Clase 1: Carbohidratos y Lípidos</p>
+
+  <div class="card" id="start-screen">
+    <p class="eyebrow" style="margin-bottom:14px;">Antes de comenzar</p>
+    <p style="color:var(--text-muted);font-size:14.5px;line-height:1.6;">Este quiz evalúa nivel <strong style="color:var(--text-light);">experto</strong>, con 20 preguntas (4 por cada habilidad PAES), extraídas al azar de un banco amplio. Cada intento genera una versión distinta.</p>
+    <ul>
+      <li>Observar y plantear preguntas</li>
+      <li>Planificar y conducir una investigación</li>
+      <li>Procesar y analizar la evidencia</li>
+      <li>Evaluar</li>
+      <li>Comunicar</li>
+    </ul>
+    <button class="btn" onclick="startQuiz()">Comenzar quiz</button>
+  </div>
+
+  <div class="card hidden" id="quiz-screen">
+    <div class="progress-row">
+      <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+      <div class="progress-label" id="progress-label">1 / 20</div>
+    </div>
+    <span class="skill-tag" id="skill-tag"></span>
+    <p class="qnum" id="qnum"></p>
+    <p class="question-text" id="question-text"></p>
+    <div class="options" id="options"></div>
+    <div class="feedback hidden" id="feedback"></div>
+    <div class="nav-row">
+      <button class="btn hidden" id="next-btn" onclick="nextQuestion()">Siguiente →</button>
+    </div>
+  </div>
+
+  <div class="card hidden" id="dashboard-screen">
+    <p class="eyebrow">Resultados</p>
+    <div class="score-hero">
+      <div class="score-big" id="score-total">0<span>/20</span></div>
+      <p class="score-caption" id="score-caption">Puntaje global</p>
+    </div>
+    <div class="skill-bars" id="skill-bars"></div>
+    <div class="improve-box hidden" id="improve-box">
+      <h3>Puntos a mejorar</h3>
+      <ul id="improve-list"></ul>
+    </div>
+    <div class="strong-box hidden" id="strong-box">
+      <h3>Habilidades consolidadas</h3>
+      <p id="strong-text"></p>
+    </div>
+    <div class="actions">
+      <button class="btn" onclick="restartQuiz()">Repetir con nuevas preguntas</button>
+      <button class="btn ghost" onclick="reviewAnswers()">Revisar mis respuestas</button>
+    </div>
+  </div>
+
+  <div class="card hidden" id="review-screen"></div>
+
+  <footer>Banco de 40 preguntas · nivel experto · basado en el temario DEMRE PAES Ciencias — Biología Común</footer>
+</div>
+
+<script>
+const SKILL_NAMES = {
+  OBS:  "Observar y plantear preguntas",
+  PLAN: "Planificar y conducir una investigación",
+  PROC: "Procesar y analizar la evidencia",
+  EVAL: "Evaluar",
+  COM:  "Comunicar"
+};
+const SKILL_ORDER = ["OBS","PLAN","PROC","EVAL","COM"];
+const LETTERS = ["A","B","C","D","E"];
+
+const QUESTION_BANK = [
+// ---------- OBS ----------
+{skill:"OBS", q:"En un estudio se observa que liposomas formados con fosfolípidos de cadena corta y alto grado de insaturación presentan una temperatura de transición de fase (gel-líquido) menor que liposomas de cadena larga y saturada. Además, al incorporar colesterol en proporción creciente, esa diferencia entre ambos tipos de liposomas se atenúa progresivamente. ¿Cuál es la pregunta de investigación que integra mejor ambas observaciones?",
+ options:["¿El colesterol actúa como un 'amortiguador' de fluidez, reduciendo la dependencia de la temperatura de transición respecto de la composición de ácidos grasos de la bicapa?","¿El colesterol es un carbohidrato que refuerza la pared de los liposomas?","¿Los liposomas de cadena corta contienen más agua que los de cadena larga?","¿La temperatura de transición de fase depende exclusivamente del pH del medio?","¿El colesterol elimina por completo la fluidez de cualquier membrana?"],
+ correct:0,
+ exp:"El colesterol tiene un efecto modulador dual: a temperaturas altas rigidiza la membrana y a temperaturas bajas la fluidifica, 'amortiguando' las diferencias de temperatura de transición entre membranas de distinta composición de ácidos grasos; esto integra ambas observaciones del enunciado."},
+{skill:"OBS", q:"Un investigador nota que, en un modelo de digestión in vitro, la amilopectina (almidón muy ramificado) se hidroliza más rápidamente por amilasa que la amilosa (almidón lineal) de igual masa, aunque ambas tienen el mismo tipo de enlace α-1,4. ¿Qué pregunta de investigación aborda con mayor precisión esta observación?",
+ options:["¿El mayor número de extremos no reductores expuestos en la estructura ramificada de la amilopectina incrementa los sitios de ataque simultáneo para la amilasa, acelerando la hidrólisis respecto de la cadena lineal de la amilosa?","¿La amilopectina contiene enlaces peptídicos que la hacen más digerible?","¿La amilosa es en realidad un lípido de reserva vegetal?","¿El tipo de enlace α-1,4 varía entre amilosa y amilopectina?","¿La amilasa solo actúa sobre polisacáridos no ramificados?"],
+ correct:0,
+ exp:"Como ambas moléculas comparten el mismo tipo de enlace α-1,4, la variable relevante a investigar es la estructura tridimensional: la ramificación de la amilopectina genera más extremos no reductores accesibles simultáneamente a la enzima, lo que explica una hidrólisis más rápida."},
+{skill:"OBS", q:"Se observa que, en un cultivo de levaduras, la fermentación de glucosa produce CO2 a mayor velocidad que la fermentación de una cantidad equimolar de lactosa, incluso cuando ambas son azúcares reductores. ¿Qué pregunta de investigación es la más específica y pertinente?",
+ options:["¿La necesidad de una etapa previa de hidrólisis enzimática (por β-galactosidasa) del disacárido lactosa en sus monosacáridos constituyentes limita la velocidad inicial de fermentación respecto del monosacárido libre glucosa?","¿La lactosa no es en realidad un carbohidrato?","¿Las levaduras no pueden metabolizar ningún tipo de disacárido?","¿El CO2 se produce solo a partir de lípidos en la fermentación?","¿La glucosa y la lactosa tienen exactamente la misma estructura molecular?"],
+ correct:0,
+ exp:"La lactosa, al ser un disacárido, requiere ser hidrolizada primero por la enzima β-galactosidasa antes de que sus monosacáridos (glucosa y galactosa) puedan ingresar a la vía glucolítica, lo que introduce un paso adicional que puede limitar la velocidad de fermentación respecto de la glucosa libre."},
+{skill:"OBS", q:"Un estudio comparó la capacidad antioxidante y el perfil de ácidos grasos de aceites sometidos a fritura repetida. Se observó que el índice de peróxidos aumentaba progresivamente con cada ciclo de fritura, mientras que el contenido de ácidos grasos poliinsaturados disminuía en la misma proporción. ¿Qué pregunta de investigación conecta mejor ambas variables?",
+ options:["¿La degradación oxidativa de los ácidos grasos poliinsaturados (con mayor número de dobles enlaces reactivos) es la principal responsable del aumento del índice de peróxidos durante ciclos sucesivos de fritura?","¿El índice de peróxidos mide directamente la cantidad de proteínas del aceite?","¿Los ácidos grasos saturados son los que se oxidan primero en la fritura?","¿La fritura repetida convierte los lípidos en carbohidratos?","¿El índice de peróxidos disminuye siempre con el uso repetido del aceite?"],
+ correct:0,
+ exp:"Los ácidos grasos poliinsaturados, al poseer más dobles enlaces, son más susceptibles a la oxidación (formación de peróxidos) que los saturados. La relación inversa observada entre ambas variables plantea directamente esta pregunta de causalidad bioquímica."},
+{skill:"OBS", q:"En un experimento con eritrocitos, se observa que al colocarlos en una solución hipotónica se hinchan y eventualmente lisan (hemólisis), liberando hemoglobina; mientras que en una solución isotónica mantienen su forma. La membrana plasmática está compuesta mayormente por fosfolípidos. ¿Qué pregunta de investigación es la más pertinente para el eje de biomoléculas?",
+ options:["¿La estructura de bicapa lipídica semipermeable de la membrana permite el paso de agua por ósmosis, generando un desbalance de presión que provoca la ruptura celular en medios hipotónicos?","¿Los fosfolípidos impiden por completo cualquier movimiento de agua a través de la membrana?","¿La hemólisis se debe a que la membrana está compuesta principalmente de almidón?","¿Las soluciones hipotónicas destruyen directamente los enlaces peptídicos de la hemoglobina?","¿El comportamiento osmótico de la célula no tiene relación con la composición de su membrana?"],
+ correct:0,
+ exp:"La naturaleza semipermeable de la bicapa lipídica permite el paso libre de agua (pero no de solutos grandes), lo que en un medio hipotónico genera entrada neta de agua por ósmosis, aumento de volumen y eventual ruptura de la membrana; esto conecta la estructura lipídica con el fenómeno observado."},
+{skill:"OBS", q:"Un investigador nota que dos especies de plantas del desierto, con hojas de apariencia similar, presentan concentraciones muy distintas de ceras cuticulares (medidas por extracción con solvente orgánico), y que la especie con mayor concentración de cera pierde agua más lentamente en condiciones de baja humedad relativa. ¿Qué pregunta de investigación formula mejor esta relación?",
+ options:["¿Existe una relación cuantitativa entre la concentración de ceras cuticulares (lípidos) y la tasa de transpiración foliar en condiciones de baja humedad?","¿Las ceras cuticulares son polisacáridos que absorben agua activamente?","¿La tasa de transpiración depende únicamente del color de la hoja?","¿Todas las plantas del desierto tienen exactamente la misma concentración de cera?","¿La extracción con solvente orgánico mide la cantidad de proteínas foliares?"],
+ correct:0,
+ exp:"Dado que las ceras son lípidos hidrofóbicos que reducen la pérdida de agua, y se observó una relación entre su concentración y la tasa de transpiración, la pregunta más pertinente busca cuantificar esa relación funcional entre biomolécula y fisiología vegetal."},
+{skill:"OBS", q:"Se observa que en un ensayo de digestión de triglicéridos, la velocidad de hidrólisis por lipasa pancreática aumenta notablemente cuando se agrega colipasa, una proteína auxiliar, incluso manteniendo constante la concentración de sales biliares. ¿Qué pregunta de investigación es más precisa?",
+ options:["¿La colipasa cumple una función complementaria a las sales biliares, posiblemente anclando la lipasa a la interfase lípido-agua para contrarrestar la inhibición que las sales biliares ejercen sobre la enzima libre?","¿La colipasa reemplaza completamente la función de la lipasa como enzima digestiva?","¿Las sales biliares inhiben permanentemente cualquier digestión de lípidos?","¿La colipasa es un tipo de carbohidrato que se une al triglicérido?","¿El aumento de velocidad se debe únicamente al color de la solución?"],
+ correct:0,
+ exp:"En la digestión real de lípidos, las sales biliares pueden desplazar a la lipasa de la interfase lipídica; la colipasa actúa como puente que ancla la enzima a esa interfase, restaurando su actividad. La observación (aumento de velocidad con colipasa, sales biliares constantes) plantea directamente esa función complementaria."},
+{skill:"OBS", q:"Un estudio nota que, al comparar el genoma de dos especies de bacterias, una capaz de metabolizar tanto glucosa como celulosa y otra que solo metaboliza glucosa, la primera posee genes adicionales que codifican para celulasas (enzimas que rompen enlaces β-1,4-glicosídicos). ¿Qué pregunta de investigación surge con mayor precisión de esta observación?",
+ options:["¿La presencia de celulasas, ausentes en la segunda especie, explica la capacidad diferencial de degradar el enlace β-1,4 de la celulosa, a diferencia del enlace α-1,4 típico del almidón que ambas especies podrían compartir?","¿Todas las bacterias pueden digerir celulosa sin excepción?","¿La celulosa y la glucosa son exactamente la misma molécula?","¿La ausencia de celulasas impide que la bacteria realice cualquier tipo de metabolismo?","¿El genoma bacteriano no tiene relación con su capacidad metabólica?"],
+ correct:0,
+ exp:"La capacidad de degradar celulosa depende específicamente de poseer enzimas (celulasas) capaces de hidrolizar el enlace β-1,4-glicosídico, distinto del enlace α-1,4 del almidón; la diferencia genética observada explica directamente la diferencia metabólica funcional entre ambas especies."},
+
+// ---------- PLAN ----------
+{skill:"PLAN", q:"Para determinar si la colipasa es indispensable para la actividad de la lipasa pancreática en presencia de sales biliares, ¿cuál es el diseño experimental más riguroso?",
+ options:["Preparar cuatro condiciones: (1) lipasa sola, (2) lipasa + sales biliares, (3) lipasa + colipasa, (4) lipasa + sales biliares + colipasa, manteniendo igual la cantidad de sustrato y midiendo la velocidad de hidrólisis en cada una para aislar el efecto de cada componente y su interacción","Comparar solo la condición (4) con un control sin ningún componente añadido","Usar solo dos condiciones: con y sin sales biliares, sin incluir colipasa en ningún caso","Variar la cantidad de sustrato en cada condición en lugar de mantenerla constante","Medir el resultado sin cuantificar la velocidad de reacción, solo observando si hay turbidez o no"],
+ correct:0,
+ exp:"Para aislar el efecto individual de cada componente (sales biliares, colipasa) y su posible interacción, se requiere un diseño factorial con las cuatro combinaciones posibles, manteniendo constante el resto de las variables (sustrato, tiempo, temperatura)."},
+{skill:"PLAN", q:"Un equipo desea investigar si el tipo de enlace glicosídico (α-1,4 vs. β-1,4) es la variable determinante de la digestibilidad por amilasa humana, controlando el posible efecto confundente del grado de ramificación. ¿Cuál es el diseño experimental más adecuado?",
+ options:["Comparar cuatro sustratos: amilosa lineal (α-1,4), amilopectina ramificada (α-1,4), celulosa lineal (β-1,4) y un polisacárido β-1,4 ramificado sintético, midiendo la hidrólisis por amilasa en cada caso bajo condiciones estandarizadas, para separar el efecto del tipo de enlace del efecto de la ramificación","Comparar solo amilosa y celulosa, sin considerar el grado de ramificación","Usar un único sustrato con enlaces mixtos sin poder diferenciar variables","Medir la digestibilidad sin estandarizar la cantidad de enzima entre sustratos","Evaluar solo la apariencia física de los sustratos antes de la digestión"],
+ correct:0,
+ exp:"Para aislar el efecto del tipo de enlace glicosídico del efecto de la ramificación (dos variables potencialmente confundidas), el diseño más riguroso incluye las cuatro combinaciones posibles de ambas variables, permitiendo un análisis factorial de sus efectos independientes."},
+{skill:"PLAN", q:"Para investigar si la temperatura de transición de fase de una membrana artificial depende de forma independiente tanto del grado de saturación de los ácidos grasos como del contenido de colesterol, ¿cuál es el diseño experimental correcto?",
+ options:["Preparar liposomas con al menos dos niveles de saturación de ácidos grasos y al menos dos niveles de concentración de colesterol, combinando ambas variables de forma cruzada (diseño factorial), y medir la temperatura de transición de fase en cada combinación","Variar solo el grado de saturación, manteniendo el colesterol en un único nivel constante, y asumir el efecto del colesterol sin medirlo","Variar el colesterol en un solo liposoma y extrapolar el resultado a todos los niveles de saturación","Medir la temperatura de transición solo en el liposoma con mayor saturación y mayor colesterol","Usar un diseño no controlado, variando ambas variables simultáneamente sin combinaciones sistemáticas"],
+ correct:0,
+ exp:"Para determinar si dos variables (saturación y colesterol) actúan de forma independiente sobre una tercera (temperatura de transición), se requiere un diseño factorial cruzado que combine sistemáticamente distintos niveles de ambas variables, permitiendo detectar efectos principales y posibles interacciones."},
+{skill:"PLAN", q:"Se desea evaluar si la actividad de la enzima lactasa disminuye con la edad en un modelo animal, controlando el posible efecto confundente de la dieta. ¿Cuál es el elemento de diseño más crítico a incorporar?",
+ options:["Mantener la misma dieta estandarizada (incluyendo la misma exposición a lactosa) en animales de distintas edades, de modo que cualquier diferencia en la actividad de lactasa pueda atribuirse a la edad y no a diferencias dietarias","Permitir que cada grupo etario consuma una dieta distinta, según su preferencia natural","Medir la actividad de lactasa solo en animales jóvenes, extrapolando el resultado a los adultos","No es necesario controlar la dieta si todos los animales son de la misma especie","Usar un solo animal por grupo etario para simplificar el diseño"],
+ correct:0,
+ exp:"Dado que la exposición a lactosa en la dieta puede inducir o mantener la expresión de lactasa (efecto confundente), es indispensable estandarizar la dieta entre los grupos etarios para poder atribuir las diferencias de actividad enzimática específicamente al efecto de la edad."},
+{skill:"PLAN", q:"Un estudiante desea determinar la constante de Michaelis-Menten (Km) de la amilasa salival para el almidón. ¿Cuál es el procedimiento experimental correcto?",
+ options:["Medir la velocidad inicial de reacción a al menos 5-6 concentraciones distintas de sustrato (almidón), manteniendo constante la concentración de enzima, y graficar velocidad vs. concentración de sustrato para estimar Km a partir de la curva de saturación","Medir la velocidad de reacción a una sola concentración de sustrato y calcular Km directamente de ese valor","Variar la concentración de enzima en cada ensayo, manteniendo fijo el sustrato","Medir solo el producto final de la reacción, sin considerar la velocidad inicial","Usar una única temperatura sin variar la concentración de sustrato"],
+ correct:0,
+ exp:"La determinación de la constante de Michaelis-Menten (Km) requiere medir la velocidad inicial de reacción a múltiples concentraciones de sustrato (con la enzima constante), generando una curva de saturación a partir de la cual se estima el parámetro cinético."},
+{skill:"PLAN", q:"Para investigar si la oxidación lipídica en un aceite depende de forma independiente de la temperatura de almacenamiento y de la exposición a la luz, ¿cuál es el diseño experimental que permite responder esta pregunta de forma más completa?",
+ options:["Un diseño factorial 2x2 con cuatro grupos: (oscuridad/temperatura baja), (oscuridad/temperatura alta), (luz/temperatura baja), (luz/temperatura alta), midiendo el índice de peróxidos en cada grupo tras un mismo periodo de tiempo","Comparar solo dos grupos: uno con luz y temperatura alta, y otro con oscuridad y temperatura baja, sin las combinaciones intermedias","Variar solo la luz, manteniendo la temperatura sin especificar ni controlar","Medir el índice de peróxidos en un solo grupo y generalizar el resultado a todas las condiciones","Usar un diseño donde luz y temperatura cambien juntas siempre en la misma dirección"],
+ correct:0,
+ exp:"Para evaluar si dos variables (temperatura y luz) afectan de forma independiente el resultado, y detectar posibles interacciones entre ellas, se requiere un diseño factorial 2x2 con las cuatro combinaciones posibles, en lugar de solo comparar los extremos."},
+{skill:"PLAN", q:"Un investigador plantea que el consumo de fibra soluble reduce la absorción intestinal de colesterol en un modelo animal. ¿Cuál es el diseño experimental más riguroso para poner a prueba esta hipótesis, minimizando variables confundentes?",
+ options:["Asignar aleatoriamente animales genéticamente similares a dos grupos (dieta estándar vs. dieta con fibra soluble añadida, con igual contenido calórico y de colesterol), y medir la absorción de colesterol marcado isotópicamente tras un periodo controlado","Comparar animales de razas distintas sin aleatorización, uno con fibra y otro sin fibra","Usar dietas con distinto contenido calórico entre los dos grupos, además de la fibra","Medir el colesterol sanguíneo sin usar ningún marcador para diferenciar el colesterol absorbido del endógeno","No aleatorizar la asignación de los animales a cada grupo dietario"],
+ correct:0,
+ exp:"Un diseño riguroso requiere aleatorización de los sujetos, control de variables confundentes (contenido calórico y de colesterol basal igual entre grupos) y un método que permita distinguir específicamente el colesterol absorbido (por ejemplo, mediante marcaje isotópico) del colesterol endógeno."},
+{skill:"PLAN", q:"Para investigar el efecto combinado de la temperatura y la concentración de sal sobre la desnaturalización de una lipoproteína (como la LDL), ¿qué variable de respuesta y diseño serían más adecuados?",
+ options:["Diseñar un experimento factorial con distintas combinaciones de temperatura y concentración de sal, midiendo como variable de respuesta un indicador estructural de la lipoproteína (como turbidez o espectroscopía) que refleje su grado de desnaturalización en cada combinación","Medir únicamente el color de la muestra sin ningún indicador estructural específico","Variar solo la temperatura, ignorando el efecto de la concentración de sal","Usar una sola combinación extrema de temperatura y sal y generalizar el resultado a todo el rango","No incluir ningún control sin tratamiento (temperatura y sal basales)"],
+ correct:0,
+ exp:"Un diseño factorial que combine sistemáticamente ambas variables (temperatura y sal), junto con una variable de respuesta cuantitativa y específica del estado estructural de la lipoproteína, permite evaluar tanto los efectos individuales como su posible interacción sobre la desnaturalización."},
+
+// ---------- PROC ----------
+{skill:"PROC", q:"En un experimento de cinética enzimática con lipasa, se obtuvieron los siguientes datos de velocidad inicial (V, µmol/min) a distintas concentraciones de sustrato [S] (mM): [S]=1, V=10; [S]=2, V=18; [S]=5, V=32; [S]=10, V=40; [S]=20, V=42. ¿Qué interpretación cinética es la más adecuada según estos datos?",
+ options:["La enzima sigue un comportamiento tipo Michaelis-Menten, aproximándose a una velocidad máxima (Vmax cercana a 42-44 µmol/min) a altas concentraciones de sustrato, lo que indica saturación de los sitios activos disponibles","La velocidad de reacción aumenta de forma indefinida y proporcional a la concentración de sustrato en todo el rango","La enzima se inhibe completamente a altas concentraciones de sustrato, deteniendo la reacción","Los datos no muestran ningún patrón identificable respecto a la concentración de sustrato","La velocidad depende únicamente de la temperatura y no de la concentración de sustrato"],
+ correct:0,
+ exp:"El patrón de los datos (incrementos decrecientes en V al aumentar [S], hasta aproximarse a una meseta) es característico de la cinética de Michaelis-Menten, donde la enzima se satura progresivamente hasta alcanzar su velocidad máxima."},
+{skill:"PROC", q:"Un estudio comparó el porcentaje de hidrólisis de triglicéridos con y sin colipasa, en presencia de una concentración fija de sales biliares, a distintos tiempos: 5 min sin colipasa=8%, con colipasa=22%; 15 min sin colipasa=15%, con colipasa=58%; 30 min sin colipasa=20%, con colipasa=85%. ¿Qué conclusión es más adecuada según estos datos?",
+ options:["La colipasa no tiene ningún efecto sobre la hidrólisis de triglicéridos en presencia de sales biliares","La presencia de colipasa incrementa sustancialmente tanto la velocidad como el porcentaje final de hidrólisis de triglicéridos en presencia de sales biliares, consistente con su rol de contrarrestar la inhibición de la lipasa por dichas sales","Las sales biliares por sí solas son suficientes para lograr el 100% de hidrólisis sin necesidad de colipasa","La hidrólisis disminuye con el tiempo en ambas condiciones","La colipasa inhibe la actividad de la lipasa en presencia de sales biliares"],
+ correct:1,
+ exp:"En todos los tiempos medidos, el porcentaje de hidrólisis es notoriamente mayor con colipasa que sin ella, y la diferencia se amplía con el tiempo; esto es consistente con el rol conocido de la colipasa como cofactor que revierte la inhibición de la lipasa causada por las sales biliares."},
+{skill:"PROC", q:"En un experimento de electroforesis de lípidos de membrana de dos poblaciones de peces (aguas frías y aguas cálidas), se determinó el porcentaje de ácidos grasos poliinsaturados: aguas frías=48%; aguas cálidas=22%. Además, la temperatura de transición de fase medida fue de −8°C y 12°C respectivamente. ¿Qué relación establecen estos datos entre ambas variables?",
+ options:["No existe relación consistente entre el porcentaje de poliinsaturados y la temperatura de transición de fase","A mayor porcentaje de ácidos grasos poliinsaturados en la membrana, menor es la temperatura de transición de fase, lo que es consistente con una mayor fluidez de membrana a bajas temperaturas ambientales en peces de aguas frías","A mayor porcentaje de poliinsaturados, mayor es la temperatura de transición de fase","La temperatura de transición de fase depende solo de la especie, no de la composición lipídica","Los peces de aguas cálidas tienen membranas con mayor proporción de poliinsaturados"],
+ correct:1,
+ exp:"Los datos muestran una relación inversa clara: mayor proporción de poliinsaturados (48% en aguas frías) se asocia a una temperatura de transición de fase mucho menor (−8°C), consistente con la adaptación evolutiva que mantiene la fluidez de membrana necesaria en ambientes fríos."},
+{skill:"PROC", q:"Se midió el índice de peróxidos (meq O2/kg) de un aceite almacenado bajo dos condiciones durante 8 semanas: oscuridad/4°C: semana 0=1, semana 4=3, semana 8=6; luz/25°C: semana 0=1, semana 4=18, semana 8=52. ¿Qué se puede inferir de estos datos respecto a los factores que afectan la oxidación lipídica?",
+ options:["La combinación de luz y temperatura elevada acelera notoriamente la velocidad de oxidación lipídica respecto del almacenamiento en oscuridad y frío, y este efecto se intensifica con el tiempo de forma no lineal","La luz y la temperatura no tienen ningún efecto sobre la oxidación de los lípidos","El índice de peróxidos disminuye con el tiempo en ambas condiciones","El almacenamiento en oscuridad y frío acelera la oxidación en comparación con luz y calor","El aumento del índice de peróxidos es idéntico en ambas condiciones experimentales"],
+ correct:0,
+ exp:"Los datos muestran que, bajo luz y temperatura alta, el índice de peróxidos se dispara de forma acelerada y no lineal (1→18→52), mientras que en oscuridad y frío el aumento es mucho más gradual (1→3→6), evidenciando el efecto sinérgico de ambos factores sobre la oxidación."},
+{skill:"PROC", q:"En un ensayo se midió la absorción de colesterol marcado isotópicamente en ratas alimentadas con distintas dosis de fibra soluble (g/kg de dieta): 0 g=68% absorbido; 20 g=52%; 40 g=38%; 60 g=30%; 80 g=28%. ¿Qué interpretación es la más adecuada de este conjunto de datos?",
+ options:["El aumento de fibra soluble en la dieta reduce progresivamente la absorción de colesterol, aunque el efecto marginal disminuye a dosis más altas (de 60 a 80 g la reducción es mucho menor que entre dosis previas), sugiriendo un efecto con rendimientos decrecientes","La fibra soluble no tiene relación con la absorción de colesterol","La absorción de colesterol aumenta proporcionalmente con la dosis de fibra","El efecto de la fibra es idéntico en todas las dosis evaluadas","La fibra soluble bloquea completamente la absorción de colesterol a partir de 20 g"],
+ correct:0,
+ exp:"Los datos muestran una relación inversa con rendimientos decrecientes: las primeras dosis de fibra generan reducciones más grandes en la absorción (68%→52%→38%), mientras que entre 60 y 80 g la reducción adicional es mínima (30%→28%), lo que sugiere un efecto que se aproxima a una meseta."},
+{skill:"PROC", q:"Un estudio de espectroscopía midió el grado de desnaturalización (%) de una lipoproteína LDL en función de la temperatura y la concentración de sal: a baja sal, la desnaturalización alcanza 50% a 65°C; a alta sal, alcanza 50% ya a 52°C. ¿Qué se puede concluir de estos datos respecto a la interacción entre ambas variables?",
+ options:["La alta concentración de sal desestabiliza la estructura de la lipoproteína, disminuyendo la temperatura requerida para alcanzar un grado equivalente de desnaturalización, lo que sugiere un efecto sinérgico (no simplemente aditivo) entre sal y temperatura","La concentración de sal no influye en la temperatura de desnaturalización","A mayor concentración de sal, se requiere mayor temperatura para desnaturalizar la lipoproteína","La desnaturalización es idéntica en ambas condiciones de sal","El efecto de la temperatura es independiente de cualquier otro factor químico"],
+ correct:0,
+ exp:"Los datos muestran que, a mayor concentración de sal, se necesita una temperatura menor para alcanzar el mismo grado de desnaturalización (52°C vs. 65°C), lo que indica que la sal desestabiliza la estructura de la lipoproteína, potenciando el efecto desnaturalizante de la temperatura."},
+{skill:"PROC", q:"En un experimento de digestión in vitro, se comparó la liberación de glucosa desde amilosa y amilopectina (misma masa) por acción de amilasa a lo largo del tiempo: a 10 min, amilosa=12 mg/dL, amilopectina=30 mg/dL; a 20 min, amilosa=25 mg/dL, amilopectina=58 mg/dL; a 30 min, amilosa=35 mg/dL, amilopectina=75 mg/dL. ¿Qué conclusión se sustenta mejor con estos datos?",
+ options:["La amilopectina se hidroliza consistentemente más rápido que la amilosa en todos los tiempos medidos, siendo la diferencia proporcionalmente mayor a los 10 minutos que a los 30 minutos","La amilosa se hidroliza más rápido que la amilopectina en todos los tiempos","Ambos polisacáridos se hidrolizan exactamente a la misma velocidad","La velocidad de hidrólisis de ambos polisacáridos disminuye con el tiempo hasta llegar a cero","No es posible comparar ambos polisacáridos con estos datos"],
+ correct:0,
+ exp:"En cada punto temporal, la amilopectina libera más glucosa que la amilosa (30 vs 12 a los 10 min; razón 2,5; 75 vs 35 a los 30 min; razón ~2,1), lo que confirma una hidrólisis consistentemente más rápida, coherente con su mayor número de extremos accesibles por ramificación."},
+{skill:"PROC", q:"Se comparó el efecto de tres antioxidantes (A, B, C) sobre la oxidación de un aceite, midiendo el tiempo (en horas) que tarda en alcanzar un índice de peróxidos crítico: sin antioxidante=12h; con A=18h; con B=45h; con C=30h. Además, se sabe que A y C son antioxidantes de menor concentración molar que B en la formulación evaluada. ¿Qué interpretación es la más rigurosa?",
+ options:["El antioxidante B fue el más efectivo en retrasar la oxidación bajo las condiciones evaluadas, aunque no puede concluirse cuál antioxidante es intrínsecamente más potente por unidad molar sin conocer las concentraciones exactas utilizadas de cada uno","El antioxidante A fue el más efectivo porque se usó en menor cantidad","La concentración de los antioxidantes no es relevante para interpretar estos resultados","El antioxidante C es claramente el menos efectivo en términos absolutos y por unidad molar","Sin antioxidante, el aceite se oxida más lento que con cualquier antioxidante"],
+ correct:0,
+ exp:"Aunque B mostró el mejor resultado en tiempo hasta oxidación, la comparación de la eficacia intrínseca (por unidad molar) requiere conocer las concentraciones exactas utilizadas; con concentraciones distintas entre los antioxidantes, no es válido concluir cuál es más potente por molécula sin normalizar por concentración."},
+
+// ---------- EVAL ----------
+{skill:"EVAL", q:"Un estudio concluyó que 'la colipasa es más importante que las sales biliares en la digestión de lípidos' basándose en que, al eliminar la colipasa, la hidrólisis cayó un 60%, mientras que al eliminar las sales biliares cayó solo un 40%. ¿Qué crítica metodológica es más sólida a esta comparación?",
+ options:["La comparación no considera que ambos componentes actúan de forma interdependiente (las sales biliares inhiben la lipasa libre y la colipasa contrarresta esa inhibición), por lo que evaluar su 'importancia' de forma aislada mediante porcentajes de caída puede ser engañoso sin un diseño factorial que evalúe su interacción","La comparación es válida y no requiere ningún ajuste metodológico adicional","Las sales biliares no participan en absoluto en la digestión de lípidos","La colipasa actúa de forma completamente independiente de las sales biliares","No es necesario un diseño factorial para evaluar la importancia relativa de dos factores interdependientes"],
+ correct:0,
+ exp:"Cuando dos factores tienen una relación funcional interdependiente (como colipasa y sales biliares), comparar porcentajes de caída al eliminar cada uno por separado puede ser engañoso; se requiere un diseño factorial que permita cuantificar efectos principales y de interacción para una conclusión válida sobre su importancia relativa."},
+{skill:"EVAL", q:"Una investigación sobre la Km de la amilasa reportó un valor obtenido a partir de mediciones realizadas a una única temperatura (37°C) y un único pH (6,8), extrapolando esa Km como 'la' constante cinética universal de la enzima. ¿Cuál es la crítica más sólida a esta extrapolación?",
+ options:["La Km es una constante que depende de las condiciones experimentales (temperatura, pH, presencia de cofactores); reportarla como un valor 'universal' sin especificar y variar sistemáticamente esas condiciones limita la validez de la generalización","La Km es siempre idéntica sin importar las condiciones experimentales, por lo que la extrapolación es válida","No es necesario especificar la temperatura ni el pH al reportar una constante cinética","La Km no tiene relación con la afinidad de la enzima por el sustrato","Medir a una sola temperatura y pH es el estándar metodológico correcto para cualquier estudio cinético"],
+ correct:0,
+ exp:"Los parámetros cinéticos enzimáticos, incluida la Km, dependen de las condiciones experimentales bajo las cuales se determinan (temperatura, pH, fuerza iónica); presentar un único valor obtenido en condiciones fijas como una constante 'universal' sobreestima la validez y generalización de la conclusión."},
+{skill:"EVAL", q:"Un estudio sobre membranas celulares midió la temperatura de transición de fase usando un único método (calorimetría diferencial de barrido) y concluyó de forma categórica que 'el colesterol siempre rigidiza la membrana en cualquier condición'. ¿Qué crítica es la más sólida a esta conclusión?",
+ options:["La conclusión ignora la evidencia bioquímica de que el colesterol tiene un efecto dual (rigidiza a temperaturas altas y fluidifica a temperaturas bajas), por lo que una afirmación categórica y sin matices no representa adecuadamente el comportamiento real de esta molécula en la membrana","La conclusión es completamente correcta y no requiere ningún matiz adicional","El colesterol nunca tiene ningún efecto sobre la fluidez de la membrana","La calorimetría diferencial de barrido no es un método válido para estudiar membranas","El colesterol solo puede rigidizar la membrana, sin excepciones bajo ninguna condición de temperatura"],
+ correct:0,
+ exp:"La generalización categórica ('siempre rigidiza') contradice el conocimiento establecido sobre el efecto dual del colesterol según la temperatura; una conclusión científicamente rigurosa debe reconocer esa dependencia contextual en lugar de una afirmación absoluta y sin matices."},
+{skill:"EVAL", q:"Una investigación sobre reducción del colesterol LDL mediante fibra soluble usó un diseño donde el grupo experimental (con fibra) también recibió, sin intención de los investigadores, una dieta con menor contenido calórico total que el grupo control. ¿Qué problema metodológico compromete la validez de la conclusión?",
+ options:["La diferencia calórica no controlada entre grupos constituye una variable confundente que impide atribuir de forma inequívoca la reducción de LDL específicamente al efecto de la fibra soluble, ya que la restricción calórica por sí sola también puede reducir el colesterol","No hay ningún problema metodológico, ya que ambos grupos recibieron fibra en distinta cantidad","La restricción calórica nunca afecta los niveles de colesterol LDL","El diseño es válido porque ambos grupos fueron asignados aleatoriamente","La variable confundente no es relevante si el resultado final coincide con la hipótesis"],
+ correct:0,
+ exp:"Cuando una variable no controlada (diferencia calórica) varía sistemáticamente entre grupos junto con la variable de interés (fibra), se genera una confusión que impide atribuir el efecto observado específicamente a la variable de interés, comprometiendo la validez interna del estudio."},
+{skill:"EVAL", q:"Un metaanálisis sobre el efecto de los ácidos grasos saturados en el riesgo cardiovascular combinó estudios con metodologías muy heterogéneas (algunos midiendo solo colesterol total, otros marcadores inflamatorios, otros eventos clínicos directos) sin ajustar por esta heterogeneidad. ¿Qué limitación es la más relevante para evaluar la solidez de sus conclusiones?",
+ options:["Combinar estudios con desenlaces (variables de resultado) conceptualmente distintos sin ajuste estadístico adecuado puede generar conclusiones poco confiables, ya que un cambio en un marcador intermedio (colesterol) no es equivalente a un cambio en un desenlace clínico duro (eventos cardiovasculares)","No existe ninguna limitación relevante si todos los estudios midieron 'algo relacionado' con los lípidos","Los metaanálisis nunca requieren evaluar la heterogeneidad de los estudios incluidos","Medir marcadores intermedios y desenlaces clínicos duros es exactamente equivalente en términos de interpretación","La heterogeneidad metodológica siempre fortalece las conclusiones de un metaanálisis"],
+ correct:0,
+ exp:"Combinar desenlaces conceptualmente distintos (marcadores bioquímicos intermedios vs. eventos clínicos) sin un ajuste metodológico adecuado (como un análisis de heterogeneidad o modelos de efectos aleatorios que consideren esta diferencia) reduce la solidez interpretativa de las conclusiones combinadas."},
+{skill:"EVAL", q:"Un estudio evaluó la fluidez de membrana solo mediante observación visual al microscopio óptico (sin resolución suficiente para detectar cambios moleculares), concluyendo que 'no hay diferencia de fluidez' entre dos composiciones lipídicas. ¿Cuál es la crítica metodológica más sólida?",
+ options:["El microscopio óptico convencional no tiene la resolución necesaria para detectar diferencias a nivel molecular en la fluidez de membrana; se requieren técnicas más sensibles (como fluorescencia de sondas específicas, calorimetría o resonancia de spin electrónico) para una conclusión válida","La observación visual al microscopio óptico es un método suficientemente preciso para medir fluidez de membrana a nivel molecular","No es necesario usar ninguna técnica especializada para estudiar la fluidez de membranas","La ausencia de diferencia visible siempre indica ausencia real de diferencia molecular","El microscopio óptico y las técnicas de fluorescencia son intercambiables para este propósito"],
+ correct:0,
+ exp:"La resolución del microscopio óptico convencional es insuficiente para detectar diferencias moleculares en la fluidez de membrana; la ausencia de un método con la sensibilidad adecuada limita severamente la validez de la conclusión negativa reportada."},
+{skill:"EVAL", q:"Una investigación concluyó que 'la fibra soluble elimina completamente la absorción de colesterol' basándose en que, a la dosis más alta evaluada, la absorción bajó de 68% a 28%, redondeando esta cifra como 'prácticamente cero'. ¿Qué error de comunicación e interpretación se identifica?",
+ options:["Un 28% de absorción residual está lejos de representar una eliminación completa; la conclusión distorsiona la magnitud real del efecto observado, sobreestimando su alcance más allá de lo que los datos permiten afirmar","La interpretación es correcta porque 28% se puede considerar equivalente a 0% en cualquier contexto científico","La fibra soluble efectivamente elimina el 100% de la absorción de colesterol según estos datos","No existe ningún problema en la forma en que se comunicó este resultado","Un cambio de 68% a 28% siempre debe interpretarse como una eliminación total del fenómeno medido"],
+ correct:0,
+ exp:"Redondear un 28% residual de absorción como 'prácticamente cero' es una distorsión significativa de los datos; la comunicación científica rigurosa debe reportar la magnitud real del efecto (una reducción sustancial pero no una eliminación completa) sin exagerar sus conclusiones."},
+{skill:"EVAL", q:"Un estudio in vitro concluyó que un compuesto es 'un potente inhibidor de la lipasa pancreática humana' basándose en ensayos realizados exclusivamente con lipasa purificada de páncreas porcino, sin ningún ensayo con la enzima humana. ¿Cuál es la limitación más relevante para evaluar la validez de esta conclusión?",
+ options:["Aunque las lipasas porcina y humana son homólogas y comúnmente usadas como modelo, extrapolar directamente los resultados a 'la lipasa humana' sin ensayos confirmatorios con la enzima humana constituye una generalización que debe señalarse como una limitación del estudio","Las lipasas porcina y humana son moléculas completamente distintas sin ninguna relación funcional","No es necesario mencionar el origen de la enzima utilizada en el estudio","El uso de un modelo animal siempre garantiza resultados idénticos en humanos sin ninguna limitación","La extrapolación entre especies nunca representa un problema metodológico en bioquímica"],
+ correct:0,
+ exp:"Si bien los modelos de lipasa porcina son ampliamente usados por su homología funcional con la enzima humana, la extrapolación directa de resultados sin validación en la enzima humana es una limitación metodológica que debe explicitarse, ya que pueden existir diferencias cinéticas o estructurales relevantes."},
+
+// ---------- COM ----------
+{skill:"COM", q:"Un estudiante debe explicar, en un informe técnico, por qué la lipasa pancreática requiere de colipasa para actuar eficientemente en presencia de sales biliares. ¿Cuál es la explicación más precisa y completa?",
+ options:["Las sales biliares, al emulsionar las grasas, también pueden desplazar a la lipasa de la interfase lípido-agua donde debe actuar; la colipasa se une tanto a la lipasa como a esa interfase, actuando como un 'ancla' que permite a la enzima permanecer unida al sustrato y ejercer su actividad catalítica de forma eficiente","La colipasa reemplaza completamente la función catalítica de la lipasa","Las sales biliares y la colipasa son la misma molécula con distinto nombre","La colipasa impide que las sales biliares emulsionen la grasa","La lipasa no requiere ningún cofactor para actuar sobre los lípidos"],
+ correct:0,
+ exp:"La explicación técnicamente precisa debe describir el mecanismo: las sales biliares, aunque necesarias para la emulsificación, pueden desplazar a la lipasa de la interfase donde actúa; la colipasa actúa como puente molecular que ancla la enzima a esa interfase, permitiendo su actividad catalítica eficiente."},
+{skill:"COM", q:"Al comunicar por qué la amilopectina se hidroliza más rápido que la amilosa a pesar de compartir el mismo tipo de enlace glicosídico, ¿cuál es la explicación estructuralmente más precisa?",
+ options:["La estructura ramificada de la amilopectina genera un mayor número de extremos no reductores expuestos, lo que permite que múltiples moléculas de amilasa ataquen la molécula simultáneamente en distintos puntos, acelerando la hidrólisis global respecto de la cadena lineal de la amilosa, que solo ofrece extremos accesibles en sus puntas","La amilopectina tiene enlaces β-1,4 mientras que la amilosa tiene enlaces α-1,4","La amilosa es una proteína, por lo que no puede ser hidrolizada por amilasa","La amilopectina contiene menos átomos de carbono que la amilosa","La velocidad de hidrólisis no depende de la estructura tridimensional del polisacárido"],
+ correct:0,
+ exp:"La explicación correcta debe apelar a la accesibilidad estructural: la ramificación de la amilopectina multiplica los puntos de ataque enzimático simultáneo (extremos no reductores), a diferencia de la estructura lineal de la amilosa, que limita el número de sitios accesibles a la vez."},
+{skill:"COM", q:"Un estudiante debe explicar en un póster científico por qué el colesterol tiene un efecto 'modulador' (y no simplemente rigidizante o fluidificante) sobre la fluidez de la membrana. ¿Cuál es la explicación más precisa?",
+ options:["A temperaturas por encima de la temperatura de transición de fase, el colesterol restringe el movimiento de las colas de ácidos grasos, rigidizando la membrana; pero a temperaturas por debajo de esa transición, impide el empaquetamiento compacto de los fosfolípidos, evitando la solidificación completa y manteniendo cierta fluidez, por lo que su efecto depende del contexto térmico","El colesterol siempre rigidiza la membrana, sin ninguna excepción según la temperatura","El colesterol no tiene ningún efecto medible sobre la fluidez de la membrana","El colesterol convierte la membrana en una estructura completamente sólida a cualquier temperatura","El efecto del colesterol depende únicamente del pH del medio, no de la temperatura"],
+ correct:0,
+ exp:"Una explicación completa y precisa debe describir el efecto dual del colesterol según el rango de temperatura: rigidiza por encima de la temperatura de transición de fase y fluidifica (evita el empaquetamiento excesivo) por debajo de ella, lo que explica su rol como 'modulador' de fluidez."},
+{skill:"COM", q:"Al explicar los resultados de un ensayo donde el índice de peróxidos de un aceite aumentó de forma no lineal (acelerada) con el tiempo de exposición a la luz y el calor, ¿cuál es la comunicación más precisa del fenómeno subyacente?",
+ options:["La oxidación lipídica es un proceso autocatalítico o en cadena: los productos primarios de oxidación (radicales libres y peróxidos) pueden actuar como iniciadores de nuevas reacciones de oxidación, lo que explica por qué la velocidad del proceso se acelera progresivamente en lugar de mantenerse constante","El aumento no lineal se debe a un error de medición y no representa un fenómeno biológico real","La oxidación lipídica siempre ocurre a una velocidad constante en el tiempo","El calor y la luz destruyen los peróxidos en lugar de generarlos","La aceleración del proceso no tiene ninguna explicación química conocida"],
+ correct:0,
+ exp:"La explicación científicamente correcta debe referirse a la naturaleza autocatalítica (en cadena) de la oxidación lipídica: los radicales libres generados en las primeras etapas propagan la reacción, acelerando el proceso con el tiempo, lo que explica el patrón no lineal observado."},
+{skill:"COM", q:"Un estudiante debe explicar por qué medir solo el colesterol total en sangre no es suficiente para evaluar el riesgo cardiovascular asociado al consumo de distintos tipos de grasas. ¿Cuál es la explicación más completa y precisa?",
+ options:["El colesterol total no distingue entre las distintas lipoproteínas que lo transportan (como LDL y HDL), las cuales tienen efectos fisiológicos opuestos sobre el riesgo cardiovascular; por lo tanto, dos personas con el mismo colesterol total pueden tener perfiles de riesgo muy distintos según la proporción de cada lipoproteína","El colesterol total es el único indicador relevante para evaluar el riesgo cardiovascular","LDL y HDL tienen exactamente el mismo efecto sobre el sistema cardiovascular","El colesterol total mide directamente el consumo de grasas saturadas de una persona","No existen distintos tipos de lipoproteínas transportadoras de colesterol"],
+ correct:0,
+ exp:"La explicación precisa debe distinguir entre las lipoproteínas transportadoras (LDL, comúnmente asociada a mayor riesgo, y HDL, asociada a un rol protector), señalando que el colesterol total por sí solo no captura esta heterogeneidad funcional relevante para el riesgo cardiovascular."},
+{skill:"COM", q:"Al explicar por qué la hidrólisis de un triglicérido por lipasa se favorece cuando el sustrato está emulsionado en pequeñas gotas en lugar de formar una fase grasa continua, ¿cuál es la explicación bioquímicamente más precisa?",
+ options:["Al fragmentar la grasa en gotas pequeñas, aumenta drásticamente la relación superficie/volumen del sustrato, lo que incrementa el área de interfase lípido-agua disponible donde la lipasa (una enzima que actúa en esa interfase) puede unirse y catalizar la reacción, acelerando así la velocidad global de hidrólisis","La emulsificación transforma químicamente la grasa en un carbohidrato más fácil de digerir","La lipasa solo puede actuar dentro de gotas de grasa, nunca en su superficie","El tamaño de las gotas de grasa no influye en la velocidad de la reacción enzimática","La emulsificación reduce la cantidad total de sustrato disponible para la enzima"],
+ correct:0,
+ exp:"La explicación correcta debe apelar al concepto de área de interfase: como la lipasa cataliza su reacción específicamente en la interfase lípido-agua, aumentar la superficie de contacto (fragmentando la grasa en gotas pequeñas) incrementa proporcionalmente la disponibilidad de sitios de acción para la enzima."},
+{skill:"COM", q:"Un estudiante debe comunicar, en una conclusión de laboratorio, por qué no es correcto afirmar que 'la fibra soluble elimina la absorción de colesterol' a partir de datos que muestran una reducción de 68% a 28% de absorción con la dosis más alta evaluada. ¿Cuál es la reformulación más precisa?",
+ options:["'La fibra soluble redujo sustancialmente la absorción de colesterol (de 68% a 28% con la dosis más alta evaluada), aunque no la eliminó por completo; los datos muestran además que el efecto marginal disminuye a dosis crecientes, lo que debe considerarse antes de extrapolar a dosis mayores'","'La fibra soluble elimina completamente la absorción de colesterol según estos resultados'","'Estos datos no permiten concluir nada sobre el efecto de la fibra soluble'","'La reducción observada se debe únicamente al azar y no representa un efecto real'","'La fibra soluble aumenta la absorción de colesterol según estos datos'"],
+ correct:0,
+ exp:"Una comunicación científica precisa debe reportar la magnitud real del efecto observado (reducción sustancial pero no eliminación total) y señalar patrones adicionales relevantes en los datos (como el rendimiento decreciente a dosis altas), evitando afirmaciones categóricas no respaldadas por la evidencia."},
+{skill:"COM", q:"Al explicar por qué dos especies de bacterias, ambas con acceso a glucosa y celulosa en su ambiente, difieren en su capacidad de utilizar la celulosa como fuente de energía, ¿cuál es la explicación bioquímicamente más precisa?",
+ options:["La capacidad de utilizar celulosa depende de poseer enzimas celulasas capaces de hidrolizar específicamente el enlace β-1,4-glicosídico entre unidades de glucosa, un enlace estructuralmente distinto del enlace α-1,4 presente en el almidón, que ambas especies podrían digerir con amilasas comunes","Todas las bacterias pueden digerir celulosa de la misma manera sin excepción","La celulosa y la glucosa libre son metabolizadas exactamente por las mismas vías enzimáticas","La diferencia se debe únicamente al tamaño de las bacterias, no a su equipo enzimático","La celulosa no es una fuente de energía para ningún organismo"],
+ correct:0,
+ exp:"La explicación precisa debe centrarse en la especificidad enzimática: la utilización de celulosa requiere celulasas capaces de romper el enlace β-1,4-glicosídico, ausente en muchas bacterias que sí poseen amilasas para el enlace α-1,4 del almidón, lo que explica la diferencia de capacidad metabólica entre especies."}
+];
+
+let currentQuiz = [];
+let currentIndex = 0;
+let answered = false;
+let userAnswers = [];
+let scoreBySkill = {};
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function buildQuiz(){
+  let selected = [];
+  SKILL_ORDER.forEach(skillKey=>{
+    const pool = QUESTION_BANK.filter(q=>q.skill===skillKey);
+    const picked = shuffle(pool).slice(0,4);
+    selected = selected.concat(picked);
+  });
+  selected = shuffle(selected);
+  return selected.map(orig=>{
+    const idxArr = [0,1,2,3,4];
+    const shuffledIdx = shuffle(idxArr);
+    const newOptions = shuffledIdx.map(i=>orig.options[i]);
+    const newCorrect = shuffledIdx.indexOf(orig.correct);
+    return { skill: orig.skill, question: orig.q, options: newOptions, correct: newCorrect, exp: orig.exp };
+  });
+}
+
+function startQuiz(){
+  currentQuiz = buildQuiz();
+  currentIndex = 0;
+  answered = false;
+  userAnswers = [];
+  scoreBySkill = {};
+  SKILL_ORDER.forEach(s=>scoreBySkill[s]={correct:0,total:0});
+  document.getElementById('start-screen').classList.add('hidden');
+  document.getElementById('dashboard-screen').classList.add('hidden');
+  document.getElementById('review-screen').classList.add('hidden');
+  document.getElementById('quiz-screen').classList.remove('hidden');
+  renderQuestion();
+}
+
+function renderQuestion(){
+  answered = false;
+  const q = currentQuiz[currentIndex];
+  const total = currentQuiz.length;
+  document.getElementById('progress-fill').style.width = ((currentIndex)/total*100)+'%';
+  document.getElementById('progress-label').textContent = (currentIndex+1)+' / '+total;
+  document.getElementById('skill-tag').textContent = SKILL_NAMES[q.skill];
+  document.getElementById('qnum').textContent = 'Pregunta '+(currentIndex+1);
+  document.getElementById('question-text').textContent = q.question;
+
+  const optsDiv = document.getElementById('options');
+  optsDiv.innerHTML = '';
+  q.options.forEach((opt, i)=>{
+    const btn = document.createElement('button');
+    btn.className = 'option';
+    btn.innerHTML = '<span class="letter">'+LETTERS[i]+')</span><span>'+opt+'</span>';
+    btn.onclick = ()=>selectOption(i);
+    optsDiv.appendChild(btn);
+  });
+
+  document.getElementById('feedback').classList.add('hidden');
+  document.getElementById('next-btn').classList.add('hidden');
+}
+
+function selectOption(i){
+  if(answered) return;
+  answered = true;
+  const q = currentQuiz[currentIndex];
+  const correct = q.correct;
+  const options = document.querySelectorAll('#options .option');
+  options.forEach((opt, idx)=>{
+    opt.classList.add('locked');
+    if(idx===correct) opt.classList.add('correct');
+    else if(idx===i) opt.classList.add('incorrect');
+    else opt.classList.add('dim');
+  });
+
+  const isCorrect = (i===correct);
+  scoreBySkill[q.skill].total++;
+  if(isCorrect) scoreBySkill[q.skill].correct++;
+
+  userAnswers.push({ skill:q.skill, question:q.question, options:q.options, correctIdx:correct, chosenIdx:i, exp:q.exp, isCorrect });
+
+  const fb = document.getElementById('feedback');
+  fb.classList.remove('hidden');
+  fb.classList.toggle('wrong', !isCorrect);
+  fb.innerHTML = '<span class="pista-label">'+(isCorrect ? '✓ Correcto — Pista' : '✕ Incorrecto — Pista')+'</span>'+
+    '<strong>Respuesta correcta: '+LETTERS[correct]+') '+q.options[correct]+'</strong><br><br>'+q.exp;
+
+  document.getElementById('next-btn').classList.remove('hidden');
+}
+
+function nextQuestion(){
+  currentIndex++;
+  if(currentIndex >= currentQuiz.length){
+    showDashboard();
+  } else {
+    renderQuestion();
+  }
+}
+
+function showDashboard(){
+  document.getElementById('quiz-screen').classList.add('hidden');
+  document.getElementById('dashboard-screen').classList.remove('hidden');
+
+  const totalCorrect = userAnswers.filter(a=>a.isCorrect).length;
+  const totalQ = userAnswers.length;
+  document.getElementById('score-total').innerHTML = totalCorrect+'<span>/'+totalQ+'</span>';
+  const pct = Math.round((totalCorrect/totalQ)*100);
+  document.getElementById('score-caption').textContent = pct+'% de logro general';
+
+  const barsDiv = document.getElementById('skill-bars');
+  barsDiv.innerHTML = '';
+  const weakSkills = [];
+  const strongSkills = [];
+
+  SKILL_ORDER.forEach(skillKey=>{
+    const s = scoreBySkill[skillKey];
+    const skillPct = s.total>0 ? Math.round((s.correct/s.total)*100) : 0;
+    let color = 'var(--accent-coral)';
+    if(skillPct>=75) color='var(--accent-sage)';
+    else if(skillPct>=50) color='var(--accent-amber)';
+
+    const row = document.createElement('div');
+    row.className='skill-bar-row';
+    row.innerHTML = '<div class="skill-bar-head"><span class="name">'+SKILL_NAMES[skillKey]+'</span><span class="frac">'+s.correct+'/'+s.total+'</span></div>'+
+      '<div class="skill-bar-track"><div class="skill-bar-fill" style="width:'+skillPct+'%;background:'+color+';"></div></div>';
+    barsDiv.appendChild(row);
+
+    if(skillPct<75) weakSkills.push({name:SKILL_NAMES[skillKey], pct:skillPct});
+    else strongSkills.push(SKILL_NAMES[skillKey]);
+  });
+
+  const improveBox = document.getElementById('improve-box');
+  const improveList = document.getElementById('improve-list');
+  improveList.innerHTML='';
+  if(weakSkills.length>0){
+    improveBox.classList.remove('hidden');
+    weakSkills.sort((a,b)=>a.pct-b.pct).forEach(w=>{
+      const li = document.createElement('li');
+      li.innerHTML = '<strong>'+w.name+'</strong> ('+w.pct+'%) — refuerza con más ejercicios de este tipo de habilidad, revisando las pistas de las preguntas falladas.';
+      improveList.appendChild(li);
+    });
+  } else {
+    improveBox.classList.add('hidden');
+  }
+
+  const strongBox = document.getElementById('strong-box');
+  const strongText = document.getElementById('strong-text');
+  if(strongSkills.length>0){
+    strongBox.classList.remove('hidden');
+    strongText.textContent = strongSkills.join(', ') + '. Buen dominio, mantén la práctica con nuevos intentos.';
+  } else {
+    strongBox.classList.add('hidden');
+  }
+}
+
+function restartQuiz(){ startQuiz(); }
+
+function reviewAnswers(){
+  document.getElementById('dashboard-screen').classList.add('hidden');
+  const rev = document.getElementById('review-screen');
+  rev.classList.remove('hidden');
+  let html = '<p class="eyebrow">Revisión de respuestas</p>';
+  userAnswers.forEach((a, i)=>{
+    html += '<div style="margin-bottom:22px;padding-bottom:18px;border-bottom:1px solid var(--line);">'+
+      '<span class="skill-tag">'+SKILL_NAMES[a.skill]+'</span>'+
+      '<p class="question-text" style="font-size:16px;">'+(i+1)+'. '+a.question+'</p>'+
+      '<p style="font-size:14px;color:'+(a.isCorrect?'var(--accent-sage)':'var(--accent-coral)')+';margin:0 0 6px;">'+
+        (a.isCorrect ? '✓ Respondiste correctamente' : '✕ Tu respuesta: '+LETTERS[a.chosenIdx]+') '+a.options[a.chosenIdx])+
+      '</p>'+
+      '<p style="font-size:14px;color:var(--text-muted);margin:0 0 8px;">Correcta: '+LETTERS[a.correctIdx]+') '+a.options[a.correctIdx]+'</p>'+
+      '<div class="feedback" style="margin-top:6px;"><span class="pista-label">Pista</span>'+a.exp+'</div>'+
+    '</div>';
+  });
+  html += '<div class="actions"><button class="btn" onclick="restartQuiz(); document.getElementById(\'review-screen\').classList.add(\'hidden\');">Repetir con nuevas preguntas</button></div>';
+  rev.innerHTML = html;
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PAES Biología · Clase 2 · Proteínas y Ácidos Nucleicos (Nivel Básico)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Source+Sans+3:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-deep:#0f2027;
+    --bg-panel:#15303a;
+    --bg-panel-2:#1b3a45;
+    --accent-amber:#e8a33d;
+    --accent-sage:#6fa88a;
+    --accent-coral:#e4572e;
+    --text-light:#f3ede1;
+    --text-muted:#a9c0c2;
+    --line:#2a4750;
+    --radius:14px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:radial-gradient(circle at 15% -10%, #1c4552 0%, var(--bg-deep) 55%) fixed;
+    color:var(--text-light);
+    font-family:'Source Sans 3', system-ui, sans-serif;
+    min-height:100vh;
+    padding:32px 16px 64px;
+  }
+  .wrap{max-width:820px;margin:0 auto;}
+  .eyebrow{font-family:'JetBrains Mono', monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent-amber);margin:0 0 8px;}
+  h1{font-family:'Fraunces', serif;font-weight:600;font-size:clamp(26px,4vw,38px);line-height:1.1;margin:0 0 6px;color:var(--text-light);}
+  .sub{color:var(--text-muted);font-size:15px;margin:0 0 28px;max-width:60ch;}
+  .card{background:linear-gradient(180deg, var(--bg-panel) 0%, var(--bg-panel-2) 100%);border:1px solid var(--line);border-radius:var(--radius);padding:28px;box-shadow:0 20px 40px -20px rgba(0,0,0,.5);}
+  #start-screen ul{color:var(--text-muted);font-size:14.5px;line-height:1.7;padding-left:20px;margin:18px 0 26px;}
+  #start-screen li{margin-bottom:4px;}
+  .btn{font-family:'Source Sans 3', sans-serif;font-weight:700;font-size:15px;border:none;border-radius:999px;padding:14px 30px;cursor:pointer;background:var(--accent-amber);color:#20140a;transition:transform .15s ease, box-shadow .15s ease;box-shadow:0 8px 20px -8px rgba(0,0,0,.35);}
+  .btn:hover{transform:translateY(-1px);}
+  .btn:active{transform:translateY(0);}
+  .btn.ghost{background:transparent;color:var(--text-muted);border:1.5px solid var(--line);box-shadow:none;}
+  .progress-row{display:flex;align-items:center;gap:14px;margin-bottom:18px;}
+  .progress-track{flex:1;height:6px;border-radius:99px;background:var(--line);overflow:hidden;}
+  .progress-fill{height:100%;background:linear-gradient(90deg,var(--accent-sage),var(--accent-amber));border-radius:99px;transition:width .3s ease;}
+  .progress-label{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--text-muted);white-space:nowrap;}
+  .skill-tag{display:inline-block;font-family:'JetBrains Mono', monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--bg-deep);background:var(--accent-sage);padding:5px 11px;border-radius:999px;margin-bottom:14px;}
+  .qnum{color:var(--text-muted);font-size:13px;font-family:'JetBrains Mono',monospace;margin-bottom:6px;}
+  .question-text{font-family:'Fraunces', serif;font-weight:500;font-size:19px;line-height:1.45;margin:0 0 22px;}
+  .options{display:flex;flex-direction:column;gap:10px;}
+  .option{display:flex;align-items:flex-start;gap:12px;text-align:left;background:rgba(255,255,255,.03);border:1.5px solid var(--line);border-radius:10px;padding:13px 15px;cursor:pointer;color:var(--text-light);font-size:14.5px;line-height:1.4;transition:border-color .15s, background .15s;}
+  .option:hover:not(.locked){border-color:var(--accent-amber);}
+  .option .letter{font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--accent-amber);flex-shrink:0;}
+  .option.correct{border-color:var(--accent-sage);background:rgba(111,168,138,.14);}
+  .option.incorrect{border-color:var(--accent-coral);background:rgba(228,87,46,.14);}
+  .option.locked{cursor:default;}
+  .option.dim{opacity:.45;}
+  .feedback{margin-top:18px;padding:16px 18px;border-radius:10px;background:rgba(255,255,255,.04);border-left:4px solid var(--accent-sage);font-size:14px;line-height:1.6;color:var(--text-muted);}
+  .feedback.wrong{border-left-color:var(--accent-coral);}
+  .feedback strong{color:var(--text-light);}
+  .feedback .pista-label{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent-amber);display:block;margin-bottom:6px;}
+  .nav-row{display:flex;justify-content:flex-end;margin-top:22px;}
+  .score-hero{text-align:center;padding:10px 0 26px;}
+  .score-big{font-family:'Fraunces',serif;font-weight:700;font-size:56px;color:var(--accent-amber);line-height:1;}
+  .score-big span{font-size:24px;color:var(--text-muted);font-weight:500;}
+  .score-caption{color:var(--text-muted);font-size:14px;margin-top:6px;}
+  .skill-bars{display:flex;flex-direction:column;gap:16px;margin:22px 0 8px;}
+  .skill-bar-head{display:flex;justify-content:space-between;font-size:13.5px;margin-bottom:6px;}
+  .skill-bar-head .name{font-weight:600;}
+  .skill-bar-head .frac{font-family:'JetBrains Mono',monospace;color:var(--text-muted);}
+  .skill-bar-track{height:10px;border-radius:99px;background:var(--line);overflow:hidden;}
+  .skill-bar-fill{height:100%;border-radius:99px;}
+  .improve-box{margin-top:26px;background:rgba(228,87,46,.08);border:1px solid rgba(228,87,46,.35);border-radius:10px;padding:18px 20px;}
+  .improve-box h3{font-family:'Fraunces',serif;font-size:16px;margin:0 0 10px;color:var(--accent-coral);}
+  .improve-box ul{margin:0;padding-left:20px;color:var(--text-light);font-size:14px;line-height:1.75;}
+  .strong-box{margin-top:14px;background:rgba(111,168,138,.08);border:1px solid rgba(111,168,138,.35);border-radius:10px;padding:18px 20px;}
+  .strong-box h3{font-family:'Fraunces',serif;font-size:16px;margin:0 0 10px;color:var(--accent-sage);}
+  .strong-box p{margin:0;color:var(--text-light);font-size:14px;line-height:1.6;}
+  .actions{display:flex;gap:12px;margin-top:28px;flex-wrap:wrap;}
+  .hidden{display:none !important;}
+  footer{text-align:center;color:var(--text-muted);font-size:12px;margin-top:26px;opacity:.6;}
+</style>
+</head>
+<body> <div style="float: left; margin-right: 25px; margin-bottom: 25px;"><img src="Logo_AMC.png" alt="Logo" style="max-width: 150px;"></div>
+<div class="wrap">
+  <p class="eyebrow">PAES · Ciencias — Módulo Biología Común · Nivel Básico</p>
+  <h1>Proteínas y Ácidos Nucleicos</h1>
+  <p class="sub">Eje 1: Organización, estructura y actividad celular — Sub-eje: Biomoléculas organizadas y teoría celular — Clase 2: Proteínas y Ácidos Nucleicos</p>
+
+  <div class="card" id="start-screen">
+    <p class="eyebrow" style="margin-bottom:14px;">Antes de comenzar</p>
+    <p style="color:var(--text-muted);font-size:14.5px;line-height:1.6;">Este quiz evalúa nivel <strong style='color:var(--text-light);'>básico</strong>, con 20 preguntas (4 por cada habilidad PAES), extraídas al azar de un banco amplio. Cada intento genera una versión distinta.</p>
+    <ul>
+      <li>Observar y plantear preguntas</li>
+      <li>Planificar y conducir una investigación</li>
+      <li>Procesar y analizar la evidencia</li>
+      <li>Evaluar</li>
+      <li>Comunicar</li>
+    </ul>
+    <button class="btn" onclick="startQuiz()">Comenzar quiz</button>
+  </div>
+
+  <div class="card hidden" id="quiz-screen">
+    <div class="progress-row">
+      <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+      <div class="progress-label" id="progress-label">1 / 20</div>
+    </div>
+    <span class="skill-tag" id="skill-tag"></span>
+    <p class="qnum" id="qnum"></p>
+    <p class="question-text" id="question-text"></p>
+    <div class="options" id="options"></div>
+    <div class="feedback hidden" id="feedback"></div>
+    <div class="nav-row">
+      <button class="btn hidden" id="next-btn" onclick="nextQuestion()">Siguiente →</button>
+    </div>
+  </div>
+
+  <div class="card hidden" id="dashboard-screen">
+    <p class="eyebrow">Resultados</p>
+    <div class="score-hero">
+      <div class="score-big" id="score-total">0<span>/20</span></div>
+      <p class="score-caption" id="score-caption">Puntaje global</p>
+    </div>
+    <div class="skill-bars" id="skill-bars"></div>
+    <div class="improve-box hidden" id="improve-box">
+      <h3>Puntos a mejorar</h3>
+      <ul id="improve-list"></ul>
+    </div>
+    <div class="strong-box hidden" id="strong-box">
+      <h3>Habilidades consolidadas</h3>
+      <p id="strong-text"></p>
+    </div>
+    <div class="actions">
+      <button class="btn" onclick="restartQuiz()">Repetir con nuevas preguntas</button>
+      <button class="btn ghost" onclick="reviewAnswers()">Revisar mis respuestas</button>
+    </div>
+  </div>
+
+  <div class="card hidden" id="review-screen"></div>
+
+  <footer>Banco de 40 preguntas · nivel básico · Clase 2 de 30 · basado en el temario DEMRE PAES Ciencias — Biología Común</footer>
+</div>
+
+<script>
+const SKILL_NAMES = {"OBS": "Observar y plantear preguntas", "PLAN": "Planificar y conducir una investigación", "PROC": "Procesar y analizar la evidencia", "EVAL": "Evaluar", "COM": "Comunicar"};
+const SKILL_ORDER = ["OBS", "PLAN", "PROC", "EVAL", "COM"];
+const LETTERS = ["A","B","C","D","E"];
+const PICK_PER_SKILL = 4;
+
+const QUESTION_BANK = [{"skill": "OBS", "q": "Un estudiante calienta clara de huevo y observa que se vuelve blanca y sólida de forma irreversible. ¿Qué pregunta de investigación es más pertinente?", "options": ["¿El calor convierte las proteínas en carbohidratos?", "¿El calor provoca la desnaturalización (pérdida de estructura) de las proteínas de la clara de huevo?", "¿La clara de huevo pierde agua y por eso cambia de color?", "¿El huevo contiene almidón que reacciona con el calor?", "¿El cambio de color se debe a la cáscara del huevo?"], "correct": 1, "exp": "El calentamiento rompe los enlaces débiles que mantienen la forma tridimensional de las proteínas, un proceso llamado desnaturalización, que suele ser irreversible y cambia su apariencia y solubilidad."}, {"skill": "OBS", "q": "Se observa que al agregar vinagre (ácido) a la leche se forman grumos (cuajada). ¿Cuál es la pregunta más pertinente?", "options": ["¿El vinagre convierte la leche en un lípido?", "¿La leche pierde todos sus nutrientes al acidificarse?", "¿El cambio de pH provoca la desnaturalización de las proteínas de la leche, alterando su solubilidad?", "¿El vinagre destruye el ADN presente en la leche?", "¿La formación de grumos se debe a la presencia de carbohidratos?"], "correct": 2, "exp": "Un cambio brusco de pH altera las cargas eléctricas de la proteína (caseína), rompiendo su estructura y reduciendo su solubilidad, lo que provoca la precipitación en forma de grumos."}, {"skill": "OBS", "q": "Al extraer ADN de fresa con detergente y alcohol frío, se observa una sustancia blanca fibrosa que precipita en el alcohol. ¿Qué pregunta de investigación surge?", "options": ["¿La sustancia fibrosa obtenida corresponde al ADN, insoluble en alcohol frío pero soluble en agua?", "¿La sustancia es una proteína de reserva de la fresa?", "¿El alcohol crea ADN nuevo dentro del tubo?", "¿La fibra observada es celulosa de la pared celular?", "¿El detergente es el que forma la sustancia blanca?"], "correct": 0, "exp": "El ADN es soluble en agua pero insoluble en alcohol frío, por lo que precipita como hebras blancas visibles al añadir alcohol, lo que fundamenta la pregunta sobre su identidad."}, {"skill": "OBS", "q": "Dos proteínas con la misma secuencia de aminoácidos pero distinta forma tridimensional presentan funciones biológicas distintas. ¿Pregunta pertinente?", "options": ["¿La secuencia de aminoácidos no influye en la función de la proteína?", "¿Todas las proteínas con la misma secuencia tienen exactamente la misma función?", "¿La forma de una proteína depende del tipo de carbohidrato que contiene?", "¿La estructura tridimensional de una proteína, y no solo su secuencia, determina su función biológica?", "¿La función de una proteína depende solo de su color?"], "correct": 3, "exp": "La función de una proteína depende críticamente de su plegamiento tridimensional, que posiciona los aminoácidos clave en el espacio; alterar esa forma puede cambiar la función aunque la secuencia sea la misma."}, {"skill": "OBS", "q": "En cualquier organismo, la proporción de adenina es igual a la de timina, y la de citosina igual a la de guanina (reglas de Chargaff). ¿Pregunta más pertinente?", "options": ["¿La cantidad de bases nitrogenadas es siempre igual en cualquier molécula orgánica?", "¿La adenina y la timina son la misma base nitrogenada?", "¿Esta proporción evidencia un apareamiento específico entre bases complementarias (A-T y C-G) en el ADN?", "¿Esta proporción indica que el ADN es una proteína?", "¿La cantidad de bases depende del tamaño del organismo?"], "correct": 2, "exp": "La igualdad A=T y C=G refleja que en la doble hélice cada base se aparea específicamente con su complementaria mediante puentes de hidrógeno, lo que explica esa proporción constante."}, {"skill": "OBS", "q": "El ARN es monocatenario y contiene uracilo en lugar de timina. ¿Pregunta de investigación pertinente?", "options": ["¿El ARN es una versión defectuosa del ADN?", "¿Estas diferencias estructurales entre ADN y ARN se relacionan con sus distintas funciones dentro de la célula?", "¿El uracilo y la timina son exactamente la misma molécula?", "¿El ARN nunca participa en la síntesis de proteínas?", "¿La cantidad de hebras no tiene relación con la función de la molécula?"], "correct": 1, "exp": "ADN y ARN difieren estructuralmente porque cumplen roles distintos: el ADN almacena información de forma estable (doble hebra), mientras el ARN es una copia móvil y transitoria (una hebra) usada en la síntesis proteica."}, {"skill": "OBS", "q": "Enzimas expuestas a 80°C dejan de catalizar reacciones incluso después de enfriarse. ¿Pregunta más pertinente?", "options": ["¿Las enzimas recuperan siempre su función al enfriarse, sin excepción?", "¿La temperatura no tiene ningún efecto sobre las proteínas?", "¿Las enzimas se transforman en ácidos nucleicos con el calor?", "¿La inactivación se debe a que la enzima pierde su color?", "¿La exposición a alta temperatura desnaturaliza de forma irreversible la enzima, inactivando su función catalítica?"], "correct": 4, "exp": "A altas temperaturas, los enlaces que sostienen la estructura tridimensional de la enzima se rompen de forma permanente, por lo que la actividad catalítica no se recupera aunque la temperatura baje."}, {"skill": "OBS", "q": "Distintos aminoácidos poseen cadenas laterales (grupos R) con propiedades muy diferentes: algunas hidrofóbicas, otras cargadas. ¿Pregunta de investigación pertinente?", "options": ["¿Todos los aminoácidos tienen exactamente las mismas propiedades químicas?", "¿El grupo R no participa en la estructura de la proteína?", "¿La diversidad química de los grupos R determina el plegamiento y la función de las proteínas que forman?", "¿La función de la proteína depende solo del número de aminoácidos, sin importar su tipo?", "¿Los aminoácidos hidrofóbicos siempre se ubican en la superficie de la proteína?"], "correct": 2, "exp": "Las propiedades químicas de los grupos R (polaridad, carga, tamaño) determinan cómo se pliega la cadena e influyen directamente en la función biológica de la proteína resultante."}, {"skill": "PLAN", "q": "Para comprobar que el calor desnaturaliza las proteínas de la clara de huevo, ¿cuál es el procedimiento más adecuado?", "options": ["Someter muestras idénticas de clara de huevo a distintas temperaturas (25°C, 60°C, 90°C) durante el mismo tiempo, y registrar el cambio de apariencia en cada caso", "Calentar solo una muestra a temperatura muy alta y asumir el resultado para las demás temperaturas", "Medir el color de la clara sin aplicar ningún cambio de temperatura", "Usar distinta cantidad de clara de huevo en cada prueba de temperatura", "Agregar lugol a la clara de huevo en lugar de aplicar calor"], "correct": 0, "exp": "Para relacionar temperatura con desnaturalización se debe usar la misma muestra bajo distintas temperaturas controladas, manteniendo constantes las demás variables, y comparar el resultado observado."}, {"skill": "PLAN", "q": "Un estudiante desea extraer ADN de fresa de forma casera. ¿Cuál es la secuencia de pasos correcta?", "options": ["Agregar primero alcohol frío y luego triturar el tejido", "Triturar el tejido para romper las paredes celulares, agregar detergente para disolver membranas, y luego añadir alcohol frío para precipitar el ADN", "Calentar el tejido a 100°C antes de agregar cualquier reactivo", "Omitir el detergente, ya que no cumple ninguna función", "Agregar lugol para visualizar directamente el ADN"], "correct": 1, "exp": "El detergente rompe las membranas celulares y nuclear liberando el ADN, y el alcohol frío, al ser un medio en que el ADN es insoluble, lo hace precipitar como hebras visibles."}, {"skill": "PLAN", "q": "Para investigar el efecto del pH sobre la solubilidad de la caseína de la leche, ¿cuál es el diseño experimental correcto?", "options": ["Usar una sola muestra de leche y cambiar el pH varias veces sin registrar cada cambio por separado", "Variar el volumen de leche en cada muestra de pH", "Preparar varias muestras idénticas de leche ajustadas a distintos valores de pH, manteniendo constantes volumen y temperatura, y observar en cuál se forma precipitado", "Medir el pH sin agregar ningún ácido o base a la leche", "No es necesario mantener constante la temperatura entre las muestras"], "correct": 2, "exp": "Para aislar el efecto del pH se deben estandarizar todas las demás variables (volumen, temperatura) y variar solo el pH entre muestras independientes, comparando la formación de precipitado."}, {"skill": "PLAN", "q": "Para comparar la actividad de la catalasa a distintas temperaturas, ¿qué variable dependiente se debe medir?", "options": ["Medir el color inicial del peróxido de hidrógeno antes de agregar la enzima", "Medir la temperatura ambiente del laboratorio en lugar de la de la muestra", "Medir la cantidad de burbujas (oxígeno liberado) al reaccionar la enzima con peróxido de hidrógeno, en un tiempo estandarizado, para cada temperatura", "Usar distinta cantidad de peróxido de hidrógeno en cada temperatura", "No es necesario estandarizar el tiempo de reacción entre temperaturas"], "correct": 2, "exp": "La cantidad de oxígeno liberado en un tiempo fijo es un indicador cuantificable de la velocidad de la reacción enzimática, permitiendo comparar la actividad entre distintas temperaturas."}, {"skill": "PLAN", "q": "Un estudiante quiere determinar si una muestra desconocida contiene proteínas. ¿Cuál es el procedimiento adecuado (prueba de Biuret)?", "options": ["Agregar lugol y observar si cambia a color azul", "Calentar la muestra con Benedict y observar el color", "Agregar el reactivo de Biuret y observar si se produce un cambio de color a violeta", "Medir el pH de la muestra sin agregar ningún reactivo", "Frotar la muestra en papel y observar si deja una mancha translúcida"], "correct": 2, "exp": "El reactivo de Biuret vira a color violeta en presencia de enlaces peptídicos, por lo que es la prueba específica para detectar proteínas."}, {"skill": "PLAN", "q": "Para investigar si la secuencia de bases del ADN determina la secuencia de aminoácidos de una proteína, ¿cuál sería un diseño adecuado?", "options": ["Comparar proteínas de organismos completamente distintos sin relacionar sus secuencias de ADN", "Inducir una mutación puntual conocida en un gen y comparar la secuencia de aminoácidos resultante con la proteína original, bajo las mismas condiciones", "Medir solo el tamaño de la proteína, sin secuenciar los aminoácidos", "No es necesario comparar con una proteína de referencia sin mutación", "Cambiar la temperatura de cultivo en lugar de modificar la secuencia de ADN"], "correct": 1, "exp": "Comparar una proteína mutada con su versión original bajo las mismas condiciones permite atribuir cualquier cambio en la secuencia de aminoácidos específicamente a la mutación introducida en el ADN."}, {"skill": "PLAN", "q": "Se desea comparar la estabilidad térmica de enzimas de un organismo de ambiente templado y otro de fuentes termales. ¿Diseño más riguroso?", "options": ["Medir la actividad de cada enzima a una única temperatura distinta, elegida arbitrariamente", "Usar distinta concentración de sustrato para cada enzima", "Medir la actividad catalítica de ambas enzimas a una serie común de temperaturas crecientes, manteniendo iguales concentración de enzima y sustrato", "Comparar solo el aspecto físico de ambas enzimas", "No es necesario usar la misma serie de temperaturas para ambas"], "correct": 2, "exp": "Solo comparando ambas enzimas bajo exactamente las mismas condiciones (misma serie de temperaturas, misma concentración) se puede determinar de forma válida cuál pierde su actividad primero."}, {"skill": "PLAN", "q": "Para verificar que el ARN mensajero se sintetiza a partir de una hebra molde de ADN, ¿qué procedimiento sería más adecuado?", "options": ["Comparar el ARN de una célula con el ADN de un organismo de otra especie", "Medir solo la cantidad total de ARN, sin analizar su secuencia", "Aislar el ARN producido, determinar su secuencia y compararla con la secuencia complementaria de una región específica del ADN de esa misma célula", "Asumir la relación sin comparar ninguna secuencia de bases", "Extraer únicamente proteínas, sin aislar ácidos nucleicos"], "correct": 2, "exp": "Comparar directamente la secuencia del ARN con el ADN molde de la misma célula permite verificar la complementariedad de bases característica del proceso de transcripción."}, {"skill": "PROC", "q": "Se midió la actividad de una enzima (µmol/min) a distintas temperaturas: 20°C=15; 30°C=28; 37°C=40; 45°C=22; 55°C=5. ¿Qué conclusión es más adecuada?", "options": ["La actividad aumenta de forma constante con la temperatura en todo el rango", "La enzima presenta una temperatura óptima cercana a 37°C, disminuyendo su actividad tanto a menor como a mayor temperatura", "La enzima funciona mejor a temperaturas superiores a 45°C", "La temperatura no influye en la actividad de esta enzima", "La actividad es igual en todas las temperaturas evaluadas"], "correct": 1, "exp": "Los datos muestran un patrón de campana: la actividad crece hasta 37°C y luego decae, lo que evidencia una temperatura óptima característica de la cinética enzimática."}, {"skill": "PROC", "q": "En una prueba de Biuret: leche=violeta intenso; clara de huevo=violeta intenso; aceite=sin cambio; agua con sal=sin cambio. ¿Qué se puede concluir?", "options": ["El aceite contiene más proteínas que la leche", "Todas las muestras contienen la misma cantidad de proteínas", "La leche y la clara de huevo contienen proteínas, mientras que el aceite y el agua con sal no presentan esta biomolécula", "La prueba de Biuret detecta específicamente lípidos", "El agua con sal presenta mayor contenido proteico que la clara de huevo"], "correct": 2, "exp": "El viraje a violeta es indicador específico de proteínas; su ausencia en aceite y agua salada indica ausencia de esta biomolécula en esas muestras."}, {"skill": "PROC", "q": "Un gráfico de actividad enzimática vs. pH muestra: pH 2=10%; pH 4=35%; pH 6=90%; pH 8=45%; pH 10=8%. ¿Qué interpretación es correcta?", "options": ["La actividad aumenta de forma lineal con el pH en todo el rango", "La enzima funciona mejor en condiciones fuertemente básicas (pH 10)", "La enzima presenta un pH óptimo cercano a 6, disminuyendo hacia condiciones más ácidas o alcalinas", "El pH no tiene ningún efecto sobre la actividad de esta enzima", "La actividad es máxima en los extremos del rango de pH evaluado"], "correct": 2, "exp": "El patrón de campana centrado en pH 6 (máxima actividad) y decreciente hacia ambos extremos es característico de un pH óptimo enzimático."}, {"skill": "PROC", "q": "Se comparó la proporción de bases en el ADN de tres organismos: X (A=30%,T=30%,C=20%,G=20%); Y (A=20%,T=20%,C=30%,G=30%); Z (A=25%,T=24%,C=26%,G=25%). ¿Conclusión más consistente con la regla de Chargaff?", "options": ["Los tres organismos son consistentes con A≈T y C≈G dentro de cada uno, aunque difieren en su composición global entre especies", "Solo el organismo Z cumple con la complementariedad de bases", "El organismo X no posee ADN de doble hebra según estos datos", "La proporción de bases debe ser idéntica entre todos los organismos", "Los datos indican un error experimental en los tres organismos"], "correct": 0, "exp": "En los tres casos A es aproximadamente igual a T, y C aproximadamente igual a G dentro del mismo organismo, cumpliendo la regla de Chargaff, aunque el porcentaje global de cada base varía entre especies."}, {"skill": "PROC", "q": "En una electroforesis, una proteína sometida previamente a mayor temperatura (25°C→95°C) mostró bandas cada vez más difusas y mayor formación de agregados. ¿Interpretación más adecuada?", "options": ["La temperatura no tiene relación con el patrón de bandas observado", "Las proteínas se vuelven más estables y ordenadas a mayor temperatura", "El aumento de temperatura provoca desnaturalización progresiva, alterando la conformación y favoreciendo agregados", "Los agregados corresponden a la formación de nuevas proteínas funcionales", "El patrón de bandas depende únicamente del tamaño del gel"], "correct": 2, "exp": "A mayor temperatura, se desestabiliza progresivamente la estructura de la proteína, generando agregados desordenados que producen un patrón de bandas menos definido en la electroforesis."}, {"skill": "PROC", "q": "Se midió el tiempo (s) para que una proteína se desnaturalice completamente a distintas concentraciones de ácido: 0,1M=180s; 0,5M=60s; 1,0M=25s; 2,0M=10s. ¿Qué tendencia revelan?", "options": ["A mayor concentración del ácido, mayor es el tiempo de desnaturalización", "La concentración del ácido no influye en el tiempo de desnaturalización", "A mayor concentración del ácido, menor es el tiempo requerido para desnaturalizar la proteína", "El tiempo de desnaturalización es independiente de la fuerza del ácido", "La proteína se desnaturaliza solo a concentraciones menores a 0,1 M"], "correct": 2, "exp": "Los datos muestran una relación inversa clara: a mayor concentración de ácido, la desnaturalización ocurre más rápido, evidenciando el efecto del pH extremo sobre la estructura proteica."}, {"skill": "PROC", "q": "Un ARNm mostró: A=28%, U=24%, C=22%, G=26%. Considerando que el ARN es monocatenario, ¿qué se puede afirmar correctamente?", "options": ["Estos datos indican un error experimental, ya que A debería ser exactamente igual a U", "La molécula debe ser ADN y no ARN, dado que las proporciones no son complementarias", "A diferencia del ADN de doble hebra, en el ARN monocatenario no es necesario que A=U ni C=G, por lo que esta composición es consistente con un ARN funcional", "El ARN siempre debe cumplir la regla de Chargaff igual que el ADN", "La presencia de uracilo indica que en realidad se trata de ADN"], "correct": 2, "exp": "La regla de Chargaff (A=T, C=G) aplica a moléculas de doble hebra donde existe apareamiento entre ambas cadenas; el ARN, al ser monocatenario, no está sujeto a esa restricción."}, {"skill": "PROC", "q": "Se midió la actividad catalítica remanente de una enzima tras exponerla 10 minutos a distintas temperaturas y devolverla a 37°C: 30°C=98%; 50°C=85%; 70°C=20%; 90°C=2%. ¿Qué conclusión es más adecuada?", "options": ["La enzima recupera siempre el 100% de su actividad, sin importar la temperatura previa", "La actividad enzimática no se ve afectada por exposiciones breves a alta temperatura", "A mayor temperatura previa, mayor es la actividad catalítica remanente", "La pérdida de actividad a 70-90°C es en gran parte irreversible, sugiriendo desnaturalización permanente a esas temperaturas", "Estos datos no permiten evaluar el efecto de la temperatura sobre la enzima"], "correct": 3, "exp": "La actividad no se recupera al volver a 37°C tras exponer la enzima a temperaturas altas, lo que indica que el daño estructural (desnaturalización) es permanente en ese rango."}, {"skill": "EVAL", "q": "Un estudiante concluye que 'todas las proteínas se desnaturalizan a la misma temperatura' basándose en un único experimento con clara de huevo. ¿Qué crítica es más pertinente?", "options": ["La conclusión es válida porque todas las proteínas comparten la misma estructura química básica", "No es necesario comparar distintas proteínas para generalizar sobre su comportamiento térmico", "La generalización no es válida porque distintas proteínas tienen distinta estabilidad térmica según su estructura", "La clara de huevo es representativa de todas las proteínas existentes", "La temperatura de desnaturalización no depende de la estructura de la proteína"], "correct": 2, "exp": "Cada proteína tiene una estabilidad térmica propia, determinada por su estructura y tipo de enlaces; generalizar a partir de un único caso no está respaldado por evidencia suficiente."}, {"skill": "EVAL", "q": "Una investigación afirma que 'el ARN es simplemente una copia defectuosa del ADN' basándose solo en que ambos contienen bases nitrogenadas. ¿Crítica más sólida?", "options": ["La afirmación es correcta porque el ARN siempre contiene errores en su secuencia", "La afirmación ignora que ADN y ARN tienen estructuras y funciones distintas y complementarias, no una versión defectuosa una de la otra", "El ADN y el ARN son exactamente la misma molécula", "El ARN no cumple ninguna función biológica relevante", "Ambas moléculas tienen siempre el mismo número de hebras"], "correct": 1, "exp": "ADN y ARN cumplen roles biológicos distintos y complementarios (almacenamiento estable vs. mensajero móvil); calificar al ARN de 'defectuoso' desconoce esa diferencia funcional."}, {"skill": "EVAL", "q": "Un estudio concluyó que una enzima 'no funciona en absoluto' a pH 4, basándose en una sola medición sin repeticiones ni control. ¿Qué mejora aumentaría la confiabilidad?", "options": ["No es necesario repetir mediciones si el resultado parece consistente", "Un control no aporta información relevante en este tipo de experimento", "Repetir la medición varias veces e incluir un control (actividad a su pH óptimo conocido) para verificar que el procedimiento funciona correctamente", "Basta con una sola medición si el investigador tiene experiencia", "La ausencia de actividad en una sola medición siempre es concluyente"], "correct": 2, "exp": "Repeticiones y un control positivo permiten distinguir un resultado real de un error experimental o de reactivos, aumentando la confiabilidad de la conclusión."}, {"skill": "EVAL", "q": "Una publicación afirma que 'la prueba de Biuret mide la cantidad exacta de aminoácidos en una muestra'. ¿Qué error se identifica?", "options": ["La afirmación es completamente correcta", "La prueba de Biuret detecta enlaces peptídicos (proteínas), no aminoácidos libres individuales; confundir ambos conceptos sobreestima lo que la prueba mide", "La prueba de Biuret mide específicamente carbohidratos", "Los aminoácidos libres y los enlaces peptídicos son exactamente lo mismo", "La prueba de Biuret no tiene relación con las proteínas"], "correct": 1, "exp": "Biuret detecta el enlace peptídico característico de cadenas proteicas, no aminoácidos sueltos; equipararlos es un error conceptual que exagera el alcance de la prueba."}, {"skill": "EVAL", "q": "Un estudiante extrajo ADN de fresa una sola vez y concluyó que 'el procedimiento siempre funciona igual de bien en cualquier fruta'. ¿Qué limitación es más relevante?", "options": ["La conclusión es válida porque todas las frutas tienen exactamente la misma composición celular", "Generalizar a 'cualquier fruta' a partir de un único ensayo con una sola especie no es válido, ya que distintas frutas pueden diferir en cantidad de ADN o compuestos que dificulten la extracción", "No es necesario probar con otras frutas para generalizar el procedimiento", "La cantidad de ADN es siempre idéntica entre especies vegetales", "Un solo ensayo es suficiente para cualquier generalización científica"], "correct": 1, "exp": "Distintas especies de fruta tienen distinta composición celular (agua, azúcares, compuestos fenólicos), lo que puede afectar el resultado; un solo ensayo no permite generalizar a todas."}, {"skill": "EVAL", "q": "Una investigación comparó solo dos temperaturas (25°C y 90°C) y concluyó que 'la enzima es estable en un amplio rango de temperaturas'. ¿Crítica más pertinente?", "options": ["Dos temperaturas son siempre suficientes para caracterizar el comportamiento térmico completo", "Evaluar solo dos temperaturas extremas no permite conocer el comportamiento en el rango intermedio; se requiere un muestreo más amplio para sostener esa conclusión", "La conclusión es válida sin necesidad de evaluar temperaturas intermedias", "La estabilidad de una enzima no depende del número de temperaturas evaluadas", "Es imposible estudiar el efecto de la temperatura con experimentos simples"], "correct": 1, "exp": "Sin datos del rango intermedio no se puede saber si la enzima pierde actividad en algún punto entre esos extremos; el muestreo insuficiente limita la validez de la generalización."}, {"skill": "EVAL", "q": "Un estudio concluyó que 'la secuencia de bases del ADN no influye en la proteína producida' porque, al cambiar una base en una región no codificante, no observó cambios. ¿Qué error se identifica?", "options": ["La conclusión es correcta y aplicable a cualquier región del ADN", "El resultado en una región no codificante no es generalizable; muchas regiones sí codifican proteínas y una mutación allí sí puede alterar la secuencia de aminoácidos", "Las regiones no codificantes son las únicas responsables de producir proteínas", "El ADN nunca influye en ninguna proteína producida", "No existen regiones codificantes ni no codificantes en el ADN"], "correct": 1, "exp": "Solo las regiones codificantes determinan directamente la secuencia de aminoácidos; una mutación en una región no codificante puede no tener efecto, pero eso no aplica a todo el genoma."}, {"skill": "EVAL", "q": "Una investigación usó como único indicador la pérdida de color de una muestra para evaluar desnaturalización proteica, sin medir ningún parámetro estructural o funcional directo. ¿Limitación más relevante?", "options": ["El color siempre refleja con exactitud el estado estructural molecular", "No es necesario usar ningún otro indicador si se observa un cambio de color", "El color no es necesariamente un indicador directo del estado estructural o funcional; se recomienda complementar con métodos más específicos como pérdida de actividad catalítica", "La desnaturalización proteica no puede evaluarse mediante ningún método experimental", "Los cambios de color y los cambios estructurales son exactamente equivalentes"], "correct": 2, "exp": "El color puede cambiar por razones distintas a la desnaturalización; usar un indicador funcional directo (como actividad enzimática) da una medida más confiable del estado de la proteína."}, {"skill": "COM", "q": "Un estudiante debe explicar por qué la clara de huevo se vuelve blanca y sólida al cocinarla. ¿Explicación más precisa?", "options": ["El calor convierte las proteínas de la clara en carbohidratos, cambiando su color", "La clara de huevo pierde toda su masa al cocinarse", "El calor rompe los enlaces débiles que mantienen la forma tridimensional de las proteínas (desnaturalización), cambiando su solubilidad y aspecto de forma irreversible", "El cambio se debe a que el calor destruye por completo la molécula, sin alterar su estructura", "La clara de huevo se solidifica porque el calor le agrega agua"], "correct": 2, "exp": "La explicación correcta debe referirse al concepto de desnaturalización: pérdida de la estructura tridimensional por ruptura de enlaces débiles, no de la composición química básica de la proteína."}, {"skill": "COM", "q": "Al explicar la diferencia entre ADN y ARN, ¿cuál es la explicación más precisa y completa?", "options": ["El ADN y el ARN son exactamente la misma molécula, solo con distinto nombre", "El ARN es bicatenario y el ADN es monocatenario", "El ADN contiene uracilo y el ARN contiene timina", "El ADN es bicatenario, con desoxirribosa y timina, y almacena información genética; el ARN es monocatenario, con ribosa y uracilo, y participa en la síntesis de proteínas", "La única diferencia entre ambas moléculas es su color"], "correct": 3, "exp": "La explicación completa contrasta estructura (bicatenario/monocatenario, azúcar, base) y función (almacenamiento vs. síntesis proteica) de ambas moléculas."}, {"skill": "COM", "q": "Un estudiante debe explicar los niveles de estructura de una proteína en un informe. ¿Cuál es la explicación más precisa?", "options": ["Todos los niveles se refieren únicamente a la secuencia de aminoácidos", "La estructura cuaternaria es la más simple, previa a la primaria", "Las proteínas solo pueden tener un nivel de estructura a la vez", "La estructura terciaria se refiere solo al color de la proteína", "La primaria es la secuencia de aminoácidos; la secundaria son plegamientos regulares; la terciaria es el plegamiento tridimensional completo; y la cuaternaria es la unión de varias cadenas en una proteína funcional"], "correct": 4, "exp": "Cada nivel describe un grado creciente de organización espacial de la proteína, desde la secuencia lineal hasta el ensamblaje de múltiples subunidades."}, {"skill": "COM", "q": "Al explicar por qué una enzima pierde su función a temperaturas muy altas, ¿cuál es la explicación bioquímicamente más precisa?", "options": ["El calor convierte la enzima en un tipo distinto de biomolécula", "La enzima simplemente se evapora a temperaturas altas", "La pérdida de función se debe a que la enzima cambia de color con el calor", "Las enzimas nunca pierden su función con el calor", "El calor excesivo rompe los enlaces que mantienen la estructura tridimensional (especialmente el sitio activo), desnaturalizándola y evitando que se una eficientemente a su sustrato"], "correct": 4, "exp": "La función enzimática depende de la forma exacta del sitio activo; al romperse esa estructura por el calor, la enzima ya no puede unirse correctamente a su sustrato."}, {"skill": "COM", "q": "Un estudiante debe explicar el rol de los nucleótidos como monómeros de los ácidos nucleicos. ¿Explicación más precisa?", "options": ["Los nucleótidos están formados únicamente por aminoácidos unidos entre sí", "Un nucleótido es idéntico en composición a un monosacárido", "Los ácidos nucleicos no están formados por unidades repetitivas", "El fosfato de un nucleótido no cumple ninguna función estructural", "Cada nucleótido está formado por una base nitrogenada, un azúcar de 5 carbonos y un grupo fosfato, y se unen mediante enlaces fosfodiéster formando las cadenas de ADN o ARN"], "correct": 4, "exp": "Los tres componentes del nucleótido (base, azúcar, fosfato) se repiten y se enlazan covalentemente para formar la cadena de ácido nucleico."}, {"skill": "COM", "q": "Al comunicar los resultados de una prueba de Biuret positiva en una muestra desconocida, ¿cuál es la conclusión mejor formulada?", "options": ["La muestra es completamente saludable porque contiene proteínas", "El color violeta indica que la muestra contiene únicamente carbohidratos", "La muestra dio positivo a la prueba de Biuret (viraje a violeta), lo que indica la presencia de proteínas debido a la detección de enlaces peptídicos", "La prueba de Biuret confirma la ausencia total de cualquier biomolécula en la muestra", "El resultado no tiene relación con ningún tipo de biomolécula específica"], "correct": 2, "exp": "Una comunicación científica precisa describe el resultado observado y su interpretación correcta, sin extrapolar a conceptos no evaluados como salud o valor nutricional."}, {"skill": "COM", "q": "Un estudiante debe explicar por qué células con el mismo ADN producen proteínas distintas según el tejido. ¿Explicación más adecuada a nivel básico?", "options": ["Cada célula del cuerpo tiene un ADN completamente distinto según el tejido", "Todas las células producen exactamente las mismas proteínas, sin excepción", "La expresión génica no tiene relación con el tipo de tejido celular", "El ADN cambia de secuencia según la función de cada célula", "Aunque el ADN es el mismo en todas las células, no todos los genes se expresan en todos los tejidos; cada tipo celular activa un conjunto distinto de genes según su función"], "correct": 4, "exp": "La diversidad celular surge de la expresión diferencial de genes (qué genes se 'activan'), no de diferencias en la secuencia de ADN entre células del mismo organismo."}, {"skill": "COM", "q": "Al explicar por qué el ARN, y no el ADN directamente, participa en la síntesis de proteínas en el citoplasma, ¿cuál es la explicación más precisa a nivel básico?", "options": ["El ADN no puede salir del núcleo porque es demasiado pequeño", "El ARN es una versión más resistente del ADN, por eso lo reemplaza completamente", "El ADN participa igual de directamente que el ARN en la síntesis de proteínas", "El ARN se forma dentro de los ribosomas, sin relación con el ADN", "El ADN permanece protegido en el núcleo y se usa como molde para producir una copia móvil (ARN mensajero) que sale al citoplasma para dirigir la síntesis de proteínas"], "correct": 4, "exp": "Usar una copia móvil (ARNm) permite que la información salga del núcleo hacia los ribosomas sin exponer ni arriesgar la molécula original de ADN."}];
+
+let currentQuiz = [];
+let currentIndex = 0;
+let answered = false;
+let userAnswers = [];
+let scoreBySkill = {};
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function buildQuiz(){
+  let selected = [];
+  SKILL_ORDER.forEach(skillKey=>{
+    const pool = QUESTION_BANK.filter(q=>q.skill===skillKey);
+    const picked = shuffle(pool).slice(0,PICK_PER_SKILL);
+    selected = selected.concat(picked);
+  });
+  selected = shuffle(selected);
+  return selected.map(orig=>{
+    const idxArr = [0,1,2,3,4];
+    const shuffledIdx = shuffle(idxArr);
+    const newOptions = shuffledIdx.map(i=>orig.options[i]);
+    const newCorrect = shuffledIdx.indexOf(orig.correct);
+    return { skill: orig.skill, question: orig.q, options: newOptions, correct: newCorrect, exp: orig.exp };
+  });
+}
+
+function startQuiz(){
+  currentQuiz = buildQuiz();
+  currentIndex = 0;
+  answered = false;
+  userAnswers = [];
+  scoreBySkill = {};
+  SKILL_ORDER.forEach(s=>scoreBySkill[s]={correct:0,total:0});
+  document.getElementById('start-screen').classList.add('hidden');
+  document.getElementById('dashboard-screen').classList.add('hidden');
+  document.getElementById('review-screen').classList.add('hidden');
+  document.getElementById('quiz-screen').classList.remove('hidden');
+  renderQuestion();
+}
+
+function renderQuestion(){
+  answered = false;
+  const q = currentQuiz[currentIndex];
+  const total = currentQuiz.length;
+  document.getElementById('progress-fill').style.width = ((currentIndex)/total*100)+'%';
+  document.getElementById('progress-label').textContent = (currentIndex+1)+' / '+total;
+  document.getElementById('skill-tag').textContent = SKILL_NAMES[q.skill];
+  document.getElementById('qnum').textContent = 'Pregunta '+(currentIndex+1);
+  document.getElementById('question-text').textContent = q.question;
+
+  const optsDiv = document.getElementById('options');
+  optsDiv.innerHTML = '';
+  q.options.forEach((opt, i)=>{
+    const btn = document.createElement('button');
+    btn.className = 'option';
+    btn.innerHTML = '<span class="letter">'+LETTERS[i]+')</span><span>'+opt+'</span>';
+    btn.onclick = ()=>selectOption(i);
+    optsDiv.appendChild(btn);
+  });
+
+  document.getElementById('feedback').classList.add('hidden');
+  document.getElementById('next-btn').classList.add('hidden');
+}
+
+function selectOption(i){
+  if(answered) return;
+  answered = true;
+  const q = currentQuiz[currentIndex];
+  const correct = q.correct;
+  const options = document.querySelectorAll('#options .option');
+  options.forEach((opt, idx)=>{
+    opt.classList.add('locked');
+    if(idx===correct) opt.classList.add('correct');
+    else if(idx===i) opt.classList.add('incorrect');
+    else opt.classList.add('dim');
+  });
+
+  const isCorrect = (i===correct);
+  scoreBySkill[q.skill].total++;
+  if(isCorrect) scoreBySkill[q.skill].correct++;
+
+  userAnswers.push({ skill:q.skill, question:q.question, options:q.options, correctIdx:correct, chosenIdx:i, exp:q.exp, isCorrect });
+
+  const fb = document.getElementById('feedback');
+  fb.classList.remove('hidden');
+  fb.classList.toggle('wrong', !isCorrect);
+  fb.innerHTML = '<span class="pista-label">'+(isCorrect ? '✓ Correcto — Pista' : '✕ Incorrecto — Pista')+'</span>'+
+    '<strong>Respuesta correcta: '+LETTERS[correct]+') '+q.options[correct]+'</strong><br><br>'+q.exp;
+
+  document.getElementById('next-btn').classList.remove('hidden');
+}
+
+function nextQuestion(){
+  currentIndex++;
+  if(currentIndex >= currentQuiz.length){
+    showDashboard();
+  } else {
+    renderQuestion();
+  }
+}
+
+function showDashboard(){
+  document.getElementById('quiz-screen').classList.add('hidden');
+  document.getElementById('dashboard-screen').classList.remove('hidden');
+
+  const totalCorrect = userAnswers.filter(a=>a.isCorrect).length;
+  const totalQ = userAnswers.length;
+  document.getElementById('score-total').innerHTML = totalCorrect+'<span>/'+totalQ+'</span>';
+  const pct = Math.round((totalCorrect/totalQ)*100);
+  document.getElementById('score-caption').textContent = pct+'% de logro general';
+
+  const barsDiv = document.getElementById('skill-bars');
+  barsDiv.innerHTML = '';
+  const weakSkills = [];
+  const strongSkills = [];
+
+  SKILL_ORDER.forEach(skillKey=>{
+    const s = scoreBySkill[skillKey];
+    const skillPct = s.total>0 ? Math.round((s.correct/s.total)*100) : 0;
+    let color = 'var(--accent-coral)';
+    if(skillPct>=75) color='var(--accent-sage)';
+    else if(skillPct>=50) color='var(--accent-amber)';
+
+    const row = document.createElement('div');
+    row.className='skill-bar-row';
+    row.innerHTML = '<div class="skill-bar-head"><span class="name">'+SKILL_NAMES[skillKey]+'</span><span class="frac">'+s.correct+'/'+s.total+'</span></div>'+
+      '<div class="skill-bar-track"><div class="skill-bar-fill" style="width:'+skillPct+'%;background:'+color+';"></div></div>';
+    barsDiv.appendChild(row);
+
+    if(skillPct<75) weakSkills.push({name:SKILL_NAMES[skillKey], pct:skillPct});
+    else strongSkills.push(SKILL_NAMES[skillKey]);
+  });
+
+  const improveBox = document.getElementById('improve-box');
+  const improveList = document.getElementById('improve-list');
+  improveList.innerHTML='';
+  if(weakSkills.length>0){
+    improveBox.classList.remove('hidden');
+    weakSkills.sort((a,b)=>a.pct-b.pct).forEach(w=>{
+      const li = document.createElement('li');
+      li.innerHTML = '<strong>'+w.name+'</strong> ('+w.pct+'%) — refuerza con más ejercicios de este tipo de habilidad, revisando las pistas de las preguntas falladas.';
+      improveList.appendChild(li);
+    });
+  } else {
+    improveBox.classList.add('hidden');
+  }
+
+  const strongBox = document.getElementById('strong-box');
+  const strongText = document.getElementById('strong-text');
+  if(strongSkills.length>0){
+    strongBox.classList.remove('hidden');
+    strongText.textContent = strongSkills.join(', ') + '. Buen dominio, mantén la práctica con nuevos intentos.';
+  } else {
+    strongBox.classList.add('hidden');
+  }
+}
+
+function restartQuiz(){ startQuiz(); }
+
+function reviewAnswers(){
+  document.getElementById('dashboard-screen').classList.add('hidden');
+  const rev = document.getElementById('review-screen');
+  rev.classList.remove('hidden');
+  let html = '<p class="eyebrow">Revisión de respuestas</p>';
+  userAnswers.forEach((a, i)=>{
+    html += '<div style="margin-bottom:22px;padding-bottom:18px;border-bottom:1px solid var(--line);">'+
+      '<span class="skill-tag">'+SKILL_NAMES[a.skill]+'</span>'+
+      '<p class="question-text" style="font-size:16px;">'+(i+1)+'. '+a.question+'</p>'+
+      '<p style="font-size:14px;color:'+(a.isCorrect?'var(--accent-sage)':'var(--accent-coral)')+';margin:0 0 6px;">'+
+        (a.isCorrect ? '✓ Respondiste correctamente' : '✕ Tu respuesta: '+LETTERS[a.chosenIdx]+') '+a.options[a.chosenIdx])+
+      '</p>'+
+      '<p style="font-size:14px;color:var(--text-muted);margin:0 0 8px;">Correcta: '+LETTERS[a.correctIdx]+') '+a.options[a.correctIdx]+'</p>'+
+      '<div class="feedback" style="margin-top:6px;"><span class="pista-label">Pista</span>'+a.exp+'</div>'+
+    '</div>';
+  });
+  html += '<div class="actions"><button class="btn" onclick="restartQuiz(); document.getElementById(\'review-screen\').classList.add(\'hidden\');">Repetir con nuevas preguntas</button></div>';
+  rev.innerHTML = html;
+}
+</script>
+</body>
+</html>

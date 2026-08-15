@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PAES Biología · Biomoléculas Orgánicas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Source+Sans+3:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-deep:#0f2027;
+    --bg-panel:#15303a;
+    --bg-panel-2:#1b3a45;
+    --accent-amber:#e8a33d;
+    --accent-sage:#6fa88a;
+    --accent-coral:#e4572e;
+    --text-light:#f3ede1;
+    --text-muted:#a9c0c2;
+    --line:#2a4750;
+    --radius:14px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:radial-gradient(circle at 15% -10%, #1c4552 0%, var(--bg-deep) 55%) fixed;
+    color:var(--text-light);
+    font-family:'Source Sans 3', system-ui, sans-serif;
+    min-height:100vh;
+    padding:32px 16px 64px;
+  }
+  .wrap{max-width:820px;margin:0 auto;}
+  .eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--accent-amber);
+    margin:0 0 8px;
+  }
+  h1{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:clamp(26px,4vw,38px);
+    line-height:1.1;
+    margin:0 0 6px;
+    color:var(--text-light);
+  }
+  .sub{color:var(--text-muted);font-size:15px;margin:0 0 28px;max-width:60ch;}
+  .card{
+    background:linear-gradient(180deg, var(--bg-panel) 0%, var(--bg-panel-2) 100%);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:28px;
+    box-shadow:0 20px 40px -20px rgba(0,0,0,.5);
+  }
+  /* START SCREEN */
+  #start-screen ul{color:var(--text-muted);font-size:14.5px;line-height:1.7;padding-left:20px;margin:18px 0 26px;}
+  #start-screen li{margin-bottom:4px;}
+  .btn{
+    font-family:'Source Sans 3', sans-serif;
+    font-weight:700;
+    font-size:15px;
+    border:none;
+    border-radius:999px;
+    padding:14px 30px;
+    cursor:pointer;
+    background:var(--accent-amber);
+    color:#20140a;
+    transition:transform .15s ease, box-shadow .15s ease;
+    box-shadow:0 8px 20px -8px rgba(232,163,61,.6);
+  }
+  .btn:hover{transform:translateY(-1px);box-shadow:0 12px 24px -8px rgba(232,163,61,.75);}
+  .btn:active{transform:translateY(0);}
+  .btn.secondary{
+    background:transparent;
+    color:var(--accent-amber);
+    border:1.5px solid var(--accent-amber);
+    box-shadow:none;
+  }
+  .btn.ghost{
+    background:transparent;
+    color:var(--text-muted);
+    border:1.5px solid var(--line);
+    box-shadow:none;
+  }
+  /* PROGRESS */
+  .progress-row{display:flex;align-items:center;gap:14px;margin-bottom:18px;}
+  .progress-track{flex:1;height:6px;border-radius:99px;background:var(--line);overflow:hidden;}
+  .progress-fill{height:100%;background:linear-gradient(90deg,var(--accent-sage),var(--accent-amber));border-radius:99px;transition:width .3s ease;}
+  .progress-label{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--text-muted);white-space:nowrap;}
+  /* QUESTION */
+  .skill-tag{
+    display:inline-block;
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    color:var(--bg-deep);
+    background:var(--accent-sage);
+    padding:5px 11px;
+    border-radius:999px;
+    margin-bottom:14px;
+  }
+  .qnum{color:var(--text-muted);font-size:13px;font-family:'JetBrains Mono',monospace;margin-bottom:6px;}
+  .question-text{
+    font-family:'Fraunces', serif;
+    font-weight:500;
+    font-size:19px;
+    line-height:1.45;
+    margin:0 0 22px;
+  }
+  .options{display:flex;flex-direction:column;gap:10px;}
+  .option{
+    display:flex;
+    align-items:flex-start;
+    gap:12px;
+    text-align:left;
+    background:rgba(255,255,255,.03);
+    border:1.5px solid var(--line);
+    border-radius:10px;
+    padding:13px 15px;
+    cursor:pointer;
+    color:var(--text-light);
+    font-size:14.5px;
+    line-height:1.4;
+    transition:border-color .15s, background .15s;
+  }
+  .option:hover:not(.locked){border-color:var(--accent-amber);background:rgba(232,163,61,.08);}
+  .option .letter{
+    font-family:'JetBrains Mono',monospace;
+    font-weight:700;
+    color:var(--accent-amber);
+    flex-shrink:0;
+  }
+  .option.correct{border-color:var(--accent-sage);background:rgba(111,168,138,.14);}
+  .option.incorrect{border-color:var(--accent-coral);background:rgba(228,87,46,.14);}
+  .option.locked{cursor:default;}
+  .option.dim{opacity:.45;}
+  .feedback{
+    margin-top:18px;
+    padding:16px 18px;
+    border-radius:10px;
+    background:rgba(255,255,255,.04);
+    border-left:4px solid var(--accent-sage);
+    font-size:14px;
+    line-height:1.6;
+    color:var(--text-muted);
+  }
+  .feedback.wrong{border-left-color:var(--accent-coral);}
+  .feedback strong{color:var(--text-light);}
+  .feedback .pista-label{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--accent-amber);
+    display:block;
+    margin-bottom:6px;
+  }
+  .nav-row{display:flex;justify-content:flex-end;margin-top:22px;}
+  /* DASHBOARD */
+  .score-hero{text-align:center;padding:10px 0 26px;}
+  .score-big{font-family:'Fraunces',serif;font-weight:700;font-size:56px;color:var(--accent-amber);line-height:1;}
+  .score-big span{font-size:24px;color:var(--text-muted);font-weight:500;}
+  .score-caption{color:var(--text-muted);font-size:14px;margin-top:6px;}
+  .skill-bars{display:flex;flex-direction:column;gap:16px;margin:22px 0 8px;}
+  .skill-bar-row{}
+  .skill-bar-head{display:flex;justify-content:space-between;font-size:13.5px;margin-bottom:6px;}
+  .skill-bar-head .name{font-weight:600;}
+  .skill-bar-head .frac{font-family:'JetBrains Mono',monospace;color:var(--text-muted);}
+  .skill-bar-track{height:10px;border-radius:99px;background:var(--line);overflow:hidden;}
+  .skill-bar-fill{height:100%;border-radius:99px;}
+  .improve-box{
+    margin-top:26px;
+    background:rgba(228,87,46,.08);
+    border:1px solid rgba(228,87,46,.35);
+    border-radius:10px;
+    padding:18px 20px;
+  }
+  .improve-box h3{
+    font-family:'Fraunces',serif;
+    font-size:16px;
+    margin:0 0 10px;
+    color:var(--accent-coral);
+  }
+  .improve-box ul{margin:0;padding-left:20px;color:var(--text-light);font-size:14px;line-height:1.75;}
+  .strong-box{
+    margin-top:14px;
+    background:rgba(111,168,138,.08);
+    border:1px solid rgba(111,168,138,.35);
+    border-radius:10px;
+    padding:18px 20px;
+  }
+  .strong-box h3{font-family:'Fraunces',serif;font-size:16px;margin:0 0 10px;color:var(--accent-sage);}
+  .strong-box p{margin:0;color:var(--text-light);font-size:14px;line-height:1.6;}
+  .actions{display:flex;gap:12px;margin-top:28px;flex-wrap:wrap;}
+  .hidden{display:none !important;}
+  footer{text-align:center;color:var(--text-muted);font-size:12px;margin-top:26px;opacity:.6;}
+</style>
+</head>
+<body> <div style="float: left; margin-right: 25px; margin-bottom: 25px;"><img src="Logo_AMC.png" alt="Logo" style="max-width: 150px;"></div>
+<div class="wrap">
+  <p class="eyebrow">PAES · Ciencias — Módulo Biología Común</p>
+  <h1>Biomoléculas Orgánicas</h1>
+  <p class="sub">Eje 1: Organización, estructura y actividad celular — Sub-eje: Biomoléculas organizadas y teoría celular — Clase 1: Carbohidratos y Lípidos</p>
+
+  <!-- START SCREEN -->
+  <div class="card" id="start-screen">
+    <p class="eyebrow" style="margin-bottom:14px;">Antes de comenzar</p>
+    <p style="color:var(--text-muted);font-size:14.5px;line-height:1.6;">Este quiz evalúa nivel <strong style="color:var(--text-light);">básico</strong>, con 20 preguntas (4 por cada habilidad PAES), extraídas al azar de un banco amplio. Cada intento genera una versión distinta.</p>
+    <ul>
+      <li>Observar y plantear preguntas</li>
+      <li>Planificar y conducir una investigación</li>
+      <li>Procesar y analizar la evidencia</li>
+      <li>Evaluar</li>
+      <li>Comunicar</li>
+    </ul>
+    <button class="btn" onclick="startQuiz()">Comenzar quiz</button>
+  </div>
+
+  <!-- QUIZ SCREEN -->
+  <div class="card hidden" id="quiz-screen">
+    <div class="progress-row">
+      <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+      <div class="progress-label" id="progress-label">1 / 20</div>
+    </div>
+    <span class="skill-tag" id="skill-tag"></span>
+    <p class="qnum" id="qnum"></p>
+    <p class="question-text" id="question-text"></p>
+    <div class="options" id="options"></div>
+    <div class="feedback hidden" id="feedback"></div>
+    <div class="nav-row">
+      <button class="btn hidden" id="next-btn" onclick="nextQuestion()">Siguiente →</button>
+    </div>
+  </div>
+
+  <!-- DASHBOARD SCREEN -->
+  <div class="card hidden" id="dashboard-screen">
+    <p class="eyebrow">Resultados</p>
+    <div class="score-hero">
+      <div class="score-big" id="score-total">0<span>/20</span></div>
+      <p class="score-caption" id="score-caption">Puntaje global</p>
+    </div>
+    <div class="skill-bars" id="skill-bars"></div>
+    <div class="improve-box hidden" id="improve-box">
+      <h3>Puntos a mejorar</h3>
+      <ul id="improve-list"></ul>
+    </div>
+    <div class="strong-box hidden" id="strong-box">
+      <h3>Habilidades consolidadas</h3>
+      <p id="strong-text"></p>
+    </div>
+    <div class="actions">
+      <button class="btn" onclick="restartQuiz()">Repetir con nuevas preguntas</button>
+      <button class="btn ghost" onclick="reviewAnswers()">Revisar mis respuestas</button>
+    </div>
+  </div>
+
+  <!-- REVIEW SCREEN -->
+  <div class="card hidden" id="review-screen"></div>
+
+  <footer>Banco de 40 preguntas · nivel básico · basado en el temario DEMRE PAES Ciencias — Biología Común</footer>
+</div>
+
+<script>
+const SKILL_NAMES = {
+  OBS:  "Observar y plantear preguntas",
+  PLAN: "Planificar y conducir una investigación",
+  PROC: "Procesar y analizar la evidencia",
+  EVAL: "Evaluar",
+  COM:  "Comunicar"
+};
+const SKILL_ORDER = ["OBS","PLAN","PROC","EVAL","COM"];
+const LETTERS = ["A","B","C","D","E"];
+
+const QUESTION_BANK = [
+// ---------- OBS: Observar y plantear preguntas ----------
+{skill:"OBS", q:"Un estudiante observa que al agregar unas gotas de lugol a una papa cocida, esta cambia a color azul-violáceo, mientras que en una manzana no ocurre el mismo cambio. ¿Cuál es la pregunta de investigación más adecuada que puede formular a partir de esta observación?",
+ options:["¿Por qué la papa es más pesada que la manzana?","¿Existe una relación entre el color obtenido con lugol y la presencia de almidón en el alimento?","¿La papa contiene más agua que la manzana?","¿El lugol cambia de color por sí solo con el tiempo?","¿La manzana tiene menor cantidad de proteínas que la papa?"],
+ correct:1,
+ exp:"El lugol es un indicador específico de almidón (un polisacárido). La observación (cambio de color solo en la papa) apunta directamente a investigar la relación entre ese color y la presencia de almidón, no a otras biomoléculas como proteínas ni a variables no observadas como el peso."},
+{skill:"OBS", q:"Al observar que la mantequilla dejada al aire libre forma una mancha translúcida y permanente en el papel, mientras que el agua forma una mancha que se evapora, un estudiante puede formular como hipótesis que...",
+ options:["el papel utilizado es de mala calidad","la mantequilla contiene lípidos, los cuales dejan una mancha translúcida y permanente porque no se evaporan como el agua","el agua es más pesada que la mantequilla","el papel absorbe mejor los carbohidratos que los lípidos","la mantequilla tiene mayor cantidad de proteínas que agua"],
+ correct:1,
+ exp:"La prueba de la mancha translúcida es un indicador clásico de lípidos: al no ser volátiles como el agua, dejan una mancha permanente. La hipótesis debe vincular esa propiedad física con la naturaleza lipídica de la mantequilla."},
+{skill:"OBS", q:"Un investigador nota que las membranas celulares de peces que viven en ambientes fríos (árticos) contienen mayor proporción de ácidos grasos insaturados que las de peces de ambientes cálidos. ¿Qué pregunta de investigación surge naturalmente de esta observación?",
+ options:["¿Los peces árticos comen más que los de aguas cálidas?","¿La proporción de ácidos grasos insaturados en la membrana influye en su fluidez a bajas temperaturas?","¿Los peces árticos tienen menos colesterol en la sangre?","¿El agua fría contiene más oxígeno disuelto?","¿Los ácidos grasos saturados son más abundantes en organismos marinos en general?"],
+ correct:1,
+ exp:"Los ácidos grasos insaturados, al tener dobles enlaces, mantienen mayor fluidez de membrana a bajas temperaturas. La observación conecta directamente el grado de insaturación con la adaptación funcional al frío."},
+{skill:"OBS", q:"Se observa que al hervir un trozo de carne (rica en proteínas) con reactivo de Benedict no se produce un cambio de color evidente, pero al hervir una solución de glucosa sí. A partir de esto, ¿qué hipótesis es la más pertinente?",
+ options:["La reacción de Benedict permite diferenciar la presencia de azúcares reductores en una muestra","La reacción de Benedict identifica específicamente proteínas","La carne no contiene ningún tipo de biomolécula","El calor destruye siempre cualquier compuesto orgánico","La glucosa y las proteínas reaccionan de igual forma frente al Benedict"],
+ correct:0,
+ exp:"El reactivo de Benedict detecta azúcares reductores mediante un precipitado (de verde a rojo ladrillo). Que reaccione con glucosa y no con la carne apoya la hipótesis de que es específico para carbohidratos reductores, no para proteínas."},
+{skill:"OBS", q:"Un estudiante quiere estudiar por qué algunos aceites vegetales permanecen líquidos a temperatura ambiente mientras que las grasas animales son sólidas. ¿Cuál es la pregunta de investigación mejor formulada?",
+ options:["¿Qué relación existe entre el grado de saturación de los ácidos grasos y el estado físico de un lípido a temperatura ambiente?","¿Los aceites vegetales son más saludables que las grasas animales?","¿Cuál lípido tiene mejor sabor para cocinar?","¿Los animales producen más lípidos que las plantas?","¿El color del lípido determina su estado físico?"],
+ correct:0,
+ exp:"La pregunta debe orientarse a una variable biológica medible y relevante: el grado de saturación de los ácidos grasos, que determina directamente el punto de fusión y, por tanto, el estado físico del lípido."},
+{skill:"OBS", q:"En un laboratorio se observa que al agregar solución de yodo a distintas harinas (trigo, maíz, arroz) todas viran a color azul oscuro, pero con diferente intensidad. ¿Qué pregunta se puede formular a partir de esta observación?",
+ options:["¿La intensidad del color con yodo se relaciona con la cantidad de almidón presente en cada harina?","¿Todas las harinas tienen el mismo origen vegetal?","¿El yodo es tóxico para el ser humano?","¿La harina de trigo tiene más proteínas que la de maíz?","¿El color azul indica presencia de lípidos en la harina?"],
+ correct:0,
+ exp:"Como el yodo/lugol es indicador de almidón, la variación de intensidad de color entre harinas plantea directamente una pregunta sobre la relación entre esa intensidad y la cantidad de almidón, no sobre proteínas o lípidos."},
+{skill:"OBS", q:"Al comparar dos muestras de aceite, una fresca y otra expuesta al aire durante meses, un estudiante nota que la segunda tiene olor rancio. ¿Qué hipótesis científica es más adecuada para explicar esta observación?",
+ options:["La oxidación de los ácidos grasos insaturados del aceite genera compuestos responsables del olor rancio","El aceite viejo contiene más carbohidratos que el fresco","El olor se debe únicamente a la evaporación del agua del aceite","Los aceites siempre cambian de color con el tiempo, nunca de olor","La rancidez se debe a un aumento en la cantidad de glucosa del aceite"],
+ correct:0,
+ exp:"La rancidez oxidativa ocurre cuando los dobles enlaces de los ácidos grasos insaturados reaccionan con el oxígeno del aire, generando compuestos volátiles de olor característico. Es un proceso químico de los lípidos, no de carbohidratos."},
+{skill:"OBS", q:"Se observa que las hojas de una planta suculenta (como el cactus) presentan una cutícula cerosa gruesa en su superficie. ¿Cuál sería la pregunta de investigación más pertinente para el eje de biomoléculas?",
+ options:["¿La cutícula cerosa (de naturaleza lipídica) cumple una función en la reducción de la pérdida de agua por transpiración?","¿Los cactus fotosintetizan menos que otras plantas?","¿La cera de la cutícula está compuesta principalmente de carbohidratos?","¿El grosor de la cutícula determina el color de la planta?","¿Los cactus almacenan glucosa en sus espinas?"],
+ correct:0,
+ exp:"Las ceras son lípidos altamente hidrofóbicos. La observación de una cutícula cerosa gruesa en una planta adaptada a ambientes secos plantea naturalmente una pregunta sobre su función impermeabilizante frente a la pérdida de agua."},
+
+// ---------- PLAN: Planificar y conducir una investigación ----------
+{skill:"PLAN", q:"Un estudiante desea comprobar si un alimento desconocido contiene lípidos. ¿Cuál sería el procedimiento experimental más adecuado?",
+ options:["Frotar una porción del alimento sobre papel y observar si deja una mancha translúcida que no desaparece al secarse","Agregar lugol y observar si el color cambia a azul-violáceo","Calentar el alimento y medir el tiempo que demora en quemarse","Agregar reactivo de Benedict y calentar la muestra a baño maría","Medir el pH del alimento con papel tornasol"],
+ correct:0,
+ exp:"La prueba de la mancha translúcida en papel es el procedimiento clásico y accesible para detectar lípidos: al secarse, la mancha grasa permanece translúcida, a diferencia del agua u otras sustancias."},
+{skill:"PLAN", q:"Para determinar experimentalmente la presencia de azúcares reductores (como la glucosa) en una muestra, ¿qué procedimiento se debe seguir?",
+ options:["Agregar reactivo de Benedict y calentar la muestra a baño maría, observando si aparece un precipitado rojo ladrillo","Agregar lugol frío y observar el color inmediato","Frotar la muestra en papel y observar su transparencia","Medir la conductividad eléctrica de la muestra","Agregar ácido clorhídrico concentrado y enfriar la muestra"],
+ correct:0,
+ exp:"El procedimiento estándar para detectar azúcares reductores es la prueba de Benedict con calentamiento: el color pasa de azul a verde, amarillo, naranja o rojo ladrillo según la concentración de azúcar reductor presente."},
+{skill:"PLAN", q:"Un grupo de estudiantes quiere investigar si la temperatura afecta la solubilidad de las grasas en agua. ¿Cuál sería el diseño experimental correcto, identificando la variable independiente?",
+ options:["Colocar la misma cantidad de grasa en agua a distintas temperaturas (variable independiente), manteniendo constantes el tipo de grasa y el volumen de agua","Colocar distintos tipos de grasa a la misma temperatura, sin controlar las demás variables","Medir una sola vez la solubilidad, sin variar la temperatura","Cambiar el tipo de agua (dulce o salada) sin controlar la temperatura","Utilizar distintos recipientes sin estandarizar la cantidad de grasa"],
+ correct:0,
+ exp:"Un diseño experimental válido debe manipular solo la variable independiente (temperatura) manteniendo constantes las demás condiciones (tipo y cantidad de grasa, volumen de agua), para poder atribuir los cambios observados a esa variable."},
+{skill:"PLAN", q:"Para diseñar una investigación que compare la cantidad de almidón en distintas variedades de papa mediante lugol, ¿cuál debería ser el grupo control?",
+ options:["Una muestra de agua destilada sin papa, tratada con lugol de la misma forma que las muestras experimentales","La variedad de papa de mayor tamaño","No es necesario incluir un grupo control en este tipo de experimento","Una papa cocida, a diferencia de las demás que se analizan crudas","Una muestra de pan, ya que también contiene almidón"],
+ correct:0,
+ exp:"El grupo control debe recibir el mismo tratamiento (lugol) pero sin la variable de interés (almidón), de modo que sirva de referencia para confirmar que el cambio de color se debe efectivamente al almidón de las muestras y no al reactivo."},
+{skill:"PLAN", q:"Un estudiante plantea la hipótesis de que las semillas oleaginosas (como el maní) contienen más lípidos que los cereales (como el arroz). ¿Cuál es el procedimiento más riguroso para poner a prueba esta hipótesis?",
+ options:["Realizar la prueba de la mancha translúcida en papel con cantidades estandarizadas de ambas muestras y comparar el tamaño y persistencia de la mancha","Probar solo el maní y asumir el resultado esperado para el arroz","Preguntar a otras personas cuál alimento creen que tiene más grasa","Medir el peso de las semillas sin realizar ninguna prueba química","Observar únicamente el color de ambos alimentos"],
+ correct:0,
+ exp:"Para comparar de forma válida, deben usarse cantidades estandarizadas de ambas muestras bajo el mismo procedimiento (mancha en papel), permitiendo una comparación objetiva y no solo una suposición o apreciación subjetiva."},
+{skill:"PLAN", q:"Al planificar un experimento para verificar el efecto de la enzima lipasa sobre los lípidos, ¿qué variable dependiente debería medirse?",
+ options:["El grado de descomposición o emulsión de la grasa en presencia de la enzima, evidenciado por cambios en el pH o la turbidez","La temperatura ambiente del laboratorio","El color inicial de la grasa antes de iniciar el experimento","La cantidad de agua utilizada para preparar la mezcla","El tipo de recipiente de vidrio utilizado"],
+ correct:0,
+ exp:"La variable dependiente es aquella que se mide como resultado del tratamiento: en este caso, el grado de descomposición/emulsión de la grasa por acción enzimática, evidenciable mediante indicadores como el cambio de pH o turbidez."},
+{skill:"PLAN", q:"Para comprobar si distintos tipos de pan (blanco vs. integral) tienen diferente contenido de almidón usando lugol, ¿qué aspecto del diseño experimental es fundamental para que la comparación sea válida?",
+ options:["Utilizar la misma cantidad (masa) de cada tipo de pan y la misma cantidad de gotas de lugol en ambas muestras","Usar distinta cantidad de lugol en cada muestra, según el color del pan","Realizar la prueba solo una vez, sin repetición","Comparar el pan con una fruta en lugar de con otro tipo de pan","No es relevante estandarizar las cantidades, solo observar el color final"],
+ correct:0,
+ exp:"Para que la comparación sea válida, deben estandarizarse todas las condiciones excepto la variable de interés (tipo de pan): misma masa de muestra y misma cantidad de reactivo, evitando así que diferencias metodológicas expliquen el resultado."},
+{skill:"PLAN", q:"Un estudiante quiere investigar si el tiempo de exposición al aire afecta la rancidez (oxidación) de un aceite vegetal. ¿Cuál sería el diseño experimental más adecuado?",
+ options:["Exponer muestras idénticas del mismo aceite al aire durante distintos periodos de tiempo, manteniendo constantes la temperatura y el recipiente, y evaluar el olor y color en cada caso","Exponer distintos tipos de aceite al aire durante el mismo tiempo, sin evaluar el olor","Guardar el aceite en un lugar oscuro sin exponerlo al aire en ningún momento","Medir solamente el color del aceite antes de comenzar el experimento","Variar la temperatura de cada muestra sin mantenerla constante"],
+ correct:0,
+ exp:"Para aislar el efecto del tiempo de exposición (variable independiente), se debe usar el mismo tipo de aceite y mantener constantes las demás condiciones (temperatura, recipiente), variando solo el tiempo entre las réplicas."},
+
+// ---------- PROC: Procesar y analizar la evidencia ----------
+{skill:"PROC", q:"En una tabla se registra la absorbancia (relacionada con la concentración de azúcares reductores) obtenida con la prueba de Benedict en 4 muestras de jugo de fruta: A=0,8; B=0,3; C=0,9; D=0,1 (a mayor absorbancia, mayor concentración). ¿Cuál muestra presenta la mayor concentración de azúcares reductores?",
+ options:["Muestra A","Muestra C","Muestra B","Muestra D","No se puede determinar con estos datos"],
+ correct:1,
+ exp:"La muestra C tiene la absorbancia más alta (0,9), por lo que corresponde a la mayor concentración de azúcares reductores. La muestra A (0,8) es cercana pero no es la mayor."},
+{skill:"PROC", q:"Se midió el tiempo (en segundos) que demora una gota de aceite en dispersarse sobre la superficie de un vaso con agua a distintas temperaturas: 10°C=120s; 20°C=80s; 30°C=45s; 40°C=20s. ¿Qué tendencia se observa entre la temperatura del agua y el tiempo de dispersión del aceite?",
+ options:["A mayor temperatura, mayor es el tiempo de dispersión","A mayor temperatura, menor es el tiempo que demora en dispersarse el aceite","No existe relación entre ambas variables","La temperatura no afecta la solubilidad de los lípidos","El tiempo de dispersión aumenta y luego disminuye sin un patrón claro"],
+ correct:1,
+ exp:"Los datos muestran una relación inversa: a medida que aumenta la temperatura (10°C→40°C), el tiempo de dispersión disminuye consistentemente (120s→20s), lo que evidencia una tendencia clara y decreciente."},
+{skill:"PROC", q:"En un experimento se compararon dos alimentos (X e Y) con la prueba de yodo/lugol. El alimento X viró a color azul-negro intenso, mientras que Y mantuvo el color amarillo-café original del lugol. A partir de estos resultados, ¿qué se puede concluir?",
+ options:["El alimento X contiene más lípidos que Y","El alimento X contiene almidón en cantidad significativa, mientras que Y no presenta almidón o lo tiene en muy baja cantidad","El alimento Y contiene más proteínas que X","Ambos alimentos tienen exactamente la misma composición","El lugol no reaccionó correctamente en ninguna de las muestras"],
+ correct:1,
+ exp:"El viraje a azul-negro intenso es la reacción positiva característica del lugol frente al almidón. La ausencia de cambio de color en Y indica ausencia o muy baja presencia de esta biomolécula, no de lípidos ni proteínas."},
+{skill:"PROC", q:"Un gráfico muestra el punto de fusión de distintos ácidos grasos según su número de dobles enlaces: 0 dobles enlaces=69°C; 1=16°C; 2=−5°C; 3=−11°C. ¿Qué relación se puede inferir entre el grado de insaturación y el punto de fusión?",
+ options:["A mayor número de dobles enlaces, mayor es el punto de fusión","A mayor número de dobles enlaces (mayor insaturación), menor es el punto de fusión del ácido graso","El punto de fusión no depende del número de dobles enlaces","Los ácidos grasos saturados siempre tienen menor punto de fusión que los insaturados","El número de dobles enlaces no tiene relación con el estado físico del lípido"],
+ correct:1,
+ exp:"Los datos muestran una tendencia decreciente clara: a mayor cantidad de dobles enlaces, menor es el punto de fusión, porque las 'torceduras' de los dobles enlaces impiden un empaquetamiento compacto de las cadenas."},
+{skill:"PROC", q:"En una tabla de resultados de tinción con Sudan III en tres tejidos vegetales se observó: tinción roja intensa en semillas de girasol, tinción moderada en pulpa de palta y ausencia de tinción en pulpa de manzana. ¿Qué conclusión es más adecuada a partir de estos resultados?",
+ options:["La manzana contiene más lípidos que la palta","Las semillas de girasol presentan mayor contenido de lípidos que la palta y la manzana, mientras que la manzana prácticamente no contiene lípidos","El Sudan III solo detecta la presencia de carbohidratos","Todos los tejidos analizados presentan la misma cantidad de lípidos","La palta no contiene ningún tipo de biomolécula"],
+ correct:1,
+ exp:"La intensidad de la tinción con Sudan III (colorante liposoluble) es proporcional a la cantidad de lípidos presentes: girasol (intensa) > palta (moderada) > manzana (ausente), lo que permite ordenar los tejidos según su contenido lipídico."},
+{skill:"PROC", q:"Se midió la glucosa liberada (mg/dL) tras someter almidón a la enzima amilasa en distintos tiempos: 0 min=0; 5 min=20; 10 min=45; 15 min=60; 20 min=62. ¿Qué se puede inferir sobre la actividad enzimática a partir de estos datos?",
+ options:["La enzima amilasa deja de funcionar completamente a los 5 minutos","La velocidad de hidrólisis del almidón disminuye con el tiempo, alcanzando un punto donde la liberación de glucosa se estabiliza","La glucosa liberada disminuye constantemente con el tiempo","No existe relación entre el tiempo y la cantidad de glucosa liberada","La amilasa degrada lípidos y no carbohidratos"],
+ correct:1,
+ exp:"Los incrementos entre intervalos (20, 25, 15, 2 mg/dL) muestran que la velocidad de reacción disminuye progresivamente, acercándose a una meseta (60→62), un patrón típico cuando el sustrato disponible comienza a agotarse."},
+{skill:"PROC", q:"Un estudio comparó el contenido de fibra (carbohidrato estructural) en 100 g de distintos alimentos: pan blanco=2,7 g; pan integral=7 g; arroz blanco=0,4 g; avena=10 g. ¿Cuál de las siguientes afirmaciones es correcta según los datos?",
+ options:["El pan blanco presenta más fibra que el pan integral","La avena presenta el mayor contenido de fibra, mientras que el arroz blanco presenta el menor","El arroz blanco tiene el mayor contenido de fibra de los cuatro alimentos","Todos los alimentos analizados presentan una cantidad similar de fibra","El pan integral tiene menos fibra que el arroz blanco"],
+ correct:1,
+ exp:"Ordenando los valores (avena 10 g > pan integral 7 g > pan blanco 2,7 g > arroz blanco 0,4 g), la avena tiene el mayor contenido de fibra y el arroz blanco el menor, tal como indican los datos numéricos."},
+{skill:"PROC", q:"En un experimento se dejaron tres muestras de mantequilla a distintas temperaturas (4°C, 20°C y 35°C) durante 30 minutos, midiendo su consistencia: 4°C=sólida; 20°C=semisólida; 35°C=líquida. ¿Qué tendencia revelan estos datos respecto al estado físico de este lípido?",
+ options:["La temperatura no influye en el estado físico de los lípidos","A medida que aumenta la temperatura, el lípido pasa de un estado sólido a uno líquido, ya que la energía calórica debilita las interacciones entre sus moléculas","A mayor temperatura, el lípido se vuelve más sólido","El estado físico de la mantequilla es independiente de la energía calórica aportada","Los lípidos siempre son líquidos, sin importar la temperatura"],
+ correct:1,
+ exp:"Los datos muestran una progresión clara: sólido (4°C) → semisólido (20°C) → líquido (35°C), consistente con el efecto de la temperatura sobre las fuerzas intermoleculares que mantienen unidas las moléculas del lípido."},
+
+// ---------- EVAL: Evaluar ----------
+{skill:"EVAL", q:"Un estudiante concluye que 'todos los alimentos que contienen almidón son saludables' basándose únicamente en el resultado positivo de la prueba de lugol en pan, papas y arroz. ¿Qué crítica es más pertinente a esta conclusión?",
+ options:["La conclusión es correcta porque el almidón siempre es saludable","La prueba de lugol solo indica presencia de almidón, no evalúa el valor nutricional del alimento, por lo que la conclusión excede lo que los datos permiten afirmar","El lugol mide directamente las calorías del alimento","La prueba debió realizarse con Benedict en lugar de lugol","Los alimentos con almidón nunca son saludables"],
+ correct:1,
+ exp:"Una prueba química que detecta una biomolécula (almidón) no entrega información sobre salubridad o valor nutricional integral; concluir sobre 'salud' a partir de ese único dato es una sobregeneralización no respaldada por la evidencia."},
+{skill:"EVAL", q:"En un experimento sobre solubilidad de lípidos, un estudiante utilizó una sola muestra de aceite y una sola repetición para concluir que 'todos los lípidos son insolubles en agua'. ¿Qué limitación metodológica presenta este estudio?",
+ options:["El estudio es válido porque todos los lípidos se comportan exactamente igual","La generalización no es válida porque se basó en una única muestra y sin repeticiones, lo que reduce la confiabilidad y representatividad del resultado","No es necesario repetir los experimentos en ciencia","El problema principal es que se usó agua en vez de alcohol","La conclusión es errónea porque los lípidos sí son solubles en agua"],
+ correct:1,
+ exp:"La confiabilidad científica exige réplicas y variedad de muestras antes de generalizar una conclusión a 'todos los lípidos'; un único ensayo con una sola muestra no permite sostener una afirmación tan amplia."},
+{skill:"EVAL", q:"Un grupo evaluó el contenido de azúcar en dos marcas de jugo con la prueba de Benedict, pero no controló la temperatura ni el tiempo de calentamiento entre ambas muestras. ¿Qué aspecto de la investigación se ve comprometido?",
+ options:["Ningún aspecto, ya que Benedict siempre da el mismo resultado sin importar las condiciones","La confiabilidad de la comparación, ya que diferencias en temperatura y tiempo pueden alterar el resultado independientemente de la concentración real de azúcar","La validez del experimento no depende de las condiciones de calentamiento","El estudio es completamente confiable tal como fue diseñado","Solo se ve afectada la apariencia visual, no los resultados"],
+ correct:1,
+ exp:"Al no controlar variables como temperatura y tiempo, las diferencias observadas entre las muestras podrían deberse a esas condiciones y no a la concentración real de azúcar, lo que compromete la confiabilidad de la comparación."},
+{skill:"EVAL", q:"Una investigación afirma que 'la grasa de origen animal es siempre peor que la de origen vegetal' basándose solo en comparar el punto de fusión de la mantequilla y el aceite de oliva. ¿Por qué esta conclusión no es científicamente sólida?",
+ options:["Porque el punto de fusión no tiene relación con los lípidos","Porque el punto de fusión solo refleja el grado de saturación de los ácidos grasos y no permite por sí solo evaluar el impacto en la salud, requiriéndose más variables y evidencia","Porque la mantequilla nunca contiene ácidos grasos saturados","Porque el aceite de oliva es en realidad un carbohidrato","La conclusión es completamente válida y no requiere más análisis"],
+ correct:1,
+ exp:"El punto de fusión es un indicador físico del grado de saturación, pero no basta por sí solo para emitir juicios sobre efectos en la salud; una conclusión de ese tipo requeriría evidencia adicional (perfil lipídico, estudios clínicos, etc.)."},
+{skill:"EVAL", q:"Un estudiante repite tres veces la prueba de Sudan III en la misma muestra de semilla y obtiene resultados distintos cada vez (tinción intensa, moderada y nula). ¿Qué se puede concluir sobre la confiabilidad del procedimiento tal como fue ejecutado?",
+ options:["El experimento es perfectamente confiable porque se repitió tres veces","La falta de consistencia entre repeticiones sugiere un problema en el control de variables (como cantidad de reactivo o tiempo de tinción), lo que reduce la confiabilidad de los resultados","Los resultados distintos confirman que la semilla no tiene lípidos","La variabilidad indica que el Sudan III no sirve para detectar lípidos","No es necesario controlar variables al repetir un experimento"],
+ correct:1,
+ exp:"Repetir un experimento aumenta la confiabilidad solo si las condiciones se mantienen controladas; resultados muy variables entre repeticiones idénticas indican, más bien, falta de estandarización en el procedimiento."},
+{skill:"EVAL", q:"En un reporte sobre digestión de lípidos, un estudiante utiliza como única fuente un video de redes sociales sin respaldo académico. ¿Qué crítica es más adecuada a esta investigación?",
+ options:["Cualquier fuente es igualmente válida en una investigación científica","La fuente utilizada no garantiza rigurosidad científica, por lo que la información debería contrastarse con fuentes académicas o revisadas por pares","Los videos de redes sociales siempre contienen información errónea","No es necesario citar fuentes en un reporte científico","La emulsión de lípidos no puede explicarse mediante ninguna fuente"],
+ correct:1,
+ exp:"La calidad de una fuente afecta directamente la validez del reporte. Fuentes sin respaldo académico o revisión por pares deben contrastarse con literatura científica confiable antes de sustentar conclusiones."},
+{skill:"EVAL", q:"Un experimento buscó determinar si la temperatura afecta la rancidez del aceite, pero se realizó en un solo día, con una sola muestra por temperatura y sin grupo control. ¿Qué mejora metodológica aumentaría la confiabilidad del estudio?",
+ options:["Realizar el experimento una sola vez es suficiente si el investigador es experto","Incluir réplicas (varias muestras por temperatura) y un grupo control, además de repetir el experimento en distintos momentos","No es necesario un grupo control en estudios sobre lípidos","Basta con una sola muestra si el resultado parece consistente con lo esperado","Cambiar la variable independiente por el color del aceite"],
+ correct:1,
+ exp:"La confiabilidad de un estudio mejora al incluir réplicas y grupos control, permitiendo distinguir el efecto real de la variable estudiada de la variabilidad natural o el azar."},
+{skill:"EVAL", q:"Una publicación asegura que 'el aceite de coco no engorda porque no dio positivo en la prueba de Sudan III', cuando en realidad sí dio positivo, indicando presencia de lípidos. ¿Qué error se identifica en esta afirmación?",
+ options:["La afirmación es correcta y está bien respaldada por la evidencia","La conclusión contradice la evidencia obtenida (positivo a Sudan III indica presencia de lípidos), y además la prueba no mide el efecto calórico o metabólico del alimento","El Sudan III mide directamente las calorías de un alimento","El aceite de coco no contiene lípidos, por lo que la prueba fue innecesaria","La prueba de Sudan III no sirve para ningún tipo de análisis biológico"],
+ correct:1,
+ exp:"Existen dos errores: se contradice el propio resultado experimental (positivo=presencia de lípidos) y se extrapola incorrectamente una prueba cualitativa de detección de lípidos hacia una conclusión sobre efectos metabólicos, que esa prueba no puede medir."},
+
+// ---------- COM: Comunicar ----------
+{skill:"COM", q:"Un estudiante debe explicar por qué el pan (rico en almidón) se vuelve dulce al masticarlo prolongadamente. ¿Cuál es la explicación científicamente correcta y mejor comunicada?",
+ options:["El pan contiene azúcar oculta que se libera al mezclarse con la saliva","La amilasa salival comienza a hidrolizar el almidón en moléculas más pequeñas, como la maltosa, que sí son percibidas como dulces","La saliva transforma las proteínas del pan directamente en glucosa","El almidón se convierte directamente en lípidos al masticarlo","El sabor dulce se debe a que la saliva humana es naturalmente dulce"],
+ correct:1,
+ exp:"La enzima amilasa presente en la saliva hidroliza el almidón (polisacárido, sin sabor dulce perceptible) en azúcares más simples como la maltosa, que sí activan los receptores de dulzor en la lengua."},
+{skill:"COM", q:"Al redactar la conclusión de un informe sobre la prueba de lugol en distintos alimentos, ¿cuál de las siguientes opciones representa una comunicación científica más adecuada?",
+ options:["'El lugol es de color azul y por eso los alimentos se ponen azules'","'Los alimentos que presentaron un color azul-violáceo al agregar lugol contienen almidón, mientras que los que no cambiaron de color no presentan esta biomolécula o la presentan en baja concentración'","'Todos los alimentos analizados son saludables porque contienen almidón'","'El experimento no sirvió para nada porque algunos alimentos no cambiaron de color'","'Los alimentos azules tienen más calorías que los demás'"],
+ correct:1,
+ exp:"Una conclusión científica adecuada describe el resultado observado y lo interpreta correctamente en función de lo que la prueba realmente mide (presencia de almidón), sin extrapolar a conceptos no evaluados como salud o calorías."},
+{skill:"COM", q:"Un estudiante debe explicar a un compañero la diferencia entre una grasa saturada y una insaturada. ¿Cuál de las siguientes explicaciones es más precisa y clara?",
+ options:["'Las grasas saturadas son las que están mojadas y las insaturadas las que están secas'","'Las grasas saturadas tienen todos sus enlaces simples entre los carbonos de la cadena, dándoles una estructura más rígida y sólida a temperatura ambiente; las insaturadas tienen uno o más dobles enlaces, lo que las hace más líquidas'","'Las grasas saturadas son siempre de origen vegetal y las insaturadas de origen animal'","'No existe ninguna diferencia química entre ambos tipos de grasa'","'Las grasas saturadas contienen más agua que las insaturadas'"],
+ correct:1,
+ exp:"La explicación correcta debe referirse al tipo de enlaces entre carbonos (simples en saturadas, dobles en insaturadas) y su consecuencia directa en el empaquetamiento molecular y el estado físico del lípido."},
+{skill:"COM", q:"En una presentación oral, un estudiante debe comunicar los resultados de un experimento donde comparó el contenido de almidón en tres variedades de arroz mediante lugol. ¿Cuál es la forma más adecuada de presentar esta información?",
+ options:["Mencionar únicamente que 'el arroz tiene almidón', sin especificar diferencias entre variedades","Utilizar una tabla o gráfico comparativo con la intensidad de color obtenida en cada variedad, acompañado de una explicación verbal de las diferencias observadas","Mostrar solo fotografías del experimento, sin ningún dato ni explicación","Leer textualmente el procedimiento, sin mencionar los resultados obtenidos","Omitir los resultados y hablar solo sobre la teoría general de los carbohidratos"],
+ correct:1,
+ exp:"Comunicar resultados científicos de forma clara implica organizar los datos (tabla o gráfico) y explicarlos verbalmente, permitiendo que la audiencia comprenda tanto el dato numérico como su interpretación."},
+{skill:"COM", q:"Al explicar el rol de los fosfolípidos en la membrana celular a un curso de enseñanza media, ¿cuál de las siguientes formas de comunicación es más precisa?",
+ options:["'Los fosfolípidos son iguales a las proteínas de la membrana'","'Los fosfolípidos poseen una cabeza hidrofílica (afinidad por el agua) y dos colas hidrofóbicas (que repelen el agua), lo que les permite organizarse en una bicapa que forma la base estructural de la membrana celular'","'Los fosfolípidos repelen el agua completamente, por eso las células no contienen agua en su interior'","'La membrana celular está hecha completamente de carbohidratos'","'Los fosfolípidos solo se encuentran en células vegetales, no en animales'"],
+ correct:1,
+ exp:"Una explicación precisa debe describir la naturaleza anfipática del fosfolípido (cabeza hidrofílica, colas hidrofóbicas) y cómo esa propiedad determina su organización espontánea en bicapa, base estructural de la membrana."},
+{skill:"COM", q:"Un estudiante debe redactar un afiche científico simple sobre la diferencia entre carbohidratos simples y complejos. ¿Cuál enunciado comunica esta idea de forma correcta y comprensible?",
+ options:["'Los carbohidratos simples son siempre más grandes que los complejos'","'Los carbohidratos simples (como la glucosa) están formados por una o pocas unidades de azúcar, mientras que los complejos (como el almidón o la celulosa) están formados por muchas unidades unidas en cadenas largas'","'No existe diferencia estructural entre carbohidratos simples y complejos'","'Los carbohidratos complejos están hechos de lípidos'","'Los carbohidratos simples se encuentran solo en organismos animales'"],
+ correct:1,
+ exp:"La diferencia clave y correcta a comunicar es estructural: los simples son monosacáridos o disacáridos (pocas unidades), mientras que los complejos son polisacáridos formados por largas cadenas de unidades repetidas."},
+{skill:"COM", q:"Durante una defensa de proyecto, un estudiante debe explicar por qué utilizó el reactivo Sudan III en su investigación sobre lípidos en semillas. ¿Cuál es la explicación más clara y correcta?",
+ options:["'El Sudan III se usa para medir la cantidad de agua presente en la muestra'","'El Sudan III es un colorante liposoluble que tiñe de rojo o naranja las gotas de lípidos presentes en la muestra, permitiendo identificar visualmente su presencia'","'El Sudan III cambia de color solo en presencia de proteínas'","'El Sudan III es un indicador de pH utilizado en todas las pruebas biológicas'","'El Sudan III destruye los lípidos para que no puedan observarse'"],
+ correct:1,
+ exp:"El Sudan III es un colorante de naturaleza liposoluble que se disuelve preferentemente en las gotas de lípidos, tiñéndolas de rojo-naranja y permitiendo así su identificación visual bajo el microscopio o a simple vista."},
+{skill:"COM", q:"Al comunicar los resultados de un experimento donde se comparó el efecto del calor sobre lípidos y carbohidratos, un estudiante concluye erróneamente que 'el calor destruye igual a todas las biomoléculas'. ¿Cómo debería reformular esta conclusión para que sea científicamente precisa?",
+ options:["La conclusión original ya es precisa y no requiere ningún cambio","'El calor afecta de manera diferente a cada tipo de biomolécula: puede fundir o alterar la estructura de los lípidos, mientras que carbohidratos como el almidón pueden hidrolizarse o caramelizarse a altas temperaturas, sin que esto sea una destrucción generalizada'","'El calor no afecta en absoluto a ninguna biomolécula'","'Solo las proteínas se ven afectadas por el calor, no los lípidos ni los carbohidratos'","'El calor convierte a todos los carbohidratos en lípidos'"],
+ correct:1,
+ exp:"Una comunicación científica precisa evita generalizaciones vagas ('destruye igual') y describe los efectos específicos y diferenciados del calor sobre cada tipo de biomolécula, según su estructura química particular."}
+];
+
+let currentQuiz = [];
+let currentIndex = 0;
+let answered = false;
+let userAnswers = []; // {skill, question, options, correctIdx, chosenIdx, exp}
+let scoreBySkill = {};
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function buildQuiz(){
+  let selected = [];
+  SKILL_ORDER.forEach(skillKey=>{
+    const pool = QUESTION_BANK.filter(q=>q.skill===skillKey);
+    const picked = shuffle(pool).slice(0,4);
+    selected = selected.concat(picked);
+  });
+  selected = shuffle(selected);
+  // shuffle options within each question, remapping correct index
+  return selected.map(orig=>{
+    const idxArr = [0,1,2,3,4];
+    const shuffledIdx = shuffle(idxArr);
+    const newOptions = shuffledIdx.map(i=>orig.options[i]);
+    const newCorrect = shuffledIdx.indexOf(orig.correct);
+    return {
+      skill: orig.skill,
+      question: orig.q,
+      options: newOptions,
+      correct: newCorrect,
+      exp: orig.exp
+    };
+  });
+}
+
+function startQuiz(){
+  currentQuiz = buildQuiz();
+  currentIndex = 0;
+  answered = false;
+  userAnswers = [];
+  scoreBySkill = {};
+  SKILL_ORDER.forEach(s=>scoreBySkill[s]={correct:0,total:0});
+  document.getElementById('start-screen').classList.add('hidden');
+  document.getElementById('dashboard-screen').classList.add('hidden');
+  document.getElementById('review-screen').classList.add('hidden');
+  document.getElementById('quiz-screen').classList.remove('hidden');
+  renderQuestion();
+}
+
+function renderQuestion(){
+  answered = false;
+  const q = currentQuiz[currentIndex];
+  const total = currentQuiz.length;
+  document.getElementById('progress-fill').style.width = ((currentIndex)/total*100)+'%';
+  document.getElementById('progress-label').textContent = (currentIndex+1)+' / '+total;
+  document.getElementById('skill-tag').textContent = SKILL_NAMES[q.skill];
+  document.getElementById('qnum').textContent = 'Pregunta '+(currentIndex+1);
+  document.getElementById('question-text').textContent = q.question;
+
+  const optsDiv = document.getElementById('options');
+  optsDiv.innerHTML = '';
+  q.options.forEach((opt, i)=>{
+    const btn = document.createElement('button');
+    btn.className = 'option';
+    btn.innerHTML = '<span class="letter">'+LETTERS[i]+')</span><span>'+opt+'</span>';
+    btn.onclick = ()=>selectOption(i);
+    optsDiv.appendChild(btn);
+  });
+
+  document.getElementById('feedback').classList.add('hidden');
+  document.getElementById('next-btn').classList.add('hidden');
+}
+
+function selectOption(i){
+  if(answered) return;
+  answered = true;
+  const q = currentQuiz[currentIndex];
+  const correct = q.correct;
+  const options = document.querySelectorAll('#options .option');
+  options.forEach((opt, idx)=>{
+    opt.classList.add('locked');
+    if(idx===correct) opt.classList.add('correct');
+    else if(idx===i) opt.classList.add('incorrect');
+    else opt.classList.add('dim');
+  });
+
+  const isCorrect = (i===correct);
+  scoreBySkill[q.skill].total++;
+  if(isCorrect) scoreBySkill[q.skill].correct++;
+
+  userAnswers.push({
+    skill:q.skill, question:q.question, options:q.options,
+    correctIdx:correct, chosenIdx:i, exp:q.exp, isCorrect
+  });
+
+  const fb = document.getElementById('feedback');
+  fb.classList.remove('hidden');
+  fb.classList.toggle('wrong', !isCorrect);
+  fb.innerHTML = '<span class="pista-label">'+(isCorrect ? '✓ Correcto — Pista' : '✕ Incorrecto — Pista')+'</span>'+
+    '<strong>Respuesta correcta: '+LETTERS[correct]+') '+q.options[correct]+'</strong><br><br>'+q.exp;
+
+  document.getElementById('next-btn').classList.remove('hidden');
+}
+
+function nextQuestion(){
+  currentIndex++;
+  if(currentIndex >= currentQuiz.length){
+    showDashboard();
+  } else {
+    renderQuestion();
+  }
+}
+
+function showDashboard(){
+  document.getElementById('quiz-screen').classList.add('hidden');
+  document.getElementById('dashboard-screen').classList.remove('hidden');
+
+  const totalCorrect = userAnswers.filter(a=>a.isCorrect).length;
+  const totalQ = userAnswers.length;
+  document.getElementById('score-total').innerHTML = totalCorrect+'<span>/'+totalQ+'</span>';
+  const pct = Math.round((totalCorrect/totalQ)*100);
+  document.getElementById('score-caption').textContent = pct+'% de logro general';
+
+  const barsDiv = document.getElementById('skill-bars');
+  barsDiv.innerHTML = '';
+  const weakSkills = [];
+  const strongSkills = [];
+
+  SKILL_ORDER.forEach(skillKey=>{
+    const s = scoreBySkill[skillKey];
+    const skillPct = s.total>0 ? Math.round((s.correct/s.total)*100) : 0;
+    let color = 'var(--accent-coral)';
+    if(skillPct>=75) color='var(--accent-sage)';
+    else if(skillPct>=50) color='var(--accent-amber)';
+
+    const row = document.createElement('div');
+    row.className='skill-bar-row';
+    row.innerHTML = '<div class="skill-bar-head"><span class="name">'+SKILL_NAMES[skillKey]+'</span><span class="frac">'+s.correct+'/'+s.total+'</span></div>'+
+      '<div class="skill-bar-track"><div class="skill-bar-fill" style="width:'+skillPct+'%;background:'+color+';"></div></div>';
+    barsDiv.appendChild(row);
+
+    if(skillPct<75) weakSkills.push({name:SKILL_NAMES[skillKey], pct:skillPct});
+    else strongSkills.push(SKILL_NAMES[skillKey]);
+  });
+
+  const improveBox = document.getElementById('improve-box');
+  const improveList = document.getElementById('improve-list');
+  improveList.innerHTML='';
+  if(weakSkills.length>0){
+    improveBox.classList.remove('hidden');
+    weakSkills.sort((a,b)=>a.pct-b.pct).forEach(w=>{
+      const li = document.createElement('li');
+      li.innerHTML = '<strong>'+w.name+'</strong> ('+w.pct+'%) — refuerza con más ejercicios de este tipo de habilidad, revisando las pistas de las preguntas falladas.';
+      improveList.appendChild(li);
+    });
+  } else {
+    improveBox.classList.add('hidden');
+  }
+
+  const strongBox = document.getElementById('strong-box');
+  const strongText = document.getElementById('strong-text');
+  if(strongSkills.length>0){
+    strongBox.classList.remove('hidden');
+    strongText.textContent = strongSkills.join(', ') + '. Buen dominio, mantén la práctica con nuevos intentos.';
+  } else {
+    strongBox.classList.add('hidden');
+  }
+}
+
+function restartQuiz(){
+  startQuiz();
+}
+
+function reviewAnswers(){
+  document.getElementById('dashboard-screen').classList.add('hidden');
+  const rev = document.getElementById('review-screen');
+  rev.classList.remove('hidden');
+  let html = '<p class="eyebrow">Revisión de respuestas</p>';
+  userAnswers.forEach((a, i)=>{
+    html += '<div style="margin-bottom:22px;padding-bottom:18px;border-bottom:1px solid var(--line);">'+
+      '<span class="skill-tag">'+SKILL_NAMES[a.skill]+'</span>'+
+      '<p class="question-text" style="font-size:16px;">'+(i+1)+'. '+a.question+'</p>'+
+      '<p style="font-size:14px;color:'+(a.isCorrect?'var(--accent-sage)':'var(--accent-coral)')+';margin:0 0 6px;">'+
+        (a.isCorrect ? '✓ Respondiste correctamente' : '✕ Tu respuesta: '+LETTERS[a.chosenIdx]+') '+a.options[a.chosenIdx])+
+      '</p>'+
+      '<p style="font-size:14px;color:var(--text-muted);margin:0 0 8px;">Correcta: '+LETTERS[a.correctIdx]+') '+a.options[a.correctIdx]+'</p>'+
+      '<div class="feedback" style="margin-top:6px;"><span class="pista-label">Pista</span>'+a.exp+'</div>'+
+    '</div>';
+  });
+  html += '<div class="actions"><button class="btn" onclick="restartQuiz(); document.getElementById(\'review-screen\').classList.add(\'hidden\');">Repetir con nuevas preguntas</button></div>';
+  rev.innerHTML = html;
+}
+</script>
+</body>
+</html>

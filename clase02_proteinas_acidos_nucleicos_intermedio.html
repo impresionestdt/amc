@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PAES Biología · Clase 2 · Proteínas y Ácidos Nucleicos (Nivel Intermedio)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Source+Sans+3:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-deep:#1a1030;
+    --bg-panel:#241a42;
+    --bg-panel-2:#2c2050;
+    --accent-amber:#f0a24b;
+    --accent-sage:#7fb88f;
+    --accent-coral:#e85c5c;
+    --text-light:#f3ede1;
+    --text-muted:#bdb0d6;
+    --line:#3c2f5c;
+    --radius:14px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:radial-gradient(circle at 15% -10%, #372a5c 0%, var(--bg-deep) 55%) fixed;
+    color:var(--text-light);
+    font-family:'Source Sans 3', system-ui, sans-serif;
+    min-height:100vh;
+    padding:32px 16px 64px;
+  }
+  .wrap{max-width:820px;margin:0 auto;}
+  .eyebrow{font-family:'JetBrains Mono', monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent-amber);margin:0 0 8px;}
+  h1{font-family:'Fraunces', serif;font-weight:600;font-size:clamp(26px,4vw,38px);line-height:1.1;margin:0 0 6px;color:var(--text-light);}
+  .sub{color:var(--text-muted);font-size:15px;margin:0 0 28px;max-width:60ch;}
+  .card{background:linear-gradient(180deg, var(--bg-panel) 0%, var(--bg-panel-2) 100%);border:1px solid var(--line);border-radius:var(--radius);padding:28px;box-shadow:0 20px 40px -20px rgba(0,0,0,.5);}
+  #start-screen ul{color:var(--text-muted);font-size:14.5px;line-height:1.7;padding-left:20px;margin:18px 0 26px;}
+  #start-screen li{margin-bottom:4px;}
+  .btn{font-family:'Source Sans 3', sans-serif;font-weight:700;font-size:15px;border:none;border-radius:999px;padding:14px 30px;cursor:pointer;background:var(--accent-amber);color:#2a1608;transition:transform .15s ease, box-shadow .15s ease;box-shadow:0 8px 20px -8px rgba(0,0,0,.35);}
+  .btn:hover{transform:translateY(-1px);}
+  .btn:active{transform:translateY(0);}
+  .btn.ghost{background:transparent;color:var(--text-muted);border:1.5px solid var(--line);box-shadow:none;}
+  .progress-row{display:flex;align-items:center;gap:14px;margin-bottom:18px;}
+  .progress-track{flex:1;height:6px;border-radius:99px;background:var(--line);overflow:hidden;}
+  .progress-fill{height:100%;background:linear-gradient(90deg,var(--accent-sage),var(--accent-amber));border-radius:99px;transition:width .3s ease;}
+  .progress-label{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--text-muted);white-space:nowrap;}
+  .skill-tag{display:inline-block;font-family:'JetBrains Mono', monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--bg-deep);background:var(--accent-sage);padding:5px 11px;border-radius:999px;margin-bottom:14px;}
+  .qnum{color:var(--text-muted);font-size:13px;font-family:'JetBrains Mono',monospace;margin-bottom:6px;}
+  .question-text{font-family:'Fraunces', serif;font-weight:500;font-size:19px;line-height:1.45;margin:0 0 22px;}
+  .options{display:flex;flex-direction:column;gap:10px;}
+  .option{display:flex;align-items:flex-start;gap:12px;text-align:left;background:rgba(255,255,255,.03);border:1.5px solid var(--line);border-radius:10px;padding:13px 15px;cursor:pointer;color:var(--text-light);font-size:14.5px;line-height:1.4;transition:border-color .15s, background .15s;}
+  .option:hover:not(.locked){border-color:var(--accent-amber);}
+  .option .letter{font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--accent-amber);flex-shrink:0;}
+  .option.correct{border-color:var(--accent-sage);background:rgba(111,168,138,.14);}
+  .option.incorrect{border-color:var(--accent-coral);background:rgba(228,87,46,.14);}
+  .option.locked{cursor:default;}
+  .option.dim{opacity:.45;}
+  .feedback{margin-top:18px;padding:16px 18px;border-radius:10px;background:rgba(255,255,255,.04);border-left:4px solid var(--accent-sage);font-size:14px;line-height:1.6;color:var(--text-muted);}
+  .feedback.wrong{border-left-color:var(--accent-coral);}
+  .feedback strong{color:var(--text-light);}
+  .feedback .pista-label{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent-amber);display:block;margin-bottom:6px;}
+  .nav-row{display:flex;justify-content:flex-end;margin-top:22px;}
+  .score-hero{text-align:center;padding:10px 0 26px;}
+  .score-big{font-family:'Fraunces',serif;font-weight:700;font-size:56px;color:var(--accent-amber);line-height:1;}
+  .score-big span{font-size:24px;color:var(--text-muted);font-weight:500;}
+  .score-caption{color:var(--text-muted);font-size:14px;margin-top:6px;}
+  .skill-bars{display:flex;flex-direction:column;gap:16px;margin:22px 0 8px;}
+  .skill-bar-head{display:flex;justify-content:space-between;font-size:13.5px;margin-bottom:6px;}
+  .skill-bar-head .name{font-weight:600;}
+  .skill-bar-head .frac{font-family:'JetBrains Mono',monospace;color:var(--text-muted);}
+  .skill-bar-track{height:10px;border-radius:99px;background:var(--line);overflow:hidden;}
+  .skill-bar-fill{height:100%;border-radius:99px;}
+  .improve-box{margin-top:26px;background:rgba(228,87,46,.08);border:1px solid rgba(228,87,46,.35);border-radius:10px;padding:18px 20px;}
+  .improve-box h3{font-family:'Fraunces',serif;font-size:16px;margin:0 0 10px;color:var(--accent-coral);}
+  .improve-box ul{margin:0;padding-left:20px;color:var(--text-light);font-size:14px;line-height:1.75;}
+  .strong-box{margin-top:14px;background:rgba(111,168,138,.08);border:1px solid rgba(111,168,138,.35);border-radius:10px;padding:18px 20px;}
+  .strong-box h3{font-family:'Fraunces',serif;font-size:16px;margin:0 0 10px;color:var(--accent-sage);}
+  .strong-box p{margin:0;color:var(--text-light);font-size:14px;line-height:1.6;}
+  .actions{display:flex;gap:12px;margin-top:28px;flex-wrap:wrap;}
+  .hidden{display:none !important;}
+  footer{text-align:center;color:var(--text-muted);font-size:12px;margin-top:26px;opacity:.6;}
+</style>
+</head>
+<body> <div style="float: left; margin-right: 25px; margin-bottom: 25px;"><img src="Logo_AMC.png" alt="Logo" style="max-width: 150px;"></div>
+<div class="wrap">
+  <p class="eyebrow">PAES · Ciencias — Módulo Biología Común · Nivel Intermedio</p>
+  <h1>Proteínas y Ácidos Nucleicos</h1>
+  <p class="sub">Eje 1: Organización, estructura y actividad celular — Sub-eje: Biomoléculas organizadas y teoría celular — Clase 2: Proteínas y Ácidos Nucleicos</p>
+
+  <div class="card" id="start-screen">
+    <p class="eyebrow" style="margin-bottom:14px;">Antes de comenzar</p>
+    <p style="color:var(--text-muted);font-size:14.5px;line-height:1.6;">Este quiz evalúa nivel <strong style='color:var(--text-light);'>intermedio</strong>, con 20 preguntas (4 por cada habilidad PAES), extraídas al azar de un banco amplio. Cada intento genera una versión distinta.</p>
+    <ul>
+      <li>Observar y plantear preguntas</li>
+      <li>Planificar y conducir una investigación</li>
+      <li>Procesar y analizar la evidencia</li>
+      <li>Evaluar</li>
+      <li>Comunicar</li>
+    </ul>
+    <button class="btn" onclick="startQuiz()">Comenzar quiz</button>
+  </div>
+
+  <div class="card hidden" id="quiz-screen">
+    <div class="progress-row">
+      <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+      <div class="progress-label" id="progress-label">1 / 20</div>
+    </div>
+    <span class="skill-tag" id="skill-tag"></span>
+    <p class="qnum" id="qnum"></p>
+    <p class="question-text" id="question-text"></p>
+    <div class="options" id="options"></div>
+    <div class="feedback hidden" id="feedback"></div>
+    <div class="nav-row">
+      <button class="btn hidden" id="next-btn" onclick="nextQuestion()">Siguiente →</button>
+    </div>
+  </div>
+
+  <div class="card hidden" id="dashboard-screen">
+    <p class="eyebrow">Resultados</p>
+    <div class="score-hero">
+      <div class="score-big" id="score-total">0<span>/20</span></div>
+      <p class="score-caption" id="score-caption">Puntaje global</p>
+    </div>
+    <div class="skill-bars" id="skill-bars"></div>
+    <div class="improve-box hidden" id="improve-box">
+      <h3>Puntos a mejorar</h3>
+      <ul id="improve-list"></ul>
+    </div>
+    <div class="strong-box hidden" id="strong-box">
+      <h3>Habilidades consolidadas</h3>
+      <p id="strong-text"></p>
+    </div>
+    <div class="actions">
+      <button class="btn" onclick="restartQuiz()">Repetir con nuevas preguntas</button>
+      <button class="btn ghost" onclick="reviewAnswers()">Revisar mis respuestas</button>
+    </div>
+  </div>
+
+  <div class="card hidden" id="review-screen"></div>
+
+  <footer>Banco de 40 preguntas · nivel intermedio · Clase 2 de 30 · basado en el temario DEMRE PAES Ciencias — Biología Común</footer>
+</div>
+
+<script>
+const SKILL_NAMES = {"OBS": "Observar y plantear preguntas", "PLAN": "Planificar y conducir una investigación", "PROC": "Procesar y analizar la evidencia", "EVAL": "Evaluar", "COM": "Comunicar"};
+const SKILL_ORDER = ["OBS", "PLAN", "PROC", "EVAL", "COM"];
+const LETTERS = ["A","B","C","D","E"];
+const PICK_PER_SKILL = 4;
+
+const QUESTION_BANK = [{"skill": "OBS", "q": "Una mutación cambia un solo aminoácido en la cadena beta de la hemoglobina (anemia falciforme), alterando la forma de los glóbulos rojos. ¿Pregunta más precisa?", "options": ["¿La hemoglobina deja de ser una proteína después de la mutación?", "¿Un cambio en un solo aminoácido de la estructura primaria puede alterar la estructura cuaternaria y la función de una proteína compleja como la hemoglobina?", "¿El cambio de forma de los glóbulos rojos se debe a una alteración del ARN ribosomal?", "¿La anemia falciforme se debe a un exceso de carbohidratos en la sangre?", "¿Todas las mutaciones en la hemoglobina generan el mismo efecto que la anemia falciforme?"], "correct": 1, "exp": "La hemoglobina depende de su estructura cuaternaria (4 subunidades) para funcionar; un cambio puntual en la secuencia primaria de una subunidad puede alterar el ensamblaje y la función global de la molécula."}, {"skill": "OBS", "q": "Dos enzimas con secuencias de aminoácidos distintas catalizan la misma reacción con eficiencia similar, siempre que formen un sitio activo con geometría equivalente. ¿Pregunta más precisa?", "options": ["¿Dos proteínas con distinta secuencia nunca pueden cumplir la misma función?", "¿La eficiencia catalítica depende únicamente del tamaño de la proteína?", "¿El sitio activo de una enzima está formado por ácidos nucleicos?", "¿La conservación de la geometría del sitio activo, más que la identidad exacta de la secuencia, es determinante para la función catalítica?", "¿Todas las enzimas con función similar tienen exactamente la misma secuencia?"], "correct": 3, "exp": "Lo funcionalmente relevante suele ser la forma tridimensional del sitio activo; distintas secuencias pueden converger en geometrías equivalentes que permiten catalizar la misma reacción."}, {"skill": "OBS", "q": "Las histonas (ricas en aminoácidos con carga positiva) se asocian fuertemente con el ADN (cargado negativamente) formando la cromatina. ¿Pregunta pertinente?", "options": ["¿Las histonas repelen completamente al ADN debido a cargas iguales?", "¿La cromatina está formada exclusivamente por ARN?", "¿La atracción electrostática entre los fosfatos del ADN y los aminoácidos básicos de las histonas explica la formación estable de la cromatina?", "¿Las histonas son enzimas que degradan el ADN?", "¿La formación de cromatina no depende de ninguna propiedad química del ADN?"], "correct": 2, "exp": "Las cargas opuestas (fosfatos negativos del ADN y grupos R positivos de las histonas) generan una atracción electrostática que estabiliza el empaquetamiento del ADN en cromatina."}, {"skill": "OBS", "q": "Proteínas de organismos termófilos mantienen su actividad a temperaturas donde proteínas homólogas de organismos mesófilos se desnaturalizan. ¿Pregunta más precisa?", "options": ["¿Los organismos termófilos no poseen proteínas en su composición celular?", "¿La temperatura ambiente no tiene ninguna relación con la estabilidad proteica?", "¿Todas las proteínas se desnaturalizan exactamente a la misma temperatura?", "¿Existen diferencias en la secuencia o en los enlaces estabilizadores entre proteínas termófilas y mesófilas que expliquen su distinta estabilidad térmica?", "¿Las proteínas termófilas están formadas por un tipo de aminoácido ausente en otras proteínas?"], "correct": 3, "exp": "La adaptación a altas temperaturas suele asociarse a diferencias estructurales (más puentes de hidrógeno o interacciones iónicas) que confieren mayor estabilidad térmica a la proteína."}, {"skill": "OBS", "q": "El ARN de transferencia adopta una estructura en 'hoja de trébol' por el apareamiento interno de bases complementarias dentro de su propia cadena. ¿Pregunta pertinente?", "options": ["¿El ARNt es en realidad una molécula de ADN de doble hebra?", "¿La forma de hoja de trébol se debe a la unión con proteínas ribosomales exclusivamente?", "¿El apareamiento de bases dentro de una misma hebra de ARN permite formar estructuras secundarias estables necesarias para su función?", "¿El apareamiento de bases solo puede ocurrir entre dos moléculas distintas de ARN?", "¿El ARNt no participa en ningún proceso de síntesis de proteínas?"], "correct": 2, "exp": "Aunque el ARN es monocatenario, regiones complementarias de la misma hebra pueden aparearse entre sí, generando estructuras secundarias plegadas funcionalmente importantes."}, {"skill": "OBS", "q": "Proteínas de membrana mantienen regiones con muchos aminoácidos hidrofóbicos que atraviesan la bicapa lipídica, con regiones hidrofílicas expuestas al medio acuoso. ¿Pregunta más precisa?", "options": ["¿Las proteínas de membrana están formadas exclusivamente por aminoácidos hidrofílicos?", "¿La distribución de aminoácidos según su polaridad determina la orientación e inserción de una proteína en la membrana celular?", "¿Todas las proteínas atraviesan completamente la bicapa lipídica sin excepción?", "¿La orientación de una proteína de membrana depende solo de su tamaño total?", "¿La polaridad de los aminoácidos no influye en la ubicación de la proteína?"], "correct": 1, "exp": "La segregación espacial de aminoácidos hidrofóbicos e hidrofílicos determina qué regiones de la proteína quedan dentro de la bicapa lipídica y cuáles expuestas al medio acuoso."}, {"skill": "OBS", "q": "Enzimas alostéricas cambian su actividad catalítica cuando una molécula reguladora se une a un sitio distinto del sitio activo. ¿Pregunta más precisa?", "options": ["¿El sitio alostérico y el sitio activo son siempre exactamente la misma región de la enzima?", "¿Las enzimas alostéricas no poseen ninguna estructura tridimensional definida?", "¿La regulación alostérica ocurre únicamente en ácidos nucleicos, nunca en proteínas?", "¿Toda molécula reguladora se une exclusivamente al sitio activo?", "¿La unión de un regulador a un sitio alostérico modifica la conformación de la enzima, afectando indirectamente la eficiencia de su sitio activo?"], "correct": 4, "exp": "La regulación alostérica ocurre porque el cambio conformacional inducido en un sitio distante se transmite estructuralmente hasta el sitio activo, modulando la actividad catalítica."}, {"skill": "OBS", "q": "Mutaciones silenciosas, debido a la redundancia del código genético, no alteran la función de la proteína resultante. ¿Pregunta más precisa?", "options": ["¿Todas las mutaciones en el ADN alteran necesariamente la función de la proteína producida?", "¿El código genético no presenta ningún tipo de redundancia entre codones y aminoácidos?", "¿La redundancia del código genético explica por qué algunas mutaciones en el ADN no afectan la secuencia ni la función de la proteína producida?", "¿Las mutaciones silenciosas eliminan por completo la producción de la proteína?", "¿La secuencia de aminoácidos no depende en absoluto de la secuencia de ADN?"], "correct": 2, "exp": "Como varios codones distintos pueden codificar el mismo aminoácido, un cambio en el ADN puede no alterar la proteína final, explicando el fenómeno de mutación silenciosa."}, {"skill": "PLAN", "q": "Para investigar si el pH afecta la actividad de la pepsina de forma distinta que la tripsina, ¿cuál es el diseño más riguroso?", "options": ["Medir ambas enzimas juntas en un mismo tubo sin poder diferenciar su actividad individual", "Medir la actividad de ambas enzimas por separado, cada una a una serie común de valores de pH, manteniendo iguales concentración de enzima y sustrato", "Usar una sola condición de pH para cada enzima, elegida arbitrariamente", "Comparar solo el aspecto físico de ambas enzimas, sin medir actividad catalítica", "No es necesario mantener la misma concentración de sustrato entre ambas enzimas"], "correct": 1, "exp": "Solo comparando ambas enzimas bajo la misma serie de condiciones de pH, con iguales concentraciones, se puede determinar de forma válida el pH óptimo de cada una."}, {"skill": "PLAN", "q": "Un estudiante desea determinar el efecto de distintas concentraciones salinas sobre la solubilidad de una proteína globular. ¿Diseño experimental correcto?", "options": ["Variar simultáneamente la sal, el pH y la temperatura sin controlar ninguna por separado", "Usar una sola concentración de sal y extrapolar el resultado a todas las demás", "Preparar soluciones con concentraciones crecientes de sal, manteniendo igual la cantidad de proteína, temperatura y pH, y registrar en qué concentración precipita la proteína", "No es necesario mantener constante la cantidad de proteína entre las muestras", "Medir solo el color de la solución sin evaluar turbidez o precipitación"], "correct": 2, "exp": "Al mantener constantes todas las variables excepto la concentración salina, se puede atribuir de forma válida cualquier cambio en la solubilidad a esa variable."}, {"skill": "PLAN", "q": "Para comprobar si una mutación específica afecta la estabilidad térmica de la proteína codificada, ¿cuál es el procedimiento adecuado?", "options": ["Comparar la proteína mutada con una proteína de una especie completamente distinta", "Medir solo el tamaño de ambas proteínas, sin evaluar su actividad catalítica", "No es necesario purificar las proteínas antes de comparar su estabilidad", "Usar condiciones de expresión distintas para la proteína silvestre y la mutada", "Expresar y purificar tanto la proteína silvestre como la mutada bajo las mismas condiciones, y comparar la temperatura a la que cada una pierde el 50% de su actividad"], "correct": 4, "exp": "Comparar bajo condiciones idénticas la proteína original y la mutada, usando un criterio cuantitativo (temperatura de pérdida del 50% de actividad), permite atribuir la diferencia a la mutación."}, {"skill": "PLAN", "q": "Se desea investigar si los puentes disulfuro contribuyen a la estabilidad estructural de una proteína. ¿Diseño experimental más adecuado?", "options": ["Comparar dos proteínas completamente distintas, una con y otra sin puentes disulfuro por naturaleza", "Comparar la actividad de la proteína en su forma nativa frente a la misma proteína tratada con un agente reductor que rompe específicamente los puentes disulfuro, bajo las mismas condiciones", "Medir solo el color de la proteína antes y después del tratamiento reductor", "No es necesario un control con la proteína en su forma nativa", "Usar distintas condiciones de pH para la muestra tratada y la no tratada"], "correct": 1, "exp": "Comparar la misma proteína con y sin puentes disulfuro (mediante un agente reductor específico) aísla el efecto de ese tipo de enlace sobre la estabilidad estructural."}, {"skill": "PLAN", "q": "Para determinar si el apareamiento entre A-T y C-G es específico (y no entre otras combinaciones), ¿qué diseño conceptual sería más adecuado?", "options": ["Medir solo la longitud de las hebras de ADN, sin evaluar su estabilidad térmica", "Usar una sola combinación de bases y asumir el resultado para todas las demás", "Medir la estabilidad (temperatura de fusión) de hebras sintéticas de ADN con distintas combinaciones de apareamiento, comparando combinaciones complementarias tradicionales con no complementarias", "No es necesario comparar distintas combinaciones para responder esta pregunta", "Evaluar únicamente hebras de ARN en lugar de ADN"], "correct": 2, "exp": "Comparar la estabilidad de distintas combinaciones de apareamiento permite verificar experimentalmente que solo las combinaciones complementarias (A-T, C-G) forman una doble hélice estable."}, {"skill": "PLAN", "q": "Un estudiante desea comparar la eficiencia catalítica de una enzima silvestre y una variante con mutación en su sitio activo. ¿Diseño correcto?", "options": ["Medir la velocidad de reacción de ambas enzimas a una sola concentración de sustrato", "Usar distinta concentración de enzima para cada variante evaluada", "Comparar solo el aspecto físico de ambas enzimas sin medir su cinética", "Medir la velocidad de reacción de ambas enzimas a varias concentraciones de sustrato, manteniendo igual la concentración de enzima, y calcular Km y Vmax de cada una", "No es necesario calcular parámetros cinéticos para comparar la eficiencia catalítica"], "correct": 3, "exp": "Construir curvas de saturación completas para ambas enzimas permite calcular y comparar de forma cuantitativa y rigurosa sus parámetros cinéticos característicos."}, {"skill": "PLAN", "q": "Para investigar si la desnaturalización de una proteína globular es reversible bajo ciertas condiciones, ¿cuál es el diseño más adecuado?", "options": ["Desnaturalizar la proteína de forma irreversible y luego intentar medir su actividad, sin remover el agente desnaturalizante", "Comparar la proteína desnaturalizada con una proteína completamente distinta", "No es necesario medir la actividad catalítica original antes de desnaturalizar la proteína", "Usar condiciones extremas de desnaturalización, ya que estas siempre son reversibles", "Desnaturalizar la proteína mediante un tratamiento controlado, luego remover el agente desnaturalizante gradualmente, y medir si recupera su actividad catalítica original"], "correct": 4, "exp": "Para evaluar reversibilidad se necesita medir la actividad antes de desnaturalizar, aplicar un tratamiento controlado (reversible en principio) y luego medir si la actividad se recupera al remover el agente."}, {"skill": "PLAN", "q": "Se desea determinar si el tipo de aminoácido en una posición específica del sitio activo es crítico para la función de una enzima (mutagénesis dirigida). ¿Diseño más riguroso?", "options": ["Cambiar simultáneamente varios aminoácidos en distintas posiciones sin poder aislar el efecto de la posición de interés", "Comparar solo dos variantes, sin incluir la enzima silvestre como referencia", "Medir únicamente el tamaño de la proteína resultante, sin evaluar su actividad catalítica", "Generar mediante mutagénesis dirigida varias variantes con un aminoácido distinto en esa posición específica, y comparar la actividad catalítica de cada variante frente a la enzima silvestre", "No es necesario mantener las mismas condiciones experimentales entre las distintas variantes"], "correct": 3, "exp": "Cambiar sistemáticamente el aminoácido de una sola posición, comparando siempre contra la enzima silvestre bajo las mismas condiciones, permite establecer con rigor la importancia de esa posición."}, {"skill": "PROC", "q": "Se midió la actividad relativa (%) de tripsina y pepsina a distintos pH: pH2: tripsina=5%,pepsina=95%; pH4: tripsina=20%,pepsina=70%; pH8: tripsina=95%,pepsina=5%. ¿Conclusión más adecuada?", "options": ["Ambas enzimas presentan exactamente el mismo óptimo de pH", "La pepsina funciona mejor en condiciones alcalinas que la tripsina", "El pH no influye en la actividad de ninguna de las dos enzimas", "La tripsina es más activa que la pepsina en cualquier condición de pH", "Ambas enzimas presentan óptimos de pH claramente distintos: la pepsina funciona mejor en condiciones ácidas y la tripsina en condiciones alcalinas, consistente con sus ambientes de acción digestiva"], "correct": 4, "exp": "Los datos muestran patrones opuestos: la pepsina decrece hacia pH alcalino y la tripsina crece, reflejando su adaptación a distintos ambientes digestivos (estómago vs. intestino)."}, {"skill": "PROC", "q": "La enzima silvestre tiene Km=2mM y una variante mutada tiene Km=20mM para el mismo sustrato, con Vmax igual en ambas. ¿Interpretación más adecuada?", "options": ["La variante mutada tiene mayor afinidad por el sustrato que la enzima silvestre", "La Km no tiene relación con la afinidad de la enzima por el sustrato", "Ambas enzimas presentan exactamente la misma afinidad por el sustrato", "Una Km más alta siempre indica una enzima más eficiente", "La variante mutada presenta menor afinidad por el sustrato, ya que requiere una concentración mucho mayor para alcanzar la mitad de su velocidad máxima"], "correct": 4, "exp": "Una Km mayor indica que se necesita más sustrato para alcanzar la mitad de la Vmax, lo que refleja menor afinidad de la enzima mutada por ese sustrato."}, {"skill": "PROC", "q": "Se comparó la temperatura de desnaturalización de tres proteínas homólogas: pez antártico=32°C; humano=51°C; bacteria termófila=88°C. ¿Conclusión más consistente?", "options": ["Todas las proteínas homólogas se desnaturalizan exactamente a la misma temperatura", "La proteína del pez antártico es la más estable térmicamente de las tres", "La temperatura de desnaturalización varía según el ambiente térmico habitual del organismo de origen, siendo mayor en organismos adaptados a ambientes más cálidos", "La temperatura ambiente del organismo no tiene relación con la estabilidad de sus proteínas", "La bacteria termófila presenta la proteína menos estable de las tres"], "correct": 2, "exp": "El patrón creciente (frío→templado→caliente) es consistente con una adaptación evolutiva de la estabilidad proteica al ambiente térmico habitual de cada organismo."}, {"skill": "PROC", "q": "En un gel de electroforesis, una proteína bajo condiciones nativas migra como un complejo mayor que bajo condiciones desnaturalizantes con SDS, donde se separa en subunidades más pequeñas. ¿Interpretación más adecuada?", "options": ["La proteína no posee ninguna estructura más allá de la primaria", "El SDS aumenta el tamaño real de la proteína en lugar de separarla", "Las subunidades observadas corresponden a moléculas de ARN", "La migración en el gel no tiene relación con el tamaño o estructura de la proteína", "La proteína posee estructura cuaternaria (varias subunidades asociadas no covalentemente), las cuales se separan al romperse esas interacciones con el desnaturalizante"], "correct": 4, "exp": "Que la proteína se separe en piezas más pequeñas solo bajo condiciones desnaturalizantes indica que en su forma nativa está formada por subunidades unidas por enlaces no covalentes (estructura cuaternaria)."}, {"skill": "PROC", "q": "Se midió el %G-C en el ADN de varios organismos, correlacionado positivamente con su temperatura de fusión (Tm). ¿Explicación bioquímica más adecuada?", "options": ["El apareamiento G-C es más débil que el A-T, por lo que debería reducir la Tm", "El porcentaje de bases no tiene relación con la estabilidad de la doble hélice", "Todos los pares de bases forman exactamente el mismo número de puentes de hidrógeno", "La Tm depende únicamente de la longitud de la molécula, no de su composición", "El apareamiento G-C involucra tres puentes de hidrógeno (frente a dos en A-T), por lo que mayor %G-C incrementa la estabilidad de la doble hélice y la Tm"], "correct": 4, "exp": "Más puentes de hidrógeno por par de bases (3 en G-C vs. 2 en A-T) implica mayor energía necesaria para separar las hebras, elevando la temperatura de fusión."}, {"skill": "PROC", "q": "En mutagénesis dirigida del sitio activo, la variante con aminoácido similar mantuvo 85% de actividad, mientras variantes con propiedades muy distintas tuvieron 5-15%. ¿Conclusión más adecuada?", "options": ["El tipo de aminoácido sustituido no tiene relación con la actividad enzimática resultante", "Cualquier cambio de aminoácido en el sitio activo elimina completamente la actividad enzimática", "Las variantes con menor actividad poseen una estructura primaria idéntica a la enzima silvestre", "La actividad enzimática depende únicamente del número total de aminoácidos de la proteína", "La similitud química entre el aminoácido original y el sustituto influye directamente en la conservación de la función catalítica"], "correct": 4, "exp": "Cuanto más similar es el aminoácido sustituto al original (en tamaño, carga, polaridad), mejor se conserva la geometría del sitio activo y, con ella, la función catalítica."}, {"skill": "PROC", "q": "Se midió la vida media de tres ARNm: A=15min; B=2horas; C=8horas. ¿Interpretación más adecuada respecto a la regulación génica?", "options": ["Todos los ARNm tienen exactamente la misma vida media dentro de la célula", "La vida media de un ARNm no tiene relación con la regulación de la expresión génica", "Los transcritos de mayor duración siempre producen menos proteína que los de menor duración", "La degradación del ARNm ocurre exclusivamente en el núcleo celular", "La variabilidad en la vida media sugiere un mecanismo adicional de regulación génica, donde transcritos de menor duración permiten una respuesta celular más rápida y transitoria"], "correct": 4, "exp": "Distintas vidas medias permiten a la célula regular la cantidad de proteína producida en el tiempo: transcritos de corta duración generan respuestas rápidas y ajustables."}, {"skill": "PROC", "q": "Se midió la actividad de una enzima alostérica ante concentraciones crecientes de un inhibidor no competitivo: Vmax disminuye progresivamente mientras Km se mantiene constante. ¿Interpretación más adecuada?", "options": ["El patrón observado es típico de una inhibición competitiva clásica", "El inhibidor se está uniendo directamente al sitio activo de la enzima", "La disminución de Vmax indica que el sustrato cambió de identidad química", "La Km constante indica que el inhibidor no tiene ningún efecto real sobre la enzima", "El patrón (Vmax disminuye, Km constante) es característico de inhibición no competitiva, donde el inhibidor se une a un sitio distinto del activo sin afectar la afinidad por el sustrato"], "correct": 4, "exp": "En la inhibición no competitiva, el inhibidor reduce la cantidad de enzima funcionalmente activa sin alterar la afinidad de la fracción activa por el sustrato, lo que se refleja en Km constante y Vmax menor."}, {"skill": "EVAL", "q": "Un estudio concluyó que 'todas las mutaciones son perjudiciales' basándose solo en mutaciones del sitio activo de una enzima. ¿Crítica más pertinente?", "options": ["La conclusión es correcta porque cualquier mutación siempre altera completamente la función", "Las mutaciones silenciosas no existen en la naturaleza", "El sitio activo es representativo de toda la secuencia de una proteína", "No es necesario distinguir entre regiones críticas y no críticas", "La conclusión generaliza incorrectamente a partir de mutaciones en una región crítica; existen mutaciones silenciosas o en regiones no críticas que no afectan la función"], "correct": 4, "exp": "No todas las regiones de una proteína son igualmente sensibles a mutaciones; generalizar desde el sitio activo (región crítica) a toda mutación posible es una sobregeneralización."}, {"skill": "EVAL", "q": "Un estudio comparó la estabilidad térmica de una enzima humana y una bacteriana usando métodos distintos para cada una, concluyendo que la bacteriana es 'mucho más estable'. ¿Crítica metodológica más sólida?", "options": ["El método de medición utilizado no tiene ninguna influencia sobre los resultados", "La comparación es válida porque ambos métodos miden exactamente lo mismo", "No es necesario estandarizar el método al comparar dos proteínas distintas", "La estabilidad térmica no puede medirse mediante ningún método experimental", "Usar métodos distintos para cada proteína compromete la comparabilidad directa; se requeriría la misma técnica para ambas antes de concluir sobre diferencias reales"], "correct": 4, "exp": "Distintos métodos pueden tener sensibilidades diferentes; sin un método común, las diferencias observadas podrían deberse a la técnica y no a una diferencia real de estabilidad."}, {"skill": "EVAL", "q": "Una publicación afirma que 'el ADN con mayor %G-C es evolutivamente superior' basándose solo en su mayor estabilidad térmica. ¿Crítica más sólida?", "options": ["La afirmación es completamente correcta y no requiere ningún matiz", "Un mayor %G-C siempre determina un mejor desempeño evolutivo del organismo", "La estabilidad térmica del ADN no tiene ninguna base química real", "El porcentaje de G-C no varía entre distintas especies", "La estabilidad térmica es una propiedad físico-química que no implica ventaja evolutiva general; extrapolar 'estabilidad' a 'superioridad' no está respaldado por la evidencia"], "correct": 4, "exp": "Una propiedad físico-química (estabilidad térmica) no es equivalente a una ventaja evolutiva o de aptitud biológica; esa extrapolación excede lo que los datos permiten afirmar."}, {"skill": "EVAL", "q": "Un estudio de mutagénesis evaluó una sola sustitución y concluyó que 'todos los aminoácidos de esa posición son intercambiables sin afectar la función'. ¿Limitación más relevante?", "options": ["Una sola sustitución es siempre suficiente para generalizar sobre cualquier otro aminoácido posible", "La conclusión es válida sin necesidad de evaluar otras sustituciones", "El sitio activo de una enzima no depende del tipo de aminoácido presente", "No es necesario un enfoque sistemático para estudiar la tolerancia a mutaciones", "Evaluar una única sustitución no permite generalizar sobre todas las posibles; se requeriría un enfoque sistemático (mutagénesis de saturación) para sostener esa conclusión"], "correct": 4, "exp": "Cada aminoácido tiene propiedades químicas distintas; probar solo uno no permite predecir el efecto de los otros 19 posibles en esa misma posición."}, {"skill": "EVAL", "q": "Un estudio sobre plegamiento concluyó que 'la secuencia determina completamente la estructura final de cualquier proteína' basándose en una sola proteína pequeña de plegamiento simple. ¿Crítica más pertinente?", "options": ["La secuencia de aminoácidos nunca influye en la estructura final de una proteína", "Todas las proteínas se pliegan exactamente de la misma manera", "No existen mecanismos celulares adicionales que asistan el plegamiento", "La conclusión es completamente generalizable sin ninguna limitación", "Generalizar a partir de una sola proteína simple ignora la existencia de proteínas cuyo plegamiento correcto depende también de chaperonas moleculares u otras condiciones celulares"], "correct": 4, "exp": "Muchas proteínas de mayor complejidad requieren asistencia de chaperonas para plegarse correctamente; asumir que la secuencia basta para todas las proteínas es una sobregeneralización."}, {"skill": "EVAL", "q": "Un estudio sobre la vida media del ARNm usó una sola línea celular y concluyó que 'todos los ARNm tienen aproximadamente la misma vida media en cualquier tipo celular'. ¿Limitación más relevante?", "options": ["La vida media del ARNm es idéntica en todos los tipos celulares sin excepción", "No es necesario evaluar más de una línea celular para esta generalización", "El tipo celular no tiene ninguna influencia sobre la estabilidad del ARN", "Un solo experimento siempre es representativo de todos los contextos celulares", "La vida media puede variar según el tipo celular y contexto fisiológico; generalizar desde una sola línea celular no sustenta una conclusión para 'cualquier tipo celular'"], "correct": 4, "exp": "Distintos tipos celulares tienen distinta maquinaria de degradación y regulación; un solo tipo celular no es representativo de todos los contextos posibles."}, {"skill": "EVAL", "q": "Un estudio de inhibición enzimática midió actividad en presencia de un supuesto inhibidor, sin incluir una condición sin inhibidor (control). ¿Problema metodológico más relevante?", "options": ["No es necesario un grupo control para evaluar el efecto de un inhibidor", "La ausencia de un control no afecta la validez de las conclusiones", "Cualquier disminución de actividad observada siempre se debe al inhibidor", "El grupo control solo es relevante en estudios con seres humanos", "Sin un grupo control no es posible determinar con certeza si el compuesto realmente reduce la actividad enzimática o si esta ya era baja por otras razones"], "correct": 4, "exp": "El grupo control (sin inhibidor, mismas condiciones) es indispensable para atribuir cualquier reducción de actividad específicamente al compuesto evaluado."}, {"skill": "EVAL", "q": "Un estudio concluyó que 'la estructura cuaternaria no es relevante para la función de las proteínas' basándose en una proteína que funciona correctamente como monómero. ¿Crítica más pertinente?", "options": ["La estructura cuaternaria nunca es relevante para ninguna proteína", "Todas las proteínas funcionan exclusivamente como monómeros", "La conclusión es válida y generalizable a cualquier tipo de proteína", "Una sola proteína siempre es representativa de todas las proteínas existentes", "La conclusión generaliza incorrectamente a partir de un caso particular; muchas proteínas, como la hemoglobina, dependen críticamente de su estructura cuaternaria para funcionar"], "correct": 4, "exp": "Existen numerosos ejemplos (como la hemoglobina) donde la estructura cuaternaria es esencial; un solo caso de proteína monomérica no invalida esa relevancia general."}, {"skill": "COM", "q": "Un estudiante debe explicar por qué una proteína con la misma secuencia pero mal plegada puede perder su función. ¿Explicación más precisa?", "options": ["La secuencia de aminoácidos es lo único relevante para la función, sin importar el plegamiento", "Una proteína mal plegada siempre mantiene exactamente la misma función que la bien plegada", "El plegamiento de una proteína no tiene relación con su estructura tridimensional", "La función de una proteína depende solo de su tamaño total, no de su forma", "La función depende de la estructura tridimensional específica, que posiciona los aminoácidos clave en el espacio correcto; un plegamiento incorrecto altera esa disposición y puede anular la función"], "correct": 4, "exp": "La secuencia es necesaria pero no suficiente: la disposición espacial correcta de los aminoácidos (especialmente del sitio activo) es lo que permite la función biológica."}, {"skill": "COM", "q": "Al explicar por qué la pepsina funciona en el ambiente ácido del estómago mientras otras enzimas humanas se desnaturalizan allí, ¿cuál es la explicación más precisa?", "options": ["La pepsina no es realmente una proteína, por lo que no se ve afectada por el pH", "Todas las enzimas humanas funcionan igual de bien en cualquier condición de pH", "El ambiente ácido del estómago no tiene ningún efecto sobre ninguna proteína", "La pepsina funciona en el estómago porque allí no existen enlaces químicos que romper", "La pepsina posee una estructura de aminoácidos adaptada evolutivamente que le confiere estabilidad conformacional específicamente en condiciones muy ácidas, a diferencia de otras enzimas óptimas a pH neutro"], "correct": 4, "exp": "Cada enzima tiene un pH óptimo determinado por su estructura; la pepsina evolucionó para mantenerse estable y funcional específicamente en el ambiente ácido gástrico."}, {"skill": "COM", "q": "Un estudiante debe explicar por qué las dos hebras de ADN se mantienen unidas mediante puentes de hidrógeno y no enlaces covalentes. ¿Explicación más precisa?", "options": ["Los puentes de hidrógeno son más fuertes que cualquier enlace covalente conocido", "Las dos hebras de ADN están unidas mediante enlaces peptídicos", "La separación de las hebras es siempre irreversible bajo cualquier condición", "Los puentes de hidrógeno solo existen entre moléculas de proteína", "Los puentes de hidrógeno son más débiles que los covalentes, lo que permite que las hebras se separen reversiblemente (por ejemplo, en replicación o transcripción) sin romper cada hebra individual"], "correct": 4, "exp": "La reversibilidad de la separación de hebras es funcionalmente esencial para procesos como la replicación y transcripción, y depende de que la unión entre hebras sea más débil que los enlaces dentro de cada hebra."}, {"skill": "COM", "q": "Al comunicar por qué la mutagénesis dirigida es útil para estudiar la función de aminoácidos específicos, ¿cuál es la explicación más precisa?", "options": ["Permite cambiar simultáneamente toda la secuencia de la proteína sin ningún control", "Solo sirve para estudiar la estructura del ADN, sin relación con las proteínas", "No permite establecer relaciones entre un aminoácido específico y la función proteica", "Se utiliza exclusivamente para eliminar por completo la función de cualquier proteína", "Permite cambiar de forma controlada un aminoácido específico y comparar la función resultante con la proteína original, aislando el efecto de ese aminoácido particular"], "correct": 4, "exp": "Al modificar un solo aminoácido y mantener todo lo demás constante, se puede atribuir cualquier cambio de función específicamente a esa posición."}, {"skill": "COM", "q": "Un estudiante debe explicar la relación entre la Km de una enzima y su afinidad por el sustrato. ¿Explicación más precisa?", "options": ["Una Km alta siempre indica una mayor afinidad de la enzima por el sustrato", "La Km no tiene relación con la afinidad de la enzima por su sustrato", "La Km mide directamente la cantidad total de enzima presente en la muestra", "Una Km baja indica que la enzima no puede unirse en absoluto a su sustrato", "La Km representa la concentración de sustrato necesaria para alcanzar la mitad de la velocidad máxima; una Km baja indica alta afinidad, mientras una Km alta indica menor afinidad"], "correct": 4, "exp": "Cuanto menos sustrato se necesita para alcanzar la mitad de Vmax (Km baja), mayor es la afinidad de la enzima por ese sustrato."}, {"skill": "COM", "q": "Al explicar por qué las chaperonas moleculares son necesarias para el correcto plegamiento de algunas proteínas, ¿cuál es la explicación más precisa?", "options": ["Las chaperonas son enzimas que degradan proteínas mal formadas sin ayudar a su plegamiento", "Todas las proteínas requieren obligatoriamente de chaperonas para plegarse correctamente", "Las chaperonas están formadas por ácidos nucleicos en lugar de aminoácidos", "El plegamiento proteico nunca requiere de ninguna asistencia celular", "Las chaperonas asisten el plegamiento correcto de ciertas proteínas, especialmente en condiciones de alta concentración proteica o estrés, evitando agregaciones incorrectas y guiando la conformación funcional"], "correct": 4, "exp": "Las chaperonas no determinan la estructura final, pero previenen interacciones inespecíficas durante el plegamiento, aumentando la probabilidad de alcanzar la conformación correcta."}, {"skill": "COM", "q": "Un estudiante debe comunicar por qué la inhibición no competitiva reduce la Vmax pero no cambia la Km. ¿Explicación más precisa?", "options": ["El inhibidor no competitivo se une directamente al sitio activo, compitiendo con el sustrato", "La Vmax y la Km siempre cambian juntas en cualquier tipo de inhibición", "La inhibición no competitiva no tiene ningún efecto medible sobre la actividad enzimática", "El sustrato deja de unirse por completo a la enzima en presencia de este inhibidor", "El inhibidor se une a un sitio distinto del activo, sin impedir la unión normal del sustrato (Km constante), pero reduciendo la cantidad de enzima funcionalmente activa disponible (menor Vmax)"], "correct": 4, "exp": "Como el inhibidor no compite por el sitio activo, la afinidad de las moléculas de enzima aún funcionales no cambia, pero hay menos enzima disponible en total, reduciendo la velocidad máxima alcanzable."}, {"skill": "COM", "q": "Al explicar la diferencia funcional entre ARN mensajero, ARN de transferencia y ARN ribosomal, ¿cuál es la explicación más precisa y completa?", "options": ["Los tres tipos de ARN cumplen exactamente la misma función dentro de la célula", "El ARN ribosomal es el encargado de transportar aminoácidos hacia el ribosoma", "El ARN de transferencia contiene toda la información genética del organismo", "El ARN mensajero se encarga de unir físicamente los aminoácidos entre sí", "El ARN mensajero transporta la información genética copiada del ADN; el ARN de transferencia reconoce codones y transporta el aminoácido correspondiente; el ARN ribosomal forma parte estructural y catalítica del ribosoma"], "correct": 4, "exp": "Cada tipo de ARN cumple un rol específico y complementario en el proceso de traducción: mensajero (información), transferencia (adaptador), ribosomal (maquinaria)."}];
+
+let currentQuiz = [];
+let currentIndex = 0;
+let answered = false;
+let userAnswers = [];
+let scoreBySkill = {};
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function buildQuiz(){
+  let selected = [];
+  SKILL_ORDER.forEach(skillKey=>{
+    const pool = QUESTION_BANK.filter(q=>q.skill===skillKey);
+    const picked = shuffle(pool).slice(0,PICK_PER_SKILL);
+    selected = selected.concat(picked);
+  });
+  selected = shuffle(selected);
+  return selected.map(orig=>{
+    const idxArr = [0,1,2,3,4];
+    const shuffledIdx = shuffle(idxArr);
+    const newOptions = shuffledIdx.map(i=>orig.options[i]);
+    const newCorrect = shuffledIdx.indexOf(orig.correct);
+    return { skill: orig.skill, question: orig.q, options: newOptions, correct: newCorrect, exp: orig.exp };
+  });
+}
+
+function startQuiz(){
+  currentQuiz = buildQuiz();
+  currentIndex = 0;
+  answered = false;
+  userAnswers = [];
+  scoreBySkill = {};
+  SKILL_ORDER.forEach(s=>scoreBySkill[s]={correct:0,total:0});
+  document.getElementById('start-screen').classList.add('hidden');
+  document.getElementById('dashboard-screen').classList.add('hidden');
+  document.getElementById('review-screen').classList.add('hidden');
+  document.getElementById('quiz-screen').classList.remove('hidden');
+  renderQuestion();
+}
+
+function renderQuestion(){
+  answered = false;
+  const q = currentQuiz[currentIndex];
+  const total = currentQuiz.length;
+  document.getElementById('progress-fill').style.width = ((currentIndex)/total*100)+'%';
+  document.getElementById('progress-label').textContent = (currentIndex+1)+' / '+total;
+  document.getElementById('skill-tag').textContent = SKILL_NAMES[q.skill];
+  document.getElementById('qnum').textContent = 'Pregunta '+(currentIndex+1);
+  document.getElementById('question-text').textContent = q.question;
+
+  const optsDiv = document.getElementById('options');
+  optsDiv.innerHTML = '';
+  q.options.forEach((opt, i)=>{
+    const btn = document.createElement('button');
+    btn.className = 'option';
+    btn.innerHTML = '<span class="letter">'+LETTERS[i]+')</span><span>'+opt+'</span>';
+    btn.onclick = ()=>selectOption(i);
+    optsDiv.appendChild(btn);
+  });
+
+  document.getElementById('feedback').classList.add('hidden');
+  document.getElementById('next-btn').classList.add('hidden');
+}
+
+function selectOption(i){
+  if(answered) return;
+  answered = true;
+  const q = currentQuiz[currentIndex];
+  const correct = q.correct;
+  const options = document.querySelectorAll('#options .option');
+  options.forEach((opt, idx)=>{
+    opt.classList.add('locked');
+    if(idx===correct) opt.classList.add('correct');
+    else if(idx===i) opt.classList.add('incorrect');
+    else opt.classList.add('dim');
+  });
+
+  const isCorrect = (i===correct);
+  scoreBySkill[q.skill].total++;
+  if(isCorrect) scoreBySkill[q.skill].correct++;
+
+  userAnswers.push({ skill:q.skill, question:q.question, options:q.options, correctIdx:correct, chosenIdx:i, exp:q.exp, isCorrect });
+
+  const fb = document.getElementById('feedback');
+  fb.classList.remove('hidden');
+  fb.classList.toggle('wrong', !isCorrect);
+  fb.innerHTML = '<span class="pista-label">'+(isCorrect ? '✓ Correcto — Pista' : '✕ Incorrecto — Pista')+'</span>'+
+    '<strong>Respuesta correcta: '+LETTERS[correct]+') '+q.options[correct]+'</strong><br><br>'+q.exp;
+
+  document.getElementById('next-btn').classList.remove('hidden');
+}
+
+function nextQuestion(){
+  currentIndex++;
+  if(currentIndex >= currentQuiz.length){
+    showDashboard();
+  } else {
+    renderQuestion();
+  }
+}
+
+function showDashboard(){
+  document.getElementById('quiz-screen').classList.add('hidden');
+  document.getElementById('dashboard-screen').classList.remove('hidden');
+
+  const totalCorrect = userAnswers.filter(a=>a.isCorrect).length;
+  const totalQ = userAnswers.length;
+  document.getElementById('score-total').innerHTML = totalCorrect+'<span>/'+totalQ+'</span>';
+  const pct = Math.round((totalCorrect/totalQ)*100);
+  document.getElementById('score-caption').textContent = pct+'% de logro general';
+
+  const barsDiv = document.getElementById('skill-bars');
+  barsDiv.innerHTML = '';
+  const weakSkills = [];
+  const strongSkills = [];
+
+  SKILL_ORDER.forEach(skillKey=>{
+    const s = scoreBySkill[skillKey];
+    const skillPct = s.total>0 ? Math.round((s.correct/s.total)*100) : 0;
+    let color = 'var(--accent-coral)';
+    if(skillPct>=75) color='var(--accent-sage)';
+    else if(skillPct>=50) color='var(--accent-amber)';
+
+    const row = document.createElement('div');
+    row.className='skill-bar-row';
+    row.innerHTML = '<div class="skill-bar-head"><span class="name">'+SKILL_NAMES[skillKey]+'</span><span class="frac">'+s.correct+'/'+s.total+'</span></div>'+
+      '<div class="skill-bar-track"><div class="skill-bar-fill" style="width:'+skillPct+'%;background:'+color+';"></div></div>';
+    barsDiv.appendChild(row);
+
+    if(skillPct<75) weakSkills.push({name:SKILL_NAMES[skillKey], pct:skillPct});
+    else strongSkills.push(SKILL_NAMES[skillKey]);
+  });
+
+  const improveBox = document.getElementById('improve-box');
+  const improveList = document.getElementById('improve-list');
+  improveList.innerHTML='';
+  if(weakSkills.length>0){
+    improveBox.classList.remove('hidden');
+    weakSkills.sort((a,b)=>a.pct-b.pct).forEach(w=>{
+      const li = document.createElement('li');
+      li.innerHTML = '<strong>'+w.name+'</strong> ('+w.pct+'%) — refuerza con más ejercicios de este tipo de habilidad, revisando las pistas de las preguntas falladas.';
+      improveList.appendChild(li);
+    });
+  } else {
+    improveBox.classList.add('hidden');
+  }
+
+  const strongBox = document.getElementById('strong-box');
+  const strongText = document.getElementById('strong-text');
+  if(strongSkills.length>0){
+    strongBox.classList.remove('hidden');
+    strongText.textContent = strongSkills.join(', ') + '. Buen dominio, mantén la práctica con nuevos intentos.';
+  } else {
+    strongBox.classList.add('hidden');
+  }
+}
+
+function restartQuiz(){ startQuiz(); }
+
+function reviewAnswers(){
+  document.getElementById('dashboard-screen').classList.add('hidden');
+  const rev = document.getElementById('review-screen');
+  rev.classList.remove('hidden');
+  let html = '<p class="eyebrow">Revisión de respuestas</p>';
+  userAnswers.forEach((a, i)=>{
+    html += '<div style="margin-bottom:22px;padding-bottom:18px;border-bottom:1px solid var(--line);">'+
+      '<span class="skill-tag">'+SKILL_NAMES[a.skill]+'</span>'+
+      '<p class="question-text" style="font-size:16px;">'+(i+1)+'. '+a.question+'</p>'+
+      '<p style="font-size:14px;color:'+(a.isCorrect?'var(--accent-sage)':'var(--accent-coral)')+';margin:0 0 6px;">'+
+        (a.isCorrect ? '✓ Respondiste correctamente' : '✕ Tu respuesta: '+LETTERS[a.chosenIdx]+') '+a.options[a.chosenIdx])+
+      '</p>'+
+      '<p style="font-size:14px;color:var(--text-muted);margin:0 0 8px;">Correcta: '+LETTERS[a.correctIdx]+') '+a.options[a.correctIdx]+'</p>'+
+      '<div class="feedback" style="margin-top:6px;"><span class="pista-label">Pista</span>'+a.exp+'</div>'+
+    '</div>';
+  });
+  html += '<div class="actions"><button class="btn" onclick="restartQuiz(); document.getElementById(\'review-screen\').classList.add(\'hidden\');">Repetir con nuevas preguntas</button></div>';
+  rev.innerHTML = html;
+}
+</script>
+</body>
+</html>

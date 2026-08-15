@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PAES Biología · Clase 3 · Teoría Celular y Diversidad Celular (Nivel Básico)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Source+Sans+3:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-deep:#0f2027;
+    --bg-panel:#15303a;
+    --bg-panel-2:#1b3a45;
+    --accent-amber:#e8a33d;
+    --accent-sage:#6fa88a;
+    --accent-coral:#e4572e;
+    --text-light:#f3ede1;
+    --text-muted:#a9c0c2;
+    --line:#2a4750;
+    --radius:14px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:radial-gradient(circle at 15% -10%, #1c4552 0%, var(--bg-deep) 55%) fixed;
+    color:var(--text-light);
+    font-family:'Source Sans 3', system-ui, sans-serif;
+    min-height:100vh;
+    padding:32px 16px 64px;
+  }
+  .wrap{max-width:820px;margin:0 auto;}
+  .eyebrow{font-family:'JetBrains Mono', monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent-amber);margin:0 0 8px;}
+  h1{font-family:'Fraunces', serif;font-weight:600;font-size:clamp(26px,4vw,38px);line-height:1.1;margin:0 0 6px;color:var(--text-light);}
+  .sub{color:var(--text-muted);font-size:15px;margin:0 0 28px;max-width:60ch;}
+  .card{background:linear-gradient(180deg, var(--bg-panel) 0%, var(--bg-panel-2) 100%);border:1px solid var(--line);border-radius:var(--radius);padding:28px;box-shadow:0 20px 40px -20px rgba(0,0,0,.5);}
+  #start-screen ul{color:var(--text-muted);font-size:14.5px;line-height:1.7;padding-left:20px;margin:18px 0 26px;}
+  #start-screen li{margin-bottom:4px;}
+  .btn{font-family:'Source Sans 3', sans-serif;font-weight:700;font-size:15px;border:none;border-radius:999px;padding:14px 30px;cursor:pointer;background:var(--accent-amber);color:#20140a;transition:transform .15s ease, box-shadow .15s ease;box-shadow:0 8px 20px -8px rgba(0,0,0,.35);}
+  .btn:hover{transform:translateY(-1px);}
+  .btn:active{transform:translateY(0);}
+  .btn.ghost{background:transparent;color:var(--text-muted);border:1.5px solid var(--line);box-shadow:none;}
+  .progress-row{display:flex;align-items:center;gap:14px;margin-bottom:18px;}
+  .progress-track{flex:1;height:6px;border-radius:99px;background:var(--line);overflow:hidden;}
+  .progress-fill{height:100%;background:linear-gradient(90deg,var(--accent-sage),var(--accent-amber));border-radius:99px;transition:width .3s ease;}
+  .progress-label{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--text-muted);white-space:nowrap;}
+  .skill-tag{display:inline-block;font-family:'JetBrains Mono', monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--bg-deep);background:var(--accent-sage);padding:5px 11px;border-radius:999px;margin-bottom:14px;}
+  .qnum{color:var(--text-muted);font-size:13px;font-family:'JetBrains Mono',monospace;margin-bottom:6px;}
+  .question-text{font-family:'Fraunces', serif;font-weight:500;font-size:19px;line-height:1.45;margin:0 0 22px;}
+  .options{display:flex;flex-direction:column;gap:10px;}
+  .option{display:flex;align-items:flex-start;gap:12px;text-align:left;background:rgba(255,255,255,.03);border:1.5px solid var(--line);border-radius:10px;padding:13px 15px;cursor:pointer;color:var(--text-light);font-size:14.5px;line-height:1.4;transition:border-color .15s, background .15s;}
+  .option:hover:not(.locked){border-color:var(--accent-amber);}
+  .option .letter{font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--accent-amber);flex-shrink:0;}
+  .option.correct{border-color:var(--accent-sage);background:rgba(111,168,138,.14);}
+  .option.incorrect{border-color:var(--accent-coral);background:rgba(228,87,46,.14);}
+  .option.locked{cursor:default;}
+  .option.dim{opacity:.45;}
+  .feedback{margin-top:18px;padding:16px 18px;border-radius:10px;background:rgba(255,255,255,.04);border-left:4px solid var(--accent-sage);font-size:14px;line-height:1.6;color:var(--text-muted);}
+  .feedback.wrong{border-left-color:var(--accent-coral);}
+  .feedback strong{color:var(--text-light);}
+  .feedback .pista-label{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent-amber);display:block;margin-bottom:6px;}
+  .nav-row{display:flex;justify-content:flex-end;margin-top:22px;}
+  .score-hero{text-align:center;padding:10px 0 26px;}
+  .score-big{font-family:'Fraunces',serif;font-weight:700;font-size:56px;color:var(--accent-amber);line-height:1;}
+  .score-big span{font-size:24px;color:var(--text-muted);font-weight:500;}
+  .score-caption{color:var(--text-muted);font-size:14px;margin-top:6px;}
+  .skill-bars{display:flex;flex-direction:column;gap:16px;margin:22px 0 8px;}
+  .skill-bar-head{display:flex;justify-content:space-between;font-size:13.5px;margin-bottom:6px;}
+  .skill-bar-head .name{font-weight:600;}
+  .skill-bar-head .frac{font-family:'JetBrains Mono',monospace;color:var(--text-muted);}
+  .skill-bar-track{height:10px;border-radius:99px;background:var(--line);overflow:hidden;}
+  .skill-bar-fill{height:100%;border-radius:99px;}
+  .improve-box{margin-top:26px;background:rgba(228,87,46,.08);border:1px solid rgba(228,87,46,.35);border-radius:10px;padding:18px 20px;}
+  .improve-box h3{font-family:'Fraunces',serif;font-size:16px;margin:0 0 10px;color:var(--accent-coral);}
+  .improve-box ul{margin:0;padding-left:20px;color:var(--text-light);font-size:14px;line-height:1.75;}
+  .strong-box{margin-top:14px;background:rgba(111,168,138,.08);border:1px solid rgba(111,168,138,.35);border-radius:10px;padding:18px 20px;}
+  .strong-box h3{font-family:'Fraunces',serif;font-size:16px;margin:0 0 10px;color:var(--accent-sage);}
+  .strong-box p{margin:0;color:var(--text-light);font-size:14px;line-height:1.6;}
+  .actions{display:flex;gap:12px;margin-top:28px;flex-wrap:wrap;}
+  .hidden{display:none !important;}
+  footer{text-align:center;color:var(--text-muted);font-size:12px;margin-top:26px;opacity:.6;}
+</style>
+</head>
+<body> <div style="float: left; margin-right: 25px; margin-bottom: 25px;"><img src="Logo_AMC.png" alt="Logo" style="max-width: 150px;"></div>
+<div class="wrap">
+  <p class="eyebrow">PAES · Ciencias — Módulo Biología Común · Nivel Básico</p>
+  <h1>Teoría Celular y Diversidad Celular</h1>
+  <p class="sub">Eje 1: Organización, estructura y actividad celular — Sub-eje: Biomoléculas organizadas y teoría celular — Clase 3: Teoría Celular y Diversidad Celular (Procarionte vs. Eucarionte)</p>
+
+  <div class="card" id="start-screen">
+    <p class="eyebrow" style="margin-bottom:14px;">Antes de comenzar</p>
+    <p style="color:var(--text-muted);font-size:14.5px;line-height:1.6;">Este quiz evalúa nivel <strong style='color:var(--text-light);'>básico</strong>, con 20 preguntas (4 por cada habilidad PAES), extraídas al azar de un banco amplio. Cada intento genera una versión distinta.</p>
+    <ul>
+      <li>Observar y plantear preguntas</li>
+      <li>Planificar y conducir una investigación</li>
+      <li>Procesar y analizar la evidencia</li>
+      <li>Evaluar</li>
+      <li>Comunicar</li>
+    </ul>
+    <button class="btn" onclick="startQuiz()">Comenzar quiz</button>
+  </div>
+
+  <div class="card hidden" id="quiz-screen">
+    <div class="progress-row">
+      <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+      <div class="progress-label" id="progress-label">1 / 20</div>
+    </div>
+    <span class="skill-tag" id="skill-tag"></span>
+    <p class="qnum" id="qnum"></p>
+    <p class="question-text" id="question-text"></p>
+    <div class="options" id="options"></div>
+    <div class="feedback hidden" id="feedback"></div>
+    <div class="nav-row">
+      <button class="btn hidden" id="next-btn" onclick="nextQuestion()">Siguiente →</button>
+    </div>
+  </div>
+
+  <div class="card hidden" id="dashboard-screen">
+    <p class="eyebrow">Resultados</p>
+    <div class="score-hero">
+      <div class="score-big" id="score-total">0<span>/20</span></div>
+      <p class="score-caption" id="score-caption">Puntaje global</p>
+    </div>
+    <div class="skill-bars" id="skill-bars"></div>
+    <div class="improve-box hidden" id="improve-box">
+      <h3>Puntos a mejorar</h3>
+      <ul id="improve-list"></ul>
+    </div>
+    <div class="strong-box hidden" id="strong-box">
+      <h3>Habilidades consolidadas</h3>
+      <p id="strong-text"></p>
+    </div>
+    <div class="actions">
+      <button class="btn" onclick="restartQuiz()">Repetir con nuevas preguntas</button>
+      <button class="btn ghost" onclick="reviewAnswers()">Revisar mis respuestas</button>
+    </div>
+  </div>
+
+  <div class="card hidden" id="review-screen"></div>
+
+  <footer>Banco de 40 preguntas · nivel básico · Clase 3 de 30 · basado en el temario DEMRE PAES Ciencias — Biología Común</footer>
+</div>
+
+<script>
+const SKILL_NAMES = {"OBS": "Observar y plantear preguntas", "PLAN": "Planificar y conducir una investigación", "PROC": "Procesar y analizar la evidencia", "EVAL": "Evaluar", "COM": "Comunicar"};
+const SKILL_ORDER = ["OBS", "PLAN", "PROC", "EVAL", "COM"];
+const LETTERS = ["A","B","C","D","E"];
+const PICK_PER_SKILL = 4;
+
+const QUESTION_BANK = [{"skill": "OBS", "q": "Al observar al microscopio una bacteria y una célula vegetal, un estudiante nota que la bacteria no presenta una región delimitada por membrana que contenga su ADN, mientras que la célula vegetal sí. ¿Pregunta más pertinente?", "options": ["¿La bacteria posee más ADN que la célula vegetal?", "¿La ausencia de una envoltura nuclear en la bacteria se relaciona con su clasificación como célula procarionte, a diferencia de la célula vegetal (eucarionte)?", "¿La célula vegetal no contiene ADN en su interior?", "¿El microscopio utilizado no permite observar el núcleo bacteriano?", "¿Todas las bacterias poseen exactamente el mismo tamaño que las células vegetales?"], "correct": 1, "exp": "La presencia o ausencia de una envoltura nuclear que delimite el ADN es el criterio central para clasificar una célula como eucarionte o procarionte respectivamente."}, {"skill": "OBS", "q": "Un estudiante observa que todas las muestras de tejido examinadas al microscopio, sin excepción, están compuestas por unidades delimitadas por una membrana. ¿Pregunta de investigación pertinente?", "options": ["¿Existen tejidos formados por unidades sin membrana que los delimite?", "¿La célula es efectivamente la unidad estructural básica común a todos los seres vivos observados?", "¿El microscopio distorsiona la imagen de todos los tejidos analizados?", "¿Los tejidos vegetales no poseen ningún tipo de organización celular?", "¿Todas las células observadas tienen exactamente el mismo tamaño?"], "correct": 1, "exp": "La observación repetida de unidades delimitadas por membrana en distintos tejidos es la base empírica del primer postulado de la teoría celular: la célula como unidad estructural de los seres vivos."}, {"skill": "OBS", "q": "Se observa que una célula vegetal presenta una estructura rígida externa a la membrana plasmática, ausente en una célula animal observada en el mismo laboratorio. ¿Pregunta pertinente?", "options": ["¿La célula animal no posee membrana plasmática?", "¿La presencia de pared celular en la célula vegetal, ausente en la animal, se relaciona con diferencias funcionales entre ambos tipos celulares (por ejemplo, soporte estructural)?", "¿La célula vegetal no realiza ningún proceso metabólico?", "¿Todas las células, sin excepción, poseen pared celular?", "¿La estructura rígida corresponde a una membrana adicional idéntica a la plasmática?"], "correct": 1, "exp": "La pared celular es una estructura característica (aunque no exclusiva) de las células vegetales que brinda soporte y protección, ausente en las células animales."}, {"skill": "OBS", "q": "Un estudiante nota que, al cultivar bacterias, estas se multiplican formando nuevas colonias, siempre a partir de bacterias preexistentes, nunca de materia inerte. ¿Pregunta pertinente?", "options": ["¿Las nuevas bacterias se originan espontáneamente de la materia inerte del medio de cultivo?", "¿Toda célula proviene de una célula preexistente mediante división celular, y no de generación espontánea?", "¿Las bacterias no requieren de ningún proceso de reproducción para multiplicarse?", "¿El medio de cultivo genera bacterias por sí solo sin ningún organismo previo?", "¿Las colonias bacterianas se forman sin ningún proceso de división celular?"], "correct": 1, "exp": "Esta observación es consistente con el tercer postulado de la teoría celular: toda célula se origina de una célula preexistente, refutando la idea de generación espontánea."}, {"skill": "OBS", "q": "Se observa que las células procariontes (bacterias) son, en promedio, mucho más pequeñas que las células eucariontes (animales o vegetales). ¿Pregunta de investigación pertinente?", "options": ["¿El tamaño celular se relaciona con la presencia o ausencia de organelos membranosos internos que compartimenten funciones?", "¿Las bacterias no poseen ningún tipo de estructura interna?", "¿El tamaño de una célula depende únicamente de su forma externa?", "¿Todas las células eucariontes tienen exactamente el mismo tamaño entre sí?", "¿Las bacterias son organismos multicelulares de gran tamaño?"], "correct": 0, "exp": "La ausencia de organelos membranosos internos en procariontes, junto con limitaciones de difusión, se relaciona con su menor tamaño respecto a las células eucariontes, que compartimentan funciones en organelos."}, {"skill": "OBS", "q": "Un estudiante observa que una célula animal, a diferencia de una célula vegetal, carece de una gran vacuola central y de cloroplastos visibles al microscopio. ¿Pregunta pertinente?", "options": ["¿La célula animal no realiza ningún proceso de obtención de energía?", "¿Las diferencias estructurales observadas (vacuola central, cloroplastos) se relacionan con las distintas funciones nutricionales entre células animales y vegetales?", "¿Todas las células vegetales carecen de mitocondrias?", "¿La célula animal posee pared celular en lugar de membrana plasmática?", "¿La ausencia de cloroplastos indica que la célula animal no tiene núcleo?"], "correct": 1, "exp": "La presencia de cloroplastos (fotosíntesis) y una gran vacuola (almacenamiento, turgencia) en células vegetales, ausentes en células animales, se relaciona con sus distintas estrategias nutricionales y estructurales."}, {"skill": "OBS", "q": "Se observa que ciertos organismos unicelulares poseen núcleo delimitado por membrana y organelos internos complejos, mientras otros no presentan ninguna de estas estructuras. ¿Pregunta pertinente?", "options": ["¿Todos los organismos unicelulares son idénticos entre sí en su organización interna?", "¿La presencia o ausencia de núcleo y organelos membranosos permite clasificar a estos organismos unicelulares en eucariontes o procariontes, respectivamente?", "¿Los organismos unicelulares nunca poseen ADN en su interior?", "¿La complejidad interna de una célula no tiene relación con su clasificación taxonómica?", "¿Todos los organismos unicelulares pertenecen al mismo dominio taxonómico?"], "correct": 1, "exp": "El criterio de presencia/ausencia de núcleo delimitado por membrana y organelos internos es central para clasificar organismos unicelulares como eucariontes o procariontes."}, {"skill": "OBS", "q": "Un estudiante observa que las células eucariontes presentan su ADN organizado en cromosomas lineales asociados a proteínas (histonas), mientras que las procariontes presentan un único cromosoma circular sin histonas asociadas. ¿Pregunta pertinente?", "options": ["¿Esta diferencia en la organización del material genético se relaciona con diferencias evolutivas y funcionales entre ambos tipos celulares?", "¿Las células procariontes no poseen ningún tipo de material genético?", "¿El ADN circular es una característica exclusiva de las células vegetales?", "¿Todas las células eucariontes carecen completamente de ADN?", "¿La forma del cromosoma no tiene ninguna relación con el tipo celular?"], "correct": 0, "exp": "La organización del ADN (circular sin histonas vs. lineal con histonas) es una diferencia estructural fundamental entre procariontes y eucariontes, con implicancias en su regulación y empaquetamiento genético."}, {"skill": "PLAN", "q": "Para comprobar experimentalmente si una célula observada al microscopio es procarionte o eucarionte, ¿cuál es el procedimiento más adecuado?", "options": ["Medir únicamente el tamaño externo de la célula sin observar su estructura interna", "Aplicar una tinción específica que permita visualizar si existe una envoltura nuclear delimitando el material genético, y observar la presencia o ausencia de organelos membranosos", "Contar el número de células presentes en la muestra sin evaluar su estructura", "Medir la temperatura del medio de cultivo en lugar de observar la célula", "Determinar el color de la célula bajo luz natural"], "correct": 1, "exp": "El criterio diagnóstico central (presencia de envoltura nuclear y organelos membranosos) requiere de técnicas de tinción y observación microscópica adecuadas para visualizarlo."}, {"skill": "PLAN", "q": "Un estudiante desea comparar la presencia de pared celular entre una célula animal y una vegetal. ¿Cuál es el procedimiento experimental adecuado?", "options": ["Observar ambos tipos de célula al microscopio óptico, idealmente con una tinción que resalte estructuras externas a la membrana plasmática, y comparar la presencia de una capa rígida adicional", "Medir solo el peso de cada tipo de célula, sin observación microscópica", "Calentar ambas células a la misma temperatura sin ninguna observación estructural", "Comparar el color de ambas células sin usar ningún método de tinción específico", "Asumir la diferencia sin realizar ninguna observación directa"], "correct": 0, "exp": "La comparación directa mediante microscopía (con tinción adecuada) permite visualizar objetivamente la presencia o ausencia de la pared celular en cada tipo celular."}, {"skill": "PLAN", "q": "Para investigar si todas las células de un cultivo bacteriano provienen de células preexistentes (y no de generación espontánea), ¿qué diseño experimental clásico sería adecuado?", "options": ["Exponer un medio de cultivo estéril al aire libre sin ningún inóculo bacteriano previo y esperar la aparición de bacterias, comparando con un medio sellado que impida el ingreso de microorganismos externos", "Inocular directamente bacterias en el medio sin ningún control", "No es necesario ningún control para investigar esta pregunta", "Calentar el medio de cultivo sin observar ningún resultado posterior", "Usar un solo medio de cultivo sin ninguna condición de comparación"], "correct": 0, "exp": "Este es esencialmente el diseño experimental clásico (similar al de Pasteur) para poner a prueba la generación espontánea: comparar un medio expuesto a microorganismos externos con uno protegido de ellos."}, {"skill": "PLAN", "q": "Se desea determinar si el tamaño celular se relaciona con la presencia de organelos membranosos internos. ¿Cuál es el diseño experimental más adecuado?", "options": ["Medir el tamaño y catalogar la presencia/ausencia de organelos membranosos en una muestra amplia y diversa de células procariontes y eucariontes, y comparar ambas variables", "Medir el tamaño de una sola célula sin comparar con ninguna otra", "Comparar solo células procariontes entre sí, sin incluir células eucariontes", "No es necesario observar los organelos internos para responder esta pregunta", "Medir únicamente el color de las células observadas"], "correct": 0, "exp": "Una muestra amplia que incluya ambos tipos celulares permite comparar de forma sistemática la relación entre tamaño celular y presencia de organelos membranosos internos."}, {"skill": "PLAN", "q": "Para comparar la estructura interna de una célula animal y una vegetal mediante microscopía, ¿qué elemento del diseño experimental es fundamental?", "options": ["Usar el mismo tipo de tinción y aumento de microscopio para ambas muestras, de modo que la comparación de estructuras (pared celular, cloroplastos, vacuola) sea válida y no producto de diferencias metodológicas", "Usar tinciones distintas para cada tipo de célula, según su color natural", "No es necesario mantener el mismo aumento del microscopio entre ambas observaciones", "Observar cada célula en un microscopio de tipo distinto", "Comparar solo el tamaño externo, sin evaluar estructuras internas"], "correct": 0, "exp": "Estandarizar el método de observación (tinción, aumento) es esencial para que las diferencias estructurales encontradas reflejen diferencias reales entre los tipos celulares y no artefactos metodológicos."}, {"skill": "PLAN", "q": "Un estudiante desea clasificar diez muestras celulares desconocidas como procariontes o eucariontes. ¿Cuál es el procedimiento más riguroso?", "options": ["Clasificar cada muestra basándose únicamente en su tamaño aparente, sin observar otras características", "Observar en cada muestra la presencia o ausencia de envoltura nuclear y organelos membranosos mediante microscopía adecuada, aplicando el mismo criterio diagnóstico a las diez muestras", "Clasificar todas las muestras como eucariontes sin ninguna observación", "Usar un criterio distinto de clasificación para cada muestra según su apariencia", "No es necesario ningún criterio sistemático para esta clasificación"], "correct": 1, "exp": "Aplicar el mismo criterio diagnóstico (envoltura nuclear, organelos) de forma sistemática a todas las muestras garantiza una clasificación consistente y comparable."}, {"skill": "PLAN", "q": "Para investigar si la teoría celular aplica también a organismos unicelulares (y no solo a los pluricelulares), ¿cuál sería un diseño de investigación adecuado?", "options": ["Observar al microscopio una amplia variedad de organismos unicelulares (bacterias, protistas) y verificar si cada uno está compuesto por al menos una célula delimitada por membrana", "Estudiar únicamente organismos pluricelulares, sin incluir unicelulares", "Asumir que la teoría celular no aplica a organismos unicelulares sin ninguna observación", "Observar un solo organismo unicelular y generalizar el resultado a todos los demás sin ninguna otra muestra", "No es necesario observar ningún organismo para responder esta pregunta"], "correct": 0, "exp": "Verificar el postulado en una muestra diversa y amplia de organismos unicelulares permite evaluar si la teoría celular (la célula como unidad estructural) aplica de forma general, más allá de los organismos pluricelulares."}, {"skill": "PROC", "q": "Se midió el diámetro promedio de distintos tipos celulares: bacteria=2 µm; célula vegetal=40 µm; célula animal=20 µm; alga unicelular eucarionte=25 µm. ¿Qué conclusión es más adecuada?", "options": ["Todas las células, sin importar su tipo, tienen exactamente el mismo tamaño", "Las células procariontes (bacteria) son notoriamente más pequeñas que las células eucariontes analizadas (vegetal, animal, alga)", "La célula vegetal es la célula procarionte más grande registrada", "El tamaño celular no tiene relación con el tipo de célula (procarionte o eucarionte)", "La célula animal es más pequeña que la bacteria según estos datos"], "correct": 1, "exp": "Los datos muestran una diferencia clara de orden de magnitud entre la bacteria (procarionte, 2 µm) y las células eucariontes analizadas (20-40 µm), consistente con el patrón general de tamaño celular."}, {"skill": "PROC", "q": "Se comparó la presencia de estructuras en tres tipos de célula: animal (sin pared celular, sin cloroplastos, sin vacuola grande); vegetal (con pared celular, con cloroplastos, con vacuola grande); bacteria (con pared celular, sin cloroplastos, sin núcleo delimitado). ¿Qué conclusión es más adecuada?", "options": ["Todas las células comparadas poseen exactamente las mismas estructuras", "La presencia de pared celular no permite diferenciar por sí sola entre célula vegetal y bacteria, siendo necesario considerar otras estructuras como el núcleo o los cloroplastos para una clasificación completa", "Solo la célula vegetal posee pared celular entre las tres analizadas", "La célula animal posee más estructuras en común con la célula vegetal que con la bacteria", "La bacteria posee cloroplastos, a diferencia de la célula vegetal"], "correct": 1, "exp": "Aunque tanto la célula vegetal como la bacteria poseen pared celular, difieren en otras estructuras clave (núcleo, cloroplastos), por lo que la pared celular por sí sola no es suficiente para clasificarlas."}, {"skill": "PROC", "q": "Un estudio contó el número de organelos membranosos distintos observados en diez células eucariontes (promedio=8 tipos distintos) y en diez células procariontes (promedio=0 tipos distintos, considerando organelos membranosos). ¿Qué conclusión es más adecuada?", "options": ["Las células procariontes poseen más organelos membranosos que las eucariontes", "Las células eucariontes analizadas presentan una compartimentación interna mediante organelos membranosos ausente en las procariontes analizadas", "Ambos tipos celulares presentan exactamente el mismo grado de compartimentación interna", "Las células procariontes no poseen ningún tipo de estructura interna, incluyendo ribosomas", "El número de organelos no tiene relación con la clasificación procarionte/eucarionte"], "correct": 1, "exp": "La diferencia marcada (8 tipos vs 0) refleja la característica compartimentación interna de las células eucariontes mediante organelos membranosos, ausente en las procariontes."}, {"skill": "PROC", "q": "Se registró la presencia de núcleo delimitado por membrana en 50 muestras celulares observadas: 30 con núcleo, 20 sin núcleo. De las 30 con núcleo, todas mostraron además organelos membranosos internos; de las 20 sin núcleo, ninguna mostró organelos membranosos. ¿Qué conclusión es más adecuada?", "options": ["No existe ninguna asociación entre la presencia de núcleo y la presencia de organelos membranosos", "La presencia de núcleo delimitado por membrana se asocia consistentemente con la presencia de organelos membranosos internos en esta muestra, consistente con la clasificación eucarionte/procarionte", "Las células sin núcleo presentan más organelos membranosos que las células con núcleo", "Todas las células observadas, con o sin núcleo, presentan exactamente las mismas estructuras internas", "La ausencia de núcleo indica la presencia de una gran cantidad de organelos membranosos"], "correct": 1, "exp": "La asociación perfecta entre presencia de núcleo y presencia de organelos membranosos en esta muestra es consistente con el patrón conocido que distingue eucariontes de procariontes."}, {"skill": "PROC", "q": "Se comparó el porcentaje del volumen celular ocupado por la vacuola central en células vegetales jóvenes (15%) y maduras (80%). ¿Qué conclusión es más adecuada respecto al desarrollo celular vegetal?", "options": ["La vacuola central disminuye su proporción del volumen celular a medida que la célula vegetal madura", "La vacuola central aumenta considerablemente su proporción del volumen celular durante la maduración de la célula vegetal", "El volumen de la vacuola central no cambia durante el desarrollo de la célula vegetal", "Las células vegetales jóvenes no poseen vacuola central en absoluto", "La vacuola central desaparece por completo en las células vegetales maduras"], "correct": 1, "exp": "El aumento marcado del porcentaje de volumen ocupado por la vacuola (de 15% a 80%) refleja el proceso conocido de expansión vacuolar durante la maduración de la célula vegetal."}, {"skill": "PROC", "q": "Un estudio comparó la longitud del cromosoma principal en distintas bacterias, encontrando que todas presentan un único cromosoma circular, mientras que en diez células eucariontes analizadas se observaron múltiples cromosomas lineales por célula. ¿Qué conclusión es más adecuada?", "options": ["La organización del material genético (número y forma de los cromosomas) difiere consistentemente entre las bacterias y las células eucariontes analizadas en este estudio", "Todas las células, procariontes y eucariontes, presentan exactamente el mismo número de cromosomas", "Las bacterias presentan más cromosomas que las células eucariontes analizadas", "La forma del cromosoma (circular o lineal) no se relaciona con el tipo celular", "Las células eucariontes presentan un único cromosoma circular, igual que las bacterias"], "correct": 0, "exp": "El patrón observado (cromosoma único circular en bacterias vs. múltiples cromosomas lineales en eucariontes) es consistente con la diferencia estructural conocida entre ambos tipos celulares."}, {"skill": "PROC", "q": "Se midió la cantidad de ADN (en picogramos) en el núcleo de distintas células eucariontes de un mismo organismo: célula A=6,2 pg; célula B=6,1 pg; célula C=6,3 pg; célula D=12,4 pg (en división). ¿Qué interpretación es la más adecuada?", "options": ["Las células A, B y C presentan una cantidad de ADN relativamente constante, mientras que la célula D presenta el doble, consistente con una célula que ha duplicado su ADN previo a la división celular", "Todas las células deberían tener exactamente la misma cantidad de ADN sin excepción, y la célula D representa un error de medición", "La cantidad de ADN de una célula no tiene ninguna relación con su estado del ciclo celular", "La célula D posee una mutación que le impide dividirse correctamente", "La variación en la cantidad de ADN indica que las células pertenecen a especies distintas"], "correct": 0, "exp": "El valor aproximadamente doble en la célula D es consistente con la duplicación del ADN que ocurre antes de la división celular, un fenómeno normal del ciclo celular."}, {"skill": "PROC", "q": "Se comparó el número de ribosomas por célula en una bacteria (aproximadamente 10.000) y en una célula eucarionte de mamífero (varios millones). ¿Qué conclusión es más adecuada?", "options": ["Las bacterias no poseen ribosomas en su estructura interna", "Ambos tipos celulares poseen ribosomas, aunque las células eucariontes analizadas presentan un número considerablemente mayor, posiblemente relacionado con su mayor tamaño y actividad de síntesis proteica", "Las células eucariontes no requieren de ribosomas para sintetizar proteínas", "El número de ribosomas es idéntico entre bacterias y células eucariontes", "Solo las células vegetales poseen ribosomas entre los tipos celulares mencionados"], "correct": 1, "exp": "Aunque ambos tipos celulares poseen ribosomas (estructura común a toda célula), la diferencia en su número se relaciona con el mayor tamaño y demanda de síntesis proteica de las células eucariontes."}, {"skill": "EVAL", "q": "Un estudiante concluye que 'todas las células con pared celular son vegetales' basándose en la observación de una sola célula vegetal con esta estructura. ¿Qué crítica es más pertinente?", "options": ["La conclusión es correcta porque solo las células vegetales pueden tener pared celular", "La generalización ignora que otros tipos celulares, como las bacterias, también poseen pared celular, aunque de composición distinta; se requiere considerar otras estructuras (como el núcleo) para una clasificación válida", "No es necesario considerar otras estructuras para clasificar un tipo celular", "Todas las estructuras rígidas externas a la membrana son idénticas entre sí", "La pared celular es una estructura exclusiva y suficiente para identificar cualquier célula vegetal"], "correct": 1, "exp": "La pared celular, aunque presente en vegetales, no es exclusiva de ellos (también está en bacterias y hongos, con composición distinta); usarla como único criterio de clasificación es un error de generalización."}, {"skill": "EVAL", "q": "Una investigación afirma que 'todas las bacterias son organismos primitivos y menos evolucionados que las células eucariontes' basándose solo en su menor tamaño y complejidad estructural aparente. ¿Crítica más sólida?", "options": ["La afirmación es completamente correcta y no requiere ningún matiz", "El menor tamaño y la ausencia de organelos membranosos no implican necesariamente menor adaptación evolutiva; las bacterias representan linajes evolutivos exitosos y diversos, no una etapa 'primitiva' de los eucariontes", "Las bacterias no poseen ningún tipo de adaptación evolutiva", "Todas las células eucariontes son evolutivamente superiores a cualquier bacteria, sin excepción", "El tamaño celular determina directamente el grado de evolución de un organismo"], "correct": 1, "exp": "Simplicidad estructural no equivale a inferioridad evolutiva; las bacterias constituyen linajes propios con adaptaciones exitosas, no una etapa intermedia hacia los eucariontes."}, {"skill": "EVAL", "q": "Un estudio clasificó una célula desconocida como procarionte basándose únicamente en su pequeño tamaño, sin observar la presencia o ausencia de núcleo. ¿Qué crítica metodológica es la más sólida?", "options": ["El tamaño celular es siempre suficiente para clasificar correctamente cualquier tipo de célula", "El criterio diagnóstico central para diferenciar procariontes de eucariontes es la presencia o ausencia de núcleo delimitado por membrana, no solo el tamaño; existen eucariontes pequeños y la clasificación basada solo en tamaño puede ser errónea", "No es necesario observar el núcleo para clasificar correctamente un tipo celular", "Todas las células pequeñas son necesariamente procariontes sin excepción", "El tamaño y la presencia de núcleo son exactamente el mismo criterio de clasificación"], "correct": 1, "exp": "El tamaño es solo un indicio general, no un criterio diagnóstico definitivo; algunos eucariontes unicelulares pueden ser pequeños, por lo que la ausencia/presencia de núcleo es el criterio central."}, {"skill": "EVAL", "q": "Una investigación concluyó que 'la teoría celular no aplica a los virus' porque estos no cumplen con los postulados de composición celular. ¿Qué evaluación es más pertinente sobre esta afirmación?", "options": ["La afirmación es incorrecta, ya que todos los virus están compuestos por células, igual que cualquier otro ser vivo", "La afirmación es consistente con el conocimiento biológico actual: los virus no están compuestos por células (carecen de membrana plasmática propia, organelos y maquinaria metabólica autónoma), por lo que efectivamente quedan fuera del alcance de la teoría celular", "Los virus poseen exactamente la misma estructura que una célula procarionte típica", "La teoría celular aplica a cualquier entidad biológica, incluidos los virus, sin ninguna excepción", "Los virus son considerados el tipo más simple de célula procarionte conocida"], "correct": 1, "exp": "Los virus, al carecer de estructura celular propia (membrana, citoplasma, maquinaria metabólica autónoma), son considerados entidades biológicas distintas a las células, y por tanto quedan fuera del alcance directo de la teoría celular."}, {"skill": "EVAL", "q": "Un estudiante afirma que 'todas las células vegetales tienen exactamente el mismo tamaño y forma' basándose en la observación de una sola muestra de tejido de una especie. ¿Qué crítica es más pertinente?", "options": ["La conclusión es válida porque todas las plantas tienen exactamente la misma anatomía celular", "Generalizar a partir de una sola muestra de una especie no permite sostener una afirmación sobre 'todas las células vegetales', ya que existe gran diversidad de tamaños y formas celulares entre distintos tejidos y especies vegetales", "No es necesario observar más de una muestra para hacer esta generalización", "El tamaño y la forma celular son idénticos en cualquier tipo de tejido vegetal", "Una sola muestra siempre es representativa de todas las especies vegetales existentes"], "correct": 1, "exp": "La diversidad de formas y tamaños celulares entre distintos tejidos (por ejemplo, células de la raíz vs. células de la hoja) y especies vegetales hace que una sola muestra no sea representativa de 'todas las células vegetales'."}, {"skill": "EVAL", "q": "Una publicación afirma que 'la ausencia de núcleo en una célula significa que no posee ningún tipo de material genético'. ¿Qué error se identifica en esta afirmación?", "options": ["La afirmación es correcta, ya que sin núcleo no puede existir ADN en la célula", "La afirmación confunde la ausencia de una envoltura nuclear (característica de procariontes) con la ausencia total de material genético; las células procariontes sí poseen ADN, solo que no está delimitado por una membrana nuclear", "Las células procariontes no realizan ningún proceso relacionado con su información genética", "El núcleo es la única estructura celular capaz de contener información genética en cualquier organismo", "Todas las células sin núcleo son en realidad fragmentos celulares sin función"], "correct": 1, "exp": "Las células procariontes poseen ADN (generalmente un cromosoma circular) ubicado en una región del citoplasma llamada nucleoide, aunque sin una membrana nuclear que lo delimite, a diferencia de los eucariontes."}, {"skill": "EVAL", "q": "Un estudio concluyó que 'todos los organismos unicelulares son procariontes' basándose en el estudio de varias especies de bacterias. ¿Qué crítica es más pertinente?", "options": ["La conclusión es correcta porque todos los organismos unicelulares son necesariamente procariontes", "La generalización ignora la existencia de organismos unicelulares eucariontes (como muchos protistas: amebas, paramecios, algas unicelulares), que también poseen núcleo delimitado por membrana", "No existen organismos unicelulares eucariontes en la naturaleza", "Todos los organismos unicelulares tienen exactamente la misma estructura interna", "El estudio de bacterias es suficiente para generalizar sobre cualquier organismo unicelular"], "correct": 1, "exp": "La unicelularidad no es exclusiva de los procariontes; existen numerosos organismos eucariontes unicelulares (protistas) que también deben considerarse al hacer generalizaciones sobre este grupo."}, {"skill": "COM", "q": "Un estudiante debe explicar la diferencia principal entre una célula procarionte y una eucarionte a un compañero. ¿Explicación más precisa?", "options": ["Las células procariontes son siempre de color distinto a las eucariontes", "Las células eucariontes no poseen ningún tipo de ADN en su interior", "Las células procariontes solo existen en ambientes acuáticos", "La diferencia principal es la presencia de un núcleo delimitado por membrana (y organelos membranosos internos) en las eucariontes, ausente en las procariontes, cuyo ADN se encuentra libre en el citoplasma", "Las células procariontes son siempre más grandes que las eucariontes"], "correct": 3, "exp": "El criterio diagnóstico fundamental que distingue ambos tipos celulares es la compartimentación del material genético (y de otras funciones) mediante membranas internas, presente solo en eucariontes."}, {"skill": "COM", "q": "Al explicar los tres postulados clásicos de la teoría celular, ¿cuál es la explicación más precisa y completa?", "options": ["Todos los seres vivos están formados por al menos una célula; la célula es la unidad estructural y funcional de los seres vivos; y toda célula proviene de una célula preexistente", "La teoría celular afirma que solo los animales están formados por células", "Los tres postulados se refieren únicamente al tamaño de las células", "La teoría celular establece que las células se originan de materia inerte de forma espontánea", "Los postulados de la teoría celular aplican únicamente a organismos unicelulares"], "correct": 0, "exp": "Los tres postulados clásicos abordan: composición celular universal, la célula como unidad funcional, y la continuidad celular (célula de célula), sentando las bases de la biología celular moderna."}, {"skill": "COM", "q": "Un estudiante debe explicar por qué una célula vegetal y una célula animal, aunque ambas eucariontes, presentan diferencias estructurales notorias. ¿Explicación más precisa?", "options": ["Ambos tipos celulares son idénticos y no presentan ninguna diferencia estructural real", "Las diferencias estructurales (pared celular, cloroplastos, vacuola central en vegetales) reflejan las distintas estrategias funcionales de cada tipo celular, como la fotosíntesis y el soporte estructural rígido en plantas", "La célula animal posee pared celular, igual que la vegetal", "Las células vegetales no poseen mitocondrias, a diferencia de las animales", "Las diferencias se deben únicamente al tamaño de cada tipo de célula"], "correct": 1, "exp": "Aunque comparten la organización eucarionte básica, cada tipo celular presenta estructuras especializadas (cloroplastos, pared celular, vacuola en vegetales) acordes a sus necesidades funcionales particulares."}, {"skill": "COM", "q": "Al explicar por qué las bacterias, a pesar de ser procariontes, pueden llevar a cabo procesos metabólicos complejos sin poseer organelos membranosos, ¿cuál es la explicación más precisa?", "options": ["Las bacterias no realizan ningún proceso metabólico, ya que carecen de organelos", "Las reacciones metabólicas de las bacterias ocurren directamente en el citoplasma o asociadas a la membrana plasmática, sin necesidad de compartimentos membranosos internos especializados como los de las células eucariontes", "Las bacterias poseen los mismos organelos membranosos que las células eucariontes, solo que de menor tamaño", "Todas las reacciones metabólicas requieren obligatoriamente de un organelo membranoso para ocurrir", "Las bacterias realizan sus procesos metabólicos fuera de la célula, en el medio externo"], "correct": 1, "exp": "A diferencia de los eucariontes, los procariontes no compartimentan sus funciones metabólicas en organelos membranosos; estas ocurren directamente en el citoplasma o en la membrana plasmática."}, {"skill": "COM", "q": "Un estudiante debe explicar por qué el descubrimiento de que 'toda célula proviene de una célula preexistente' fue relevante para refutar la teoría de la generación espontánea. ¿Explicación más precisa?", "options": ["La generación espontánea nunca fue una teoría científica seriamente considerada", "Este postulado estableció que la vida celular surge exclusivamente por división de células ya existentes, contradiciendo directamente la idea de que organismos vivos podían originarse de materia inerte sin ningún proceso reproductivo previo", "La generación espontánea y la teoría celular son exactamente compatibles entre sí", "Este postulado no tiene ninguna relación con el debate histórico sobre la generación espontánea", "La teoría celular confirma que la vida puede originarse espontáneamente de la materia inerte"], "correct": 1, "exp": "Al establecer que las células solo se originan por división de células preexistentes, este postulado proporcionó una base conceptual que contradecía directamente la idea de generación espontánea de vida."}, {"skill": "COM", "q": "Al explicar por qué el ADN de una célula eucarionte está asociado a proteínas llamadas histonas, mientras el de una bacteria típicamente no lo está de la misma manera, ¿cuál es la explicación más precisa a nivel básico?", "options": ["Las histonas son estructuras exclusivas de las bacterias, ausentes en eucariontes", "El ADN eucarionte es mucho más largo y debe empaquetarse eficientemente dentro del núcleo mediante la asociación con histonas, formando la cromatina; el material genético bacteriano, más simple y compacto, no requiere el mismo tipo de empaquetamiento", "Las histonas destruyen el ADN al que se asocian", "El ADN bacteriano no puede asociarse con ninguna proteína bajo ninguna circunstancia", "La presencia de histonas no tiene relación con el empaquetamiento del ADN"], "correct": 1, "exp": "La mayor cantidad de ADN en células eucariontes requiere un sistema de empaquetamiento eficiente (histonas y cromatina) para caber dentro del núcleo, a diferencia del cromosoma bacteriano más simple."}, {"skill": "COM", "q": "Un estudiante debe comunicar en un informe por qué la observación microscópica fue clave para el desarrollo de la teoría celular. ¿Explicación más precisa?", "options": ["El microscopio no tuvo ninguna relevancia histórica para el desarrollo de la teoría celular", "La invención y mejora del microscopio permitió observar directamente unidades delimitadas por membrana en distintos tejidos, proporcionando la evidencia empírica necesaria para formular y sostener los postulados de la teoría celular", "La teoría celular se desarrolló completamente sin ningún tipo de evidencia observacional", "Los microscopios actuales no aportan ninguna información relevante sobre la estructura celular", "La teoría celular fue formulada antes de la invención de cualquier tipo de microscopio"], "correct": 1, "exp": "La observación directa de células mediante microscopía proporcionó la evidencia empírica fundamental que permitió a los científicos formular los postulados de la teoría celular."}, {"skill": "PLAN", "q": "Un estudiante desea comprobar si una muestra celular desconocida posee pared celular. ¿Cuál es el procedimiento experimental más simple y adecuado?", "options": ["Observar la célula al microscopio óptico y evaluar si existe una capa rígida y definida por fuera de la membrana plasmática, comparando con muestras de referencia conocidas (vegetal con pared, animal sin pared)", "Medir el peso total de la célula sin ninguna observación microscópica", "Calentar la muestra a altas temperaturas antes de cualquier observación", "Determinar el color de la célula bajo luz ultravioleta", "No es necesario ningún procedimiento, basta con adivinar según el nombre de la muestra"], "correct": 0, "exp": "La observación microscópica comparativa con muestras de referencia conocidas es el procedimiento básico y directo para determinar la presencia de pared celular en una muestra desconocida."}, {"skill": "EVAL", "q": "Un estudiante afirma que 'toda célula con cloroplastos es necesariamente una célula vegetal', sin considerar otros organismos fotosintéticos unicelulares. ¿Qué crítica es más pertinente?", "options": ["La afirmación es completamente correcta sin ninguna excepción", "La generalización ignora que existen otros organismos eucariontes fotosintéticos, como ciertas algas unicelulares, que poseen cloroplastos sin ser consideradas plantas", "Los cloroplastos son una estructura exclusiva de las plantas, sin ninguna excepción en la naturaleza", "No es necesario considerar otros organismos fotosintéticos para esta afirmación", "Ningún organismo unicelular puede poseer cloroplastos"], "correct": 1, "exp": "La presencia de cloroplastos no es exclusiva de las plantas; diversos organismos eucariontes unicelulares (algas) también los poseen, por lo que la generalización es incorrecta."}, {"skill": "COM", "q": "Un estudiante debe explicar por qué, a pesar de que la célula vegetal posee pared celular rígida, aún puede realizar intercambio de sustancias con su entorno. ¿Explicación más precisa?", "options": ["La pared celular es completamente impermeable y bloquea cualquier intercambio de sustancias", "La pared celular es porosa y permite el paso de agua y solutos, mientras que la regulación selectiva del intercambio de sustancias ocurre principalmente en la membrana plasmática ubicada por debajo de ella", "La célula vegetal no realiza ningún tipo de intercambio con su entorno", "La pared celular reemplaza completamente la función de la membrana plasmática", "El intercambio de sustancias ocurre únicamente a través de la vacuola central"], "correct": 1, "exp": "La pared celular, al ser porosa, no impide el paso de sustancias; es la membrana plasmática, ubicada internamente, la que ejerce el control selectivo característico del intercambio celular."}];
+
+let currentQuiz = [];
+let currentIndex = 0;
+let answered = false;
+let userAnswers = [];
+let scoreBySkill = {};
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function buildQuiz(){
+  let selected = [];
+  SKILL_ORDER.forEach(skillKey=>{
+    const pool = QUESTION_BANK.filter(q=>q.skill===skillKey);
+    const picked = shuffle(pool).slice(0,PICK_PER_SKILL);
+    selected = selected.concat(picked);
+  });
+  selected = shuffle(selected);
+  return selected.map(orig=>{
+    const idxArr = [0,1,2,3,4];
+    const shuffledIdx = shuffle(idxArr);
+    const newOptions = shuffledIdx.map(i=>orig.options[i]);
+    const newCorrect = shuffledIdx.indexOf(orig.correct);
+    return { skill: orig.skill, question: orig.q, options: newOptions, correct: newCorrect, exp: orig.exp };
+  });
+}
+
+function startQuiz(){
+  currentQuiz = buildQuiz();
+  currentIndex = 0;
+  answered = false;
+  userAnswers = [];
+  scoreBySkill = {};
+  SKILL_ORDER.forEach(s=>scoreBySkill[s]={correct:0,total:0});
+  document.getElementById('start-screen').classList.add('hidden');
+  document.getElementById('dashboard-screen').classList.add('hidden');
+  document.getElementById('review-screen').classList.add('hidden');
+  document.getElementById('quiz-screen').classList.remove('hidden');
+  renderQuestion();
+}
+
+function renderQuestion(){
+  answered = false;
+  const q = currentQuiz[currentIndex];
+  const total = currentQuiz.length;
+  document.getElementById('progress-fill').style.width = ((currentIndex)/total*100)+'%';
+  document.getElementById('progress-label').textContent = (currentIndex+1)+' / '+total;
+  document.getElementById('skill-tag').textContent = SKILL_NAMES[q.skill];
+  document.getElementById('qnum').textContent = 'Pregunta '+(currentIndex+1);
+  document.getElementById('question-text').textContent = q.question;
+
+  const optsDiv = document.getElementById('options');
+  optsDiv.innerHTML = '';
+  q.options.forEach((opt, i)=>{
+    const btn = document.createElement('button');
+    btn.className = 'option';
+    btn.innerHTML = '<span class="letter">'+LETTERS[i]+')</span><span>'+opt+'</span>';
+    btn.onclick = ()=>selectOption(i);
+    optsDiv.appendChild(btn);
+  });
+
+  document.getElementById('feedback').classList.add('hidden');
+  document.getElementById('next-btn').classList.add('hidden');
+}
+
+function selectOption(i){
+  if(answered) return;
+  answered = true;
+  const q = currentQuiz[currentIndex];
+  const correct = q.correct;
+  const options = document.querySelectorAll('#options .option');
+  options.forEach((opt, idx)=>{
+    opt.classList.add('locked');
+    if(idx===correct) opt.classList.add('correct');
+    else if(idx===i) opt.classList.add('incorrect');
+    else opt.classList.add('dim');
+  });
+
+  const isCorrect = (i===correct);
+  scoreBySkill[q.skill].total++;
+  if(isCorrect) scoreBySkill[q.skill].correct++;
+
+  userAnswers.push({ skill:q.skill, question:q.question, options:q.options, correctIdx:correct, chosenIdx:i, exp:q.exp, isCorrect });
+
+  const fb = document.getElementById('feedback');
+  fb.classList.remove('hidden');
+  fb.classList.toggle('wrong', !isCorrect);
+  fb.innerHTML = '<span class="pista-label">'+(isCorrect ? '✓ Correcto — Pista' : '✕ Incorrecto — Pista')+'</span>'+
+    '<strong>Respuesta correcta: '+LETTERS[correct]+') '+q.options[correct]+'</strong><br><br>'+q.exp;
+
+  document.getElementById('next-btn').classList.remove('hidden');
+}
+
+function nextQuestion(){
+  currentIndex++;
+  if(currentIndex >= currentQuiz.length){
+    showDashboard();
+  } else {
+    renderQuestion();
+  }
+}
+
+function showDashboard(){
+  document.getElementById('quiz-screen').classList.add('hidden');
+  document.getElementById('dashboard-screen').classList.remove('hidden');
+
+  const totalCorrect = userAnswers.filter(a=>a.isCorrect).length;
+  const totalQ = userAnswers.length;
+  document.getElementById('score-total').innerHTML = totalCorrect+'<span>/'+totalQ+'</span>';
+  const pct = Math.round((totalCorrect/totalQ)*100);
+  document.getElementById('score-caption').textContent = pct+'% de logro general';
+
+  const barsDiv = document.getElementById('skill-bars');
+  barsDiv.innerHTML = '';
+  const weakSkills = [];
+  const strongSkills = [];
+
+  SKILL_ORDER.forEach(skillKey=>{
+    const s = scoreBySkill[skillKey];
+    const skillPct = s.total>0 ? Math.round((s.correct/s.total)*100) : 0;
+    let color = 'var(--accent-coral)';
+    if(skillPct>=75) color='var(--accent-sage)';
+    else if(skillPct>=50) color='var(--accent-amber)';
+
+    const row = document.createElement('div');
+    row.className='skill-bar-row';
+    row.innerHTML = '<div class="skill-bar-head"><span class="name">'+SKILL_NAMES[skillKey]+'</span><span class="frac">'+s.correct+'/'+s.total+'</span></div>'+
+      '<div class="skill-bar-track"><div class="skill-bar-fill" style="width:'+skillPct+'%;background:'+color+';"></div></div>';
+    barsDiv.appendChild(row);
+
+    if(skillPct<75) weakSkills.push({name:SKILL_NAMES[skillKey], pct:skillPct});
+    else strongSkills.push(SKILL_NAMES[skillKey]);
+  });
+
+  const improveBox = document.getElementById('improve-box');
+  const improveList = document.getElementById('improve-list');
+  improveList.innerHTML='';
+  if(weakSkills.length>0){
+    improveBox.classList.remove('hidden');
+    weakSkills.sort((a,b)=>a.pct-b.pct).forEach(w=>{
+      const li = document.createElement('li');
+      li.innerHTML = '<strong>'+w.name+'</strong> ('+w.pct+'%) — refuerza con más ejercicios de este tipo de habilidad, revisando las pistas de las preguntas falladas.';
+      improveList.appendChild(li);
+    });
+  } else {
+    improveBox.classList.add('hidden');
+  }
+
+  const strongBox = document.getElementById('strong-box');
+  const strongText = document.getElementById('strong-text');
+  if(strongSkills.length>0){
+    strongBox.classList.remove('hidden');
+    strongText.textContent = strongSkills.join(', ') + '. Buen dominio, mantén la práctica con nuevos intentos.';
+  } else {
+    strongBox.classList.add('hidden');
+  }
+}
+
+function restartQuiz(){ startQuiz(); }
+
+function reviewAnswers(){
+  document.getElementById('dashboard-screen').classList.add('hidden');
+  const rev = document.getElementById('review-screen');
+  rev.classList.remove('hidden');
+  let html = '<p class="eyebrow">Revisión de respuestas</p>';
+  userAnswers.forEach((a, i)=>{
+    html += '<div style="margin-bottom:22px;padding-bottom:18px;border-bottom:1px solid var(--line);">'+
+      '<span class="skill-tag">'+SKILL_NAMES[a.skill]+'</span>'+
+      '<p class="question-text" style="font-size:16px;">'+(i+1)+'. '+a.question+'</p>'+
+      '<p style="font-size:14px;color:'+(a.isCorrect?'var(--accent-sage)':'var(--accent-coral)')+';margin:0 0 6px;">'+
+        (a.isCorrect ? '✓ Respondiste correctamente' : '✕ Tu respuesta: '+LETTERS[a.chosenIdx]+') '+a.options[a.chosenIdx])+
+      '</p>'+
+      '<p style="font-size:14px;color:var(--text-muted);margin:0 0 8px;">Correcta: '+LETTERS[a.correctIdx]+') '+a.options[a.correctIdx]+'</p>'+
+      '<div class="feedback" style="margin-top:6px;"><span class="pista-label">Pista</span>'+a.exp+'</div>'+
+    '</div>';
+  });
+  html += '<div class="actions"><button class="btn" onclick="restartQuiz(); document.getElementById(\'review-screen\').classList.add(\'hidden\');">Repetir con nuevas preguntas</button></div>';
+  rev.innerHTML = html;
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PAES Biología · Clase 5 · Organelos Celulares II (Nivel Básico)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Source+Sans+3:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-deep:#0f2027;
+    --bg-panel:#15303a;
+    --bg-panel-2:#1b3a45;
+    --accent-amber:#e8a33d;
+    --accent-sage:#6fa88a;
+    --accent-coral:#e4572e;
+    --text-light:#f3ede1;
+    --text-muted:#a9c0c2;
+    --line:#2a4750;
+    --radius:14px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:radial-gradient(circle at 15% -10%, #1c4552 0%, var(--bg-deep) 55%) fixed;
+    color:var(--text-light);
+    font-family:'Source Sans 3', system-ui, sans-serif;
+    min-height:100vh;
+    padding:32px 16px 64px;
+  }
+  .wrap{max-width:820px;margin:0 auto;}
+  .eyebrow{font-family:'JetBrains Mono', monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent-amber);margin:0 0 8px;}
+  h1{font-family:'Fraunces', serif;font-weight:600;font-size:clamp(26px,4vw,38px);line-height:1.1;margin:0 0 6px;color:var(--text-light);}
+  .sub{color:var(--text-muted);font-size:15px;margin:0 0 28px;max-width:60ch;}
+  .card{background:linear-gradient(180deg, var(--bg-panel) 0%, var(--bg-panel-2) 100%);border:1px solid var(--line);border-radius:var(--radius);padding:28px;box-shadow:0 20px 40px -20px rgba(0,0,0,.5);}
+  #start-screen ul{color:var(--text-muted);font-size:14.5px;line-height:1.7;padding-left:20px;margin:18px 0 26px;}
+  #start-screen li{margin-bottom:4px;}
+  .btn{font-family:'Source Sans 3', sans-serif;font-weight:700;font-size:15px;border:none;border-radius:999px;padding:14px 30px;cursor:pointer;background:var(--accent-amber);color:#20140a;transition:transform .15s ease, box-shadow .15s ease;box-shadow:0 8px 20px -8px rgba(0,0,0,.35);}
+  .btn:hover{transform:translateY(-1px);}
+  .btn:active{transform:translateY(0);}
+  .btn.ghost{background:transparent;color:var(--text-muted);border:1.5px solid var(--line);box-shadow:none;}
+  .progress-row{display:flex;align-items:center;gap:14px;margin-bottom:18px;}
+  .progress-track{flex:1;height:6px;border-radius:99px;background:var(--line);overflow:hidden;}
+  .progress-fill{height:100%;background:linear-gradient(90deg,var(--accent-sage),var(--accent-amber));border-radius:99px;transition:width .3s ease;}
+  .progress-label{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--text-muted);white-space:nowrap;}
+  .skill-tag{display:inline-block;font-family:'JetBrains Mono', monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--bg-deep);background:var(--accent-sage);padding:5px 11px;border-radius:999px;margin-bottom:14px;}
+  .qnum{color:var(--text-muted);font-size:13px;font-family:'JetBrains Mono',monospace;margin-bottom:6px;}
+  .question-text{font-family:'Fraunces', serif;font-weight:500;font-size:19px;line-height:1.45;margin:0 0 22px;}
+  .options{display:flex;flex-direction:column;gap:10px;}
+  .option{display:flex;align-items:flex-start;gap:12px;text-align:left;background:rgba(255,255,255,.03);border:1.5px solid var(--line);border-radius:10px;padding:13px 15px;cursor:pointer;color:var(--text-light);font-size:14.5px;line-height:1.4;transition:border-color .15s, background .15s;}
+  .option:hover:not(.locked){border-color:var(--accent-amber);}
+  .option .letter{font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--accent-amber);flex-shrink:0;}
+  .option.correct{border-color:var(--accent-sage);background:rgba(111,168,138,.14);}
+  .option.incorrect{border-color:var(--accent-coral);background:rgba(228,87,46,.14);}
+  .option.locked{cursor:default;}
+  .option.dim{opacity:.45;}
+  .feedback{margin-top:18px;padding:16px 18px;border-radius:10px;background:rgba(255,255,255,.04);border-left:4px solid var(--accent-sage);font-size:14px;line-height:1.6;color:var(--text-muted);}
+  .feedback.wrong{border-left-color:var(--accent-coral);}
+  .feedback strong{color:var(--text-light);}
+  .feedback .pista-label{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent-amber);display:block;margin-bottom:6px;}
+  .nav-row{display:flex;justify-content:flex-end;margin-top:22px;}
+  .score-hero{text-align:center;padding:10px 0 26px;}
+  .score-big{font-family:'Fraunces',serif;font-weight:700;font-size:56px;color:var(--accent-amber);line-height:1;}
+  .score-big span{font-size:24px;color:var(--text-muted);font-weight:500;}
+  .score-caption{color:var(--text-muted);font-size:14px;margin-top:6px;}
+  .skill-bars{display:flex;flex-direction:column;gap:16px;margin:22px 0 8px;}
+  .skill-bar-head{display:flex;justify-content:space-between;font-size:13.5px;margin-bottom:6px;}
+  .skill-bar-head .name{font-weight:600;}
+  .skill-bar-head .frac{font-family:'JetBrains Mono',monospace;color:var(--text-muted);}
+  .skill-bar-track{height:10px;border-radius:99px;background:var(--line);overflow:hidden;}
+  .skill-bar-fill{height:100%;border-radius:99px;}
+  .improve-box{margin-top:26px;background:rgba(228,87,46,.08);border:1px solid rgba(228,87,46,.35);border-radius:10px;padding:18px 20px;}
+  .improve-box h3{font-family:'Fraunces',serif;font-size:16px;margin:0 0 10px;color:var(--accent-coral);}
+  .improve-box ul{margin:0;padding-left:20px;color:var(--text-light);font-size:14px;line-height:1.75;}
+  .strong-box{margin-top:14px;background:rgba(111,168,138,.08);border:1px solid rgba(111,168,138,.35);border-radius:10px;padding:18px 20px;}
+  .strong-box h3{font-family:'Fraunces',serif;font-size:16px;margin:0 0 10px;color:var(--accent-sage);}
+  .strong-box p{margin:0;color:var(--text-light);font-size:14px;line-height:1.6;}
+  .actions{display:flex;gap:12px;margin-top:28px;flex-wrap:wrap;}
+  .hidden{display:none !important;}
+  footer{text-align:center;color:var(--text-muted);font-size:12px;margin-top:26px;opacity:.6;}
+</style>
+</head>
+<body> <div style="float: left; margin-right: 25px; margin-bottom: 25px;"><img src="Logo_AMC.png" alt="Logo" style="max-width: 150px;"></div>
+<div class="wrap">
+  <p class="eyebrow">PAES · Ciencias — Módulo Biología Común · Nivel Básico</p>
+  <h1>Organelos Celulares II</h1>
+  <p class="sub">Eje 1: Organización, estructura y actividad celular — Sub-eje: Organelos celulares y membrana plasmática — Clase 5: Organelos Celulares II (Mitocondrias, Cloroplastos, Lisosomas, Citoesqueleto)</p>
+
+  <div class="card" id="start-screen">
+    <p class="eyebrow" style="margin-bottom:14px;">Antes de comenzar</p>
+    <p style="color:var(--text-muted);font-size:14.5px;line-height:1.6;">Este quiz evalúa nivel <strong style='color:var(--text-light);'>básico</strong>, con 20 preguntas (4 por cada habilidad PAES), extraídas al azar de un banco amplio. Cada intento genera una versión distinta.</p>
+    <ul>
+      <li>Observar y plantear preguntas</li>
+      <li>Planificar y conducir una investigación</li>
+      <li>Procesar y analizar la evidencia</li>
+      <li>Evaluar</li>
+      <li>Comunicar</li>
+    </ul>
+    <button class="btn" onclick="startQuiz()">Comenzar quiz</button>
+  </div>
+
+  <div class="card hidden" id="quiz-screen">
+    <div class="progress-row">
+      <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+      <div class="progress-label" id="progress-label">1 / 20</div>
+    </div>
+    <span class="skill-tag" id="skill-tag"></span>
+    <p class="qnum" id="qnum"></p>
+    <p class="question-text" id="question-text"></p>
+    <div class="options" id="options"></div>
+    <div class="feedback hidden" id="feedback"></div>
+    <div class="nav-row">
+      <button class="btn hidden" id="next-btn" onclick="nextQuestion()">Siguiente →</button>
+    </div>
+  </div>
+
+  <div class="card hidden" id="dashboard-screen">
+    <p class="eyebrow">Resultados</p>
+    <div class="score-hero">
+      <div class="score-big" id="score-total">0<span>/20</span></div>
+      <p class="score-caption" id="score-caption">Puntaje global</p>
+    </div>
+    <div class="skill-bars" id="skill-bars"></div>
+    <div class="improve-box hidden" id="improve-box">
+      <h3>Puntos a mejorar</h3>
+      <ul id="improve-list"></ul>
+    </div>
+    <div class="strong-box hidden" id="strong-box">
+      <h3>Habilidades consolidadas</h3>
+      <p id="strong-text"></p>
+    </div>
+    <div class="actions">
+      <button class="btn" onclick="restartQuiz()">Repetir con nuevas preguntas</button>
+      <button class="btn ghost" onclick="reviewAnswers()">Revisar mis respuestas</button>
+    </div>
+  </div>
+
+  <div class="card hidden" id="review-screen"></div>
+
+  <footer>Banco de 40 preguntas · nivel básico · Clase 5 de 30 · basado en el temario DEMRE PAES Ciencias — Biología Común</footer>
+</div>
+
+<script>
+const SKILL_NAMES = {"OBS": "Observar y plantear preguntas", "PLAN": "Planificar y conducir una investigación", "PROC": "Procesar y analizar la evidencia", "EVAL": "Evaluar", "COM": "Comunicar"};
+const SKILL_ORDER = ["OBS", "PLAN", "PROC", "EVAL", "COM"];
+const LETTERS = ["A","B","C","D","E"];
+const PICK_PER_SKILL = 4;
+
+const QUESTION_BANK = [{"skill": "OBS", "q": "Se observa que las mitocondrias poseen una doble membrana con la interna muy plegada (crestas), mientras el peroxisoma posee solo una membrana simple sin pliegues. ¿Pregunta más pertinente?", "options": ["¿Los peroxisomas realizan fotosíntesis en lugar de respiración celular?", "¿La superficie plegada de la membrana interna mitocondrial se relaciona con una mayor capacidad de albergar las enzimas necesarias para la respiración celular?", "¿La doble membrana mitocondrial impide cualquier intercambio de sustancias con el citoplasma?", "¿El peroxisoma posee crestas similares a las de la mitocondria?", "¿La forma de la membrana de un organelo no tiene ninguna relación con su función?"], "correct": 1, "exp": "El plegamiento de la membrana interna mitocondrial (crestas) aumenta considerablemente la superficie disponible para alojar las proteínas de la cadena respiratoria, lo que se relaciona directamente con la eficiencia de la respiración celular."}, {"skill": "OBS", "q": "Se observa que las células vegetales verdes contienen cloroplastos con una coloración verde intensa, mientras las células de la raíz (sin exposición a luz) poseen plastidios sin ese color. ¿Pregunta más pertinente?", "options": ["¿La presencia de clorofila en los cloroplastos se relaciona con la capacidad de realizar fotosíntesis en los tejidos expuestos a la luz?", "¿Las raíces de la planta realizan fotosíntesis con mayor eficiencia que las hojas?", "¿El color verde de los cloroplastos se debe a la presencia de almidón?", "¿Todos los plastidios de una planta poseen exactamente el mismo color, sin importar el tejido?", "¿La clorofila se encuentra únicamente en las raíces de la planta?"], "correct": 0, "exp": "La clorofila es el pigmento fotosintético responsable del color verde de los cloroplastos; su ausencia en tejidos no expuestos a luz (como la raíz) es consistente con la menor necesidad de aparato fotosintético en esas células."}, {"skill": "OBS", "q": "Un estudiante observa que, al aplicar un colorante específico para enzimas hidrolíticas, se detecta fuerte tinción en pequeñas vesículas dispersas en el citoplasma de glóbulos blancos que recientemente fagocitaron bacterias. ¿Pregunta más pertinente?", "options": ["¿Estas vesículas corresponden a mitocondrias encargadas de producir energía para la fagocitosis?", "¿Estas vesículas corresponden a lisosomas, cuya función es digerir el material fagocitado mediante enzimas hidrolíticas?", "¿La tinción observada indica la presencia de cloroplastos en los glóbulos blancos?", "¿Los glóbulos blancos no requieren de ningún organelo para digerir material fagocitado?", "¿Las enzimas hidrolíticas se encuentran únicamente en el núcleo celular?"], "correct": 1, "exp": "La presencia de enzimas hidrolíticas en pequeñas vesículas citoplasmáticas es característica de los lisosomas, organelos especializados en la digestión de material fagocitado o de componentes celulares propios."}, {"skill": "OBS", "q": "Se observa que las células vegetales maduras presentan una gran vacuola central que ocupa la mayor parte del volumen celular, mientras las células animales no presentan una estructura equivalente de ese tamaño. ¿Pregunta más pertinente?", "options": ["¿El gran tamaño de la vacuola central en células vegetales se relaciona con funciones de almacenamiento y mantenimiento de la turgencia celular?", "¿Las células animales poseen una vacuola central de mayor tamaño que las vegetales?", "¿La vacuola central es un organelo exclusivo de las mitocondrias?", "¿La ausencia de vacuola central en células animales indica que no pueden almacenar ninguna sustancia?", "¿El tamaño de la vacuola no tiene ninguna relación con el volumen celular total?"], "correct": 0, "exp": "La gran vacuola central de las células vegetales cumple funciones de almacenamiento de agua, nutrientes y desechos, además de generar la presión de turgencia que da rigidez a la célula, características que la distinguen de las células animales."}, {"skill": "OBS", "q": "Un investigador nota que células con alta actividad de división celular presentan una red visible de microtúbulos organizados que forman el huso mitótico durante la división. ¿Pregunta más pertinente?", "options": ["¿Los microtúbulos del citoesqueleto cumplen un rol estructural necesario para la separación de los cromosomas durante la división celular?", "¿El huso mitótico está compuesto por filamentos de ADN en lugar de microtúbulos?", "¿Los microtúbulos desaparecen por completo durante la división celular?", "¿La formación del huso mitótico no tiene ninguna relación con el citoesqueleto celular?", "¿Solo las células vegetales forman un huso mitótico durante su división?"], "correct": 0, "exp": "Los microtúbulos son componentes del citoesqueleto que se organizan formando el huso mitótico, una estructura necesaria para la correcta separación de los cromosomas hacia cada célula hija durante la división celular."}, {"skill": "OBS", "q": "Se observa que las mitocondrias y los cloroplastos, a diferencia de otros organelos como el aparato de Golgi, poseen su propio ADN circular. ¿Pregunta más pertinente?", "options": ["¿Esta característica compartida por mitocondrias y cloroplastos podría relacionarse con un posible origen evolutivo bacteriano de ambos organelos?", "¿El aparato de Golgi posee más ADN propio que las mitocondrias y los cloroplastos?", "¿La presencia de ADN circular indica que estos organelos no cumplen ninguna función metabólica?", "¿Todos los organelos celulares poseen exactamente la misma cantidad de ADN propio?", "¿El ADN circular de mitocondrias y cloroplastos es idéntico al ADN nuclear de la célula?"], "correct": 0, "exp": "La posesión de ADN propio circular por mitocondrias y cloroplastos, ausente en organelos como el Golgi, es una de las evidencias que respalda la teoría endosimbiótica sobre su origen bacteriano ancestral."}, {"skill": "OBS", "q": "Un estudiante observa que peroxisomas aislados de células hepáticas producen burbujas de oxígeno al ser expuestos a peróxido de hidrógeno, gracias a la enzima catalasa presente en su interior. ¿Pregunta más pertinente?", "options": ["¿La presencia de catalasa en los peroxisomas cumple una función de detoxificación al descomponer el peróxido de hidrógeno, una sustancia tóxica para la célula?", "¿Los peroxisomas producen peróxido de hidrógeno como su función principal, sin ninguna relación con la detoxificación?", "¿La catalasa es una enzima exclusiva de las mitocondrias, sin relación con los peroxisomas?", "¿Las burbujas observadas corresponden a dióxido de carbono producido por la respiración celular?", "¿Los peroxisomas no poseen ningún tipo de enzima en su interior?"], "correct": 0, "exp": "La catalasa peroxisomal descompone el peróxido de hidrógeno (subproducto tóxico de ciertas reacciones metabólicas) en agua y oxígeno, cumpliendo una función protectora de detoxificación celular."}, {"skill": "OBS", "q": "Se observa que fibroblastos cultivados en placa cambian su forma y se desplazan lentamente, coincidiendo con reorganizaciones visibles en los filamentos de actina de su citoesqueleto. ¿Pregunta más pertinente?", "options": ["¿Los microfilamentos de actina participan en los cambios de forma y el movimiento observado en estas células?", "¿Los filamentos de actina son idénticos estructuralmente a los microtúbulos del citoesqueleto?", "¿El cambio de forma celular no tiene ninguna relación con el citoesqueleto?", "¿Los fibroblastos pierden por completo su citoesqueleto al cambiar de forma?", "¿La actina se encuentra únicamente en células vegetales?"], "correct": 0, "exp": "Los microfilamentos de actina son componentes dinámicos del citoesqueleto que participan activamente en los cambios de forma celular y en procesos de movimiento, como el desplazamiento observado en fibroblastos en cultivo."}, {"skill": "PLAN", "q": "Para comprobar experimentalmente que los peroxisomas contienen la enzima catalasa, ¿cuál es el procedimiento más adecuado?", "options": ["Aislar peroxisomas de una muestra celular y exponerlos a peróxido de hidrógeno, observando si se produce liberación de burbujas de oxígeno como indicador de actividad enzimática", "Agregar lugol a los peroxisomas aislados y observar si cambian de color", "Medir solo el tamaño de los peroxisomas, sin exponerlos a ningún reactivo", "No es necesario ningún procedimiento experimental para comprobar esta característica", "Calentar los peroxisomas a temperaturas extremas antes de cualquier observación"], "correct": 0, "exp": "Exponer peroxisomas aislados a peróxido de hidrógeno y observar la liberación de oxígeno (burbujas) es el procedimiento clásico para evidenciar la actividad de la enzima catalasa característica de este organelo."}, {"skill": "PLAN", "q": "Un estudiante desea investigar si la cantidad de mitocondrias varía según la demanda energética de distintos tipos celulares (por ejemplo, célula muscular vs. célula epitelial). ¿Cuál es el diseño experimental adecuado?", "options": ["Observar mediante microscopía electrónica y cuantificar la cantidad de mitocondrias en ambos tipos celulares, bajo el mismo método de preparación y análisis", "Observar un solo tipo celular y generalizar el resultado al otro sin ninguna comparación", "Medir solo el tamaño externo de la célula, sin observar su contenido de mitocondrias", "No es necesario comparar distintos tipos celulares para responder esta pregunta", "Usar métodos de preparación distintos para cada tipo celular analizado"], "correct": 0, "exp": "Comparar sistemáticamente, bajo el mismo método de observación, la cantidad de mitocondrias entre tipos celulares con distinta demanda energética permite establecer de forma válida esta relación."}, {"skill": "PLAN", "q": "Para determinar si los lisosomas participan efectivamente en la digestión de bacterias fagocitadas por un glóbulo blanco, ¿cuál es el procedimiento experimental adecuado?", "options": ["Marcar las bacterias con un indicador fluorescente y seguir por microscopía si, tras la fagocitosis, se fusionan con vesículas que contienen enzimas lisosomales, observando la posterior degradación de la marca bacteriana", "Observar el glóbulo blanco sin ningún tipo de marcaje ni seguimiento temporal", "No es necesario ningún experimento para comprobar esta función de los lisosomas", "Medir solo el tamaño del glóbulo blanco antes y después de la fagocitosis", "Bloquear la fagocitosis por completo y observar el resultado únicamente en esa condición"], "correct": 0, "exp": "El seguimiento por microscopía de la fusión entre la vesícula fagocítica y el lisosoma, junto con la posterior degradación del material fagocitado, permite comprobar experimentalmente el rol digestivo de los lisosomas."}, {"skill": "PLAN", "q": "Se desea investigar si la vacuola central contribuye a la turgencia de una célula vegetal. ¿Cuál es el diseño experimental más adecuado?", "options": ["Colocar células vegetales en soluciones de distinta concentración (hipotónica e hipertónica) y observar el cambio en el tamaño de la vacuola central junto con la rigidez celular observada en cada condición", "Observar la célula vegetal en una sola condición, sin ninguna variación de concentración externa", "Medir solo el tamaño del núcleo celular, sin evaluar la vacuola", "No es necesario variar la concentración externa para responder esta pregunta", "Usar únicamente células animales para este experimento, ya que no poseen vacuola central"], "correct": 0, "exp": "Comparar el comportamiento de la vacuola y la rigidez celular bajo distintas condiciones osmóticas permite establecer experimentalmente la relación entre el tamaño de la vacuola y el estado de turgencia de la célula vegetal."}, {"skill": "PLAN", "q": "Un investigador desea determinar si los microtúbulos son necesarios para la correcta separación de los cromosomas durante la división celular. ¿Cuál es el diseño experimental adecuado?", "options": ["Comparar la separación de cromosomas en células con microtúbulos funcionales frente a células tratadas con un compuesto que impide su formación, manteniendo iguales las demás condiciones experimentales", "Observar la división celular en una sola condición, sin ningún grupo de comparación", "No es necesario ningún grupo control para esta pregunta", "Medir solo el tamaño de la célula durante la división, sin observar el comportamiento de los cromosomas", "Bloquear simultáneamente todos los componentes del citoesqueleto sin poder aislar el efecto específico de los microtúbulos"], "correct": 0, "exp": "Comparar la separación cromosómica entre condiciones con y sin microtúbulos funcionales, manteniendo todo lo demás constante, permite establecer de forma rigurosa la necesidad de estos componentes del citoesqueleto en la división celular."}, {"skill": "PLAN", "q": "Para comparar la cantidad de cloroplastos entre una célula de una hoja expuesta al sol y una célula de una hoja mantenida en la oscuridad, ¿cuál es el procedimiento experimental más adecuado?", "options": ["Observar ambos tipos de célula mediante microscopía óptica bajo el mismo aumento y condiciones de preparación, y contar o estimar la cantidad de cloroplastos visibles en cada una", "Medir solo el tamaño de la hoja, sin observar sus células individuales", "Usar aumentos distintos del microscopio para cada muestra analizada", "No es necesario mantener las mismas condiciones de preparación entre ambas muestras", "Comparar solo una célula de cada condición sin ningún criterio de conteo sistemático"], "correct": 0, "exp": "Un protocolo estandarizado de observación y conteo permite realizar una comparación válida y objetiva de la cantidad de cloroplastos entre células de hojas sometidas a distintas condiciones de luz."}, {"skill": "PLAN", "q": "Se desea investigar si la actividad de la catalasa peroxisomal varía según el tipo de tejido analizado (por ejemplo, hígado vs. músculo). ¿Cuál es el diseño experimental adecuado?", "options": ["Aislar peroxisomas de ambos tejidos bajo el mismo protocolo, exponerlos a la misma concentración de peróxido de hidrógeno, y medir la cantidad de oxígeno liberado en un tiempo estandarizado para cada tejido", "Aislar peroxisomas de un solo tejido y generalizar el resultado al otro sin ninguna comparación", "Usar concentraciones distintas de peróxido de hidrógeno para cada tejido evaluado", "No es necesario estandarizar el tiempo de exposición entre ambos tejidos", "Medir solo el tamaño de los peroxisomas, sin evaluar su actividad enzimática"], "correct": 0, "exp": "Mantener estandarizadas todas las condiciones experimentales (concentración de reactivo, tiempo) y variar solo el tejido de origen permite comparar de forma válida la actividad enzimática entre ambos tipos de tejido."}, {"skill": "PLAN", "q": "Para investigar si los filamentos de actina son necesarios para el desplazamiento de un fibroblasto en cultivo, ¿cuál es el diseño experimental adecuado?", "options": ["Comparar la velocidad y capacidad de desplazamiento de fibroblastos con filamentos de actina funcionales frente a fibroblastos tratados con un compuesto que impide su polimerización, bajo las mismas condiciones de cultivo", "Observar el desplazamiento de fibroblastos en una sola condición, sin ningún grupo de comparación", "No es necesario ningún grupo control para esta pregunta", "Medir solo el tamaño del fibroblasto, sin evaluar su capacidad de desplazamiento", "Bloquear simultáneamente todos los componentes del citoesqueleto sin poder aislar el efecto específico de la actina"], "correct": 0, "exp": "Comparar el desplazamiento celular entre condiciones con y sin filamentos de actina funcionales, manteniendo todo lo demás constante, permite establecer de forma rigurosa el rol de este componente del citoesqueleto en el movimiento celular."}, {"skill": "PROC", "q": "Se midió la cantidad de mitocondrias por célula en distintos tejidos: célula epitelial de piel=200; célula hepática=1.000-2.000; célula muscular cardíaca=3.000-5.000. ¿Qué conclusión es más adecuada?", "options": ["La cantidad de mitocondrias por célula tiende a ser mayor en tejidos con alta demanda energética (como el músculo cardíaco), en comparación con tejidos de menor actividad metabólica (como la piel)", "Todas las células, sin importar el tejido, presentan exactamente la misma cantidad de mitocondrias", "La célula epitelial de piel presenta la mayor cantidad de mitocondrias entre los tejidos analizados", "La cantidad de mitocondrias no tiene ninguna relación con la demanda energética del tejido", "El músculo cardíaco presenta la menor cantidad de mitocondrias entre los tejidos comparados"], "correct": 0, "exp": "La marcada diferencia en la cantidad de mitocondrias, mayor en tejidos de alta demanda energética como el músculo cardíaco, es consistente con el rol de este organelo en la producción de energía celular (ATP)."}, {"skill": "PROC", "q": "Se comparó el tamaño de la vacuola central de una célula vegetal en una solución hipotónica (vacuola grande, célula túrgida) y en una solución hipertónica (vacuola reducida, célula flácida). ¿Qué conclusión es más adecuada?", "options": ["El tamaño de la vacuola central varía según la concentración del medio externo, relacionándose con el estado de turgencia de la célula vegetal", "El tamaño de la vacuola no cambia bajo ninguna condición de concentración externa", "La solución hipertónica siempre produce un aumento del tamaño de la vacuola central", "La turgencia celular no tiene ninguna relación con el tamaño de la vacuola", "Las células vegetales pierden por completo su vacuola central en soluciones hipotónicas"], "correct": 0, "exp": "La relación observada entre concentración del medio externo, tamaño de la vacuola y estado de turgencia es consistente con el rol de la vacuola central en la regulación del balance hídrico y la rigidez de la célula vegetal."}, {"skill": "PROC", "q": "Un estudio midió la cantidad de oxígeno liberado por catalasa peroxisomal al exponerla a distintas concentraciones de peróxido de hidrógeno: 1%=poco oxígeno; 3%=oxígeno moderado; 10%=mucho oxígeno; 30%=oxígeno máximo, con posterior estabilización. ¿Qué tendencia revelan estos datos?", "options": ["La cantidad de oxígeno liberado aumenta con la concentración de peróxido de hidrógeno, hasta alcanzar un punto de estabilización a altas concentraciones", "La cantidad de oxígeno liberado disminuye a medida que aumenta la concentración de peróxido de hidrógeno", "La concentración de peróxido de hidrógeno no tiene ninguna relación con la cantidad de oxígeno liberado", "La catalasa deja de funcionar completamente a concentraciones superiores al 1%", "La liberación de oxígeno es igual en todas las concentraciones evaluadas"], "correct": 0, "exp": "El patrón observado (aumento progresivo con estabilización a altas concentraciones) es consistente con el comportamiento típico de una enzima que se acerca a su velocidad máxima de reacción al aumentar la disponibilidad de sustrato."}, {"skill": "PROC", "q": "Se comparó la cantidad de cloroplastos en células de hojas expuestas a distintas intensidades de luz: baja intensidad=pocos cloroplastos por célula; intensidad media=cantidad intermedia; alta intensidad=mayor cantidad de cloroplastos por célula. ¿Qué conclusión es más adecuada?", "options": ["La cantidad de cloroplastos por célula tiende a aumentar con la intensidad de luz a la que ha estado expuesta la hoja", "La cantidad de cloroplastos disminuye a medida que aumenta la intensidad de luz", "La intensidad de luz no tiene ninguna relación con la cantidad de cloroplastos presentes en la célula", "Las hojas expuestas a baja intensidad de luz presentan la mayor cantidad de cloroplastos", "Todas las células foliares presentan exactamente la misma cantidad de cloroplastos, sin importar la luz recibida"], "correct": 0, "exp": "La tendencia observada (mayor cantidad de cloroplastos con mayor intensidad de luz) es consistente con una respuesta adaptativa de la célula vegetal para optimizar la captación de luz disponible para la fotosíntesis."}, {"skill": "PROC", "q": "Se midió el porcentaje de separación correcta de cromosomas durante la división celular en presencia de microtúbulos funcionales (95% de separación correcta) y con microtúbulos inhibidos (15% de separación correcta, con numerosos errores). ¿Qué conclusión es más adecuada?", "options": ["Los microtúbulos son necesarios para la separación correcta de los cromosomas durante la división celular, ya que su inhibición reduce drásticamente el porcentaje de separaciones exitosas", "La inhibición de los microtúbulos mejora la precisión de la separación cromosómica", "Los microtúbulos no tienen ninguna relación con la separación de los cromosomas durante la división celular", "Ambas condiciones muestran exactamente el mismo porcentaje de separación correcta de cromosomas", "La separación cromosómica ocurre de forma completamente independiente del citoesqueleto celular"], "correct": 0, "exp": "La marcada disminución en el porcentaje de separación correcta tras inhibir los microtúbulos confirma su rol necesario en la organización del huso mitótico y la correcta segregación cromosómica."}, {"skill": "PROC", "q": "Se comparó la actividad de la catalasa peroxisomal en tejido hepático (alta actividad) y en tejido muscular (baja actividad), ambos expuestos a la misma concentración de peróxido de hidrógeno. ¿Qué interpretación es la más adecuada?", "options": ["El tejido hepático presenta mayor actividad de catalasa que el tejido muscular, posiblemente relacionado con su mayor función de detoxificación metabólica", "El tejido muscular presenta mayor actividad de catalasa que el tejido hepático", "Ambos tejidos presentan exactamente la misma actividad de catalasa", "La actividad de catalasa no tiene ninguna relación con la función metabólica del tejido", "El hígado no posee ningún tipo de peroxisoma en su composición celular"], "correct": 0, "exp": "La mayor actividad de catalasa en el tejido hepático es consistente con su conocida función central en procesos de detoxificación metabólica, que generan peróxido de hidrógeno como subproducto."}, {"skill": "PROC", "q": "Se midió la velocidad de desplazamiento de fibroblastos con filamentos de actina funcionales (velocidad normal) y con la polimerización de actina inhibida (velocidad muy reducida o desplazamiento nulo). ¿Qué conclusión es más adecuada?", "options": ["Los filamentos de actina son necesarios para el desplazamiento celular normal, ya que su inhibición reduce drásticamente la velocidad de movimiento de los fibroblastos", "La inhibición de los filamentos de actina aumenta la velocidad de desplazamiento celular", "Los filamentos de actina no tienen ninguna relación con el desplazamiento celular", "Ambas condiciones muestran exactamente la misma velocidad de desplazamiento", "El desplazamiento celular ocurre de forma completamente independiente del citoesqueleto"], "correct": 0, "exp": "La marcada disminución de la velocidad de desplazamiento tras inhibir la polimerización de actina confirma el rol necesario de este componente del citoesqueleto en el movimiento celular."}, {"skill": "PROC", "q": "Se comparó la cantidad de ADN mitocondrial (copias por célula) en distintos tejidos: piel=cientos de copias; músculo cardíaco=miles de copias. ¿Qué conclusión es más adecuada considerando la cantidad de mitocondrias en cada tejido?", "options": ["La mayor cantidad de ADN mitocondrial en el músculo cardíaco es consistente con su mayor número de mitocondrias, reflejando su mayor demanda energética", "La piel presenta mayor cantidad de ADN mitocondrial que el músculo cardíaco", "La cantidad de ADN mitocondrial no tiene ninguna relación con el número de mitocondrias presentes", "Ambos tejidos presentan exactamente la misma cantidad de ADN mitocondrial", "El ADN mitocondrial se encuentra exclusivamente en el núcleo celular, sin relación con las mitocondrias"], "correct": 0, "exp": "La correlación entre mayor número de mitocondrias y mayor cantidad de copias de ADN mitocondrial es consistente, ya que cada mitocondria posee su propio material genético, y el músculo cardíaco requiere de muchas más mitocondrias por su alta demanda energética."}, {"skill": "EVAL", "q": "Un estudiante concluye que 'todas las células vegetales tienen exactamente el mismo tamaño de vacuola central' basándose en la observación de una sola célula de una hoja madura. ¿Qué crítica es más pertinente?", "options": ["La conclusión es válida porque una sola observación es representativa de todas las células vegetales existentes", "El tamaño de la vacuola central varía según el tipo celular, su grado de madurez y las condiciones ambientales; generalizar a partir de una sola célula no permite sostener esa afirmación para 'todas las células vegetales'", "Todas las células vegetales, sin excepción, carecen de vacuola central", "No es necesario observar más de una célula para hacer esta generalización", "El tamaño de la vacuola central es idéntico en cualquier condición ambiental"], "correct": 1, "exp": "El tamaño de la vacuola central varía considerablemente según el tipo celular, su estado de desarrollo y las condiciones del medio; una sola observación no es representativa de esa variabilidad conocida."}, {"skill": "EVAL", "q": "Una investigación concluyó que 'los lisosomas son organelos exclusivos de los glóbulos blancos' basándose en su observación únicamente en ese tipo celular. ¿Qué crítica es más sólida?", "options": ["La conclusión es correcta porque los lisosomas solo cumplen función en el sistema inmune", "Los lisosomas están presentes en la mayoría de las células eucariontes, no solo en los glóbulos blancos, cumpliendo funciones de digestión intracelular en distintos contextos (autofagia, reciclaje de componentes celulares); generalizar su exclusividad a un solo tipo celular es incorrecto", "Los lisosomas no existen en ningún tipo celular, incluidos los glóbulos blancos", "La función de los lisosomas se limita únicamente a la fagocitosis de bacterias", "No es necesario considerar otros tipos celulares para esta generalización"], "correct": 1, "exp": "Los lisosomas son organelos presentes de forma general en las células eucariontes, cumpliendo funciones más allá de la digestión de material fagocitado, como el reciclaje de componentes celulares propios (autofagia); limitar su presencia a un solo tipo celular es un error de generalización."}, {"skill": "EVAL", "q": "Un estudio comparó la cantidad de mitocondrias en una sola célula muscular y una sola célula de piel, concluyendo que 'todas las células musculares tienen más mitocondrias que cualquier otro tipo celular del organismo, sin excepción'. ¿Qué crítica es más pertinente?", "options": ["La conclusión es válida porque una sola comparación es suficiente para generalizar a todo el organismo", "Comparar una sola célula de cada tipo no permite generalizar a 'todas las células musculares' ni descartar que otros tipos celulares de alta demanda energética (como neuronas) también presenten alta cantidad de mitocondrias; se requeriría una muestra más amplia y diversa", "No es necesario ampliar la muestra para hacer esta generalización", "Todas las células del organismo, sin excepción, tienen exactamente la misma cantidad de mitocondrias", "Las células musculares nunca presentan variación en la cantidad de mitocondrias entre sí"], "correct": 1, "exp": "Generalizar a partir de una sola célula de cada tipo, sin considerar otros tipos celulares de alta demanda energética ni la variabilidad dentro de cada tipo, no es una base suficiente para una afirmación tan amplia y categórica."}, {"skill": "EVAL", "q": "Una publicación afirma que 'los cloroplastos y las mitocondrias cumplen exactamente la misma función dentro de la célula, ya que ambos producen energía'. ¿Qué error se identifica en esta afirmación?", "options": ["La afirmación es correcta porque ambos organelos producen energía de la misma forma", "Aunque ambos organelos están relacionados con el metabolismo energético, cumplen funciones distintas: los cloroplastos capturan energía lumínica y la convierten en energía química mediante fotosíntesis, mientras las mitocondrias obtienen energía a partir de la degradación de moléculas orgánicas mediante respiración celular", "Los cloroplastos no tienen ninguna relación con la producción de energía celular", "Las mitocondrias realizan fotosíntesis, igual que los cloroplastos", "Solo las mitocondrias participan en algún proceso relacionado con la energía celular"], "correct": 1, "exp": "Aunque ambos organelos están vinculados al metabolismo energético celular, los procesos que realizan (fotosíntesis vs. respiración celular) y el tipo de energía que capturan o liberan son fundamentalmente distintos."}, {"skill": "EVAL", "q": "Un estudio concluyó que 'el citoesqueleto es una estructura fija e inmóvil dentro de la célula' basándose en una sola imagen estática obtenida por microscopía. ¿Qué crítica es más pertinente?", "options": ["La conclusión es correcta porque el citoesqueleto nunca cambia su organización dentro de la célula", "Una sola imagen estática no permite evaluar la naturaleza dinámica del citoesqueleto, que se reorganiza constantemente (por ejemplo, durante el movimiento celular o la división); se requeriría un seguimiento en el tiempo para evaluar correctamente esta característica", "El citoesqueleto no cumple ninguna función estructural dentro de la célula", "Las imágenes estáticas siempre son suficientes para evaluar procesos dinámicos celulares", "El citoesqueleto es idéntico en organización en cualquier momento del ciclo celular"], "correct": 1, "exp": "El citoesqueleto es una estructura dinámica que se reorganiza constantemente según las necesidades celulares (movimiento, división, cambios de forma); una sola imagen estática no captura esa naturaleza cambiante."}, {"skill": "EVAL", "q": "Una investigación afirmó que 'la catalasa es una enzima exclusiva de las mitocondrias' basándose en su rol en el metabolismo celular. ¿Qué crítica es más sólida?", "options": ["La afirmación es correcta porque solo las mitocondrias pueden contener enzimas relacionadas con el metabolismo celular", "La catalasa es una enzima característica de los peroxisomas, no de las mitocondrias; confundir la localización de esta enzima refleja un error en la identificación del organelo correspondiente", "Las mitocondrias no poseen ningún tipo de enzima en su interior", "Los peroxisomas no poseen ninguna enzima relacionada con el metabolismo celular", "La catalasa se encuentra únicamente en el núcleo celular"], "correct": 1, "exp": "La catalasa es una enzima característica y distintiva de los peroxisomas, encargada de descomponer el peróxido de hidrógeno; atribuirla a las mitocondrias es un error de identificación del organelo correcto."}, {"skill": "EVAL", "q": "Un estudio concluyó que 'la vacuola central de las células vegetales cumple exactamente la misma función que el núcleo celular' basándose en que ambas son estructuras grandes y visibles al microscopio. ¿Qué crítica es más pertinente?", "options": ["La conclusión es correcta porque el tamaño similar de ambas estructuras implica una función equivalente", "El tamaño similar de dos estructuras celulares no implica que cumplan la misma función; la vacuola central cumple funciones de almacenamiento y turgencia, mientras el núcleo alberga el material genético y dirige la actividad celular, funciones completamente distintas", "La vacuola central contiene el material genético de la célula vegetal, igual que el núcleo", "El núcleo celular no cumple ninguna función relevante dentro de la célula vegetal", "Ambas estructuras son exactamente idénticas en composición y función"], "correct": 1, "exp": "Inferir función a partir de una característica superficial (tamaño visible) sin considerar la composición y el rol biológico real de cada estructura es un error de razonamiento; vacuola y núcleo cumplen funciones celulares completamente distintas."}, {"skill": "EVAL", "q": "Una publicación afirmó que 'todos los organelos que poseen ADN propio (mitocondrias y cloroplastos) tienen exactamente el mismo origen evolutivo bacteriano específico'. ¿Qué crítica es más pertinente a nivel básico?", "options": ["La afirmación es completamente correcta y no requiere ningún matiz adicional", "Aunque ambos organelos comparten la característica general de poseer ADN propio (asociada a un origen endosimbiótico), corresponden a eventos evolutivos independientes con bacterias ancestrales distintas, por lo que no comparten exactamente el mismo origen específico", "Solo las mitocondrias poseen ADN propio entre estos dos organelos", "Los cloroplastos y las mitocondrias no tienen ningún tipo de relación con bacterias ancestrales", "El ADN propio de estos organelos es idéntico al ADN nuclear de la célula"], "correct": 1, "exp": "Aunque ambos organelos comparten el mecanismo general de origen endosimbiótico, se originaron a partir de bacterias ancestrales distintas (relacionadas con cianobacterias en el caso de los cloroplastos), por lo que no debe asumirse un origen específico idéntico."}, {"skill": "COM", "q": "Un estudiante debe explicar la diferencia funcional entre mitocondrias y cloroplastos a un compañero. ¿Explicación más precisa?", "options": ["Ambos organelos cumplen exactamente la misma función dentro de la célula", "Las mitocondrias obtienen energía mediante la degradación de moléculas orgánicas (respiración celular), mientras los cloroplastos capturan energía lumínica y la convierten en energía química mediante fotosíntesis, presente solo en células con capacidad fotosintética", "Los cloroplastos se encuentran en cualquier tipo de célula, incluidas las animales", "Las mitocondrias realizan fotosíntesis, mientras los cloroplastos realizan respiración celular", "Ninguno de los dos organelos tiene relación con el metabolismo energético de la célula"], "correct": 1, "exp": "La explicación correcta distingue claramente los procesos metabólicos característicos de cada organelo (respiración celular en mitocondrias, fotosíntesis en cloroplastos) y su distribución en distintos tipos de organismos."}, {"skill": "COM", "q": "Al explicar por qué los lisosomas son considerados el 'sistema digestivo' de la célula, ¿cuál es la explicación más precisa?", "options": ["Los lisosomas contienen enzimas hidrolíticas capaces de degradar macromoléculas (proteínas, lípidos, carbohidratos) provenientes tanto de material externo fagocitado como de componentes celulares propios en proceso de reciclaje", "Los lisosomas producen la energía necesaria para todos los procesos celulares", "Los lisosomas almacenan agua y nutrientes para la célula, sin ninguna función digestiva", "Los lisosomas son idénticos en función a las mitocondrias", "Los lisosomas se encuentran únicamente en el núcleo celular"], "correct": 0, "exp": "La analogía del 'sistema digestivo celular' se explica por la capacidad de los lisosomas de descomponer distintos tipos de macromoléculas mediante sus enzimas hidrolíticas, tanto de origen externo como interno."}, {"skill": "COM", "q": "Un estudiante debe explicar por qué la vacuola central es importante para mantener la rigidez de una célula vegetal. ¿Explicación más precisa?", "options": ["La vacuola central acumula agua, generando una presión interna (turgencia) que empuja la membrana plasmática contra la pared celular, lo que contribuye a mantener la forma y rigidez de la célula vegetal", "La vacuola central no tiene ninguna relación con la rigidez de la célula vegetal", "La rigidez celular depende únicamente del núcleo, sin relación con la vacuola", "La vacuola central expulsa toda el agua de la célula, lo que genera su rigidez", "La pared celular es la única estructura responsable de la rigidez, sin ninguna contribución de la vacuola"], "correct": 0, "exp": "La presión de turgencia generada por la acumulación de agua en la vacuola central, contra la pared celular, es un mecanismo central que contribuye a mantener la forma y rigidez característica de las células vegetales."}, {"skill": "COM", "q": "Al explicar por qué los peroxisomas son importantes para la célula a pesar de generar una sustancia tóxica (peróxido de hidrógeno) durante su actividad metabólica, ¿cuál es la explicación más precisa?", "options": ["Los peroxisomas no generan ninguna sustancia relevante durante su actividad metabólica", "Aunque ciertas reacciones metabólicas dentro del peroxisoma generan peróxido de hidrógeno como subproducto, el mismo organelo contiene la enzima catalasa, que descompone rápidamente esa sustancia tóxica en agua y oxígeno, evitando su acumulación dañina para la célula", "El peróxido de hidrógeno generado por los peroxisomas nunca representa un riesgo para la célula", "Los peroxisomas eliminan el peróxido de hidrógeno enviándolo directamente al núcleo celular", "La catalasa convierte el peróxido de hidrógeno en glucosa, sin ninguna relación con la detoxificación"], "correct": 1, "exp": "La explicación completa debe destacar el mecanismo de autocontención: el mismo organelo que genera la sustancia potencialmente tóxica posee la enzima necesaria para neutralizarla, evitando así un daño celular mayor."}, {"skill": "COM", "q": "Un estudiante debe explicar el rol del citoesqueleto en el mantenimiento de la forma celular y el movimiento. ¿Explicación más precisa?", "options": ["El citoesqueleto no cumple ninguna función relacionada con la forma o el movimiento celular", "El citoesqueleto, compuesto por microfilamentos, microtúbulos y filamentos intermedios, proporciona soporte estructural que determina y mantiene la forma de la célula, además de participar activamente en procesos de movimiento celular y transporte interno de organelos", "El citoesqueleto es una estructura rígida y completamente estática, sin ninguna función dinámica", "La forma celular depende únicamente de la membrana plasmática, sin ninguna contribución del citoesqueleto", "El citoesqueleto se encuentra exclusivamente en células vegetales"], "correct": 1, "exp": "La explicación completa reconoce el doble rol del citoesqueleto: soporte estructural (forma celular) y función dinámica (movimiento, transporte interno), coordinado por sus distintos tipos de filamentos."}, {"skill": "COM", "q": "Al explicar por qué las mitocondrias y los cloroplastos poseen su propio ADN, a diferencia de la mayoría de los otros organelos celulares, ¿cuál es la explicación más precisa a nivel básico?", "options": ["Estos organelos se originaron, según la teoría endosimbiótica, a partir de bacterias ancestrales de vida libre que fueron incorporadas por una célula huésped, conservando parte de su material genético original propio de esa historia evolutiva bacteriana", "Todos los organelos celulares poseen exactamente la misma cantidad de ADN propio", "El ADN de mitocondrias y cloroplastos proviene directamente del núcleo celular", "Estos organelos no poseen ningún tipo de material genético en su interior", "La presencia de ADN propio en estos organelos no tiene ninguna explicación evolutiva conocida"], "correct": 0, "exp": "La teoría endosimbiótica explica la presencia de ADN propio en mitocondrias y cloroplastos como un vestigio de su origen evolutivo a partir de bacterias ancestrales de vida libre, incorporadas por una célula huésped en el pasado evolutivo."}, {"skill": "COM", "q": "Un estudiante debe explicar por qué las células musculares, que requieren gran cantidad de energía, poseen muchas más mitocondrias que otras células del organismo. ¿Explicación más precisa?", "options": ["Las mitocondrias son las responsables principales de la producción de energía celular (ATP) mediante la respiración celular; por lo tanto, células con alta demanda energética, como las musculares, requieren de una mayor cantidad de estos organelos para satisfacer esa necesidad metabólica", "Las mitocondrias no tienen ninguna relación con la producción de energía celular", "Las células musculares no requieren de ningún tipo de energía adicional respecto a otras células", "La cantidad de mitocondrias es idéntica en cualquier tipo celular, sin relación con su demanda energética", "Las mitocondrias producen menos energía en las células musculares que en otros tipos celulares"], "correct": 0, "exp": "La relación entre la cantidad de mitocondrias y la demanda energética de una célula se explica por el rol central de este organelo en la producción de ATP mediante la respiración celular, un proceso fundamental para el funcionamiento muscular."}, {"skill": "COM", "q": "Al explicar por qué los lisosomas deben mantener su contenido enzimático aislado del resto del citoplasma mediante una membrana, ¿cuál es la explicación más precisa?", "options": ["Las enzimas hidrolíticas contenidas en los lisosomas podrían degradar componentes celulares propios si se liberaran libremente en el citoplasma; la membrana lisosomal mantiene estas enzimas contenidas y activas solo dentro del organelo, protegiendo así al resto de la célula de una digestión no controlada", "Las enzimas lisosomales no representan ningún riesgo para el resto de la célula, incluso si se liberan al citoplasma", "La membrana lisosomal no cumple ninguna función de contención, solo de forma", "Los lisosomas no contienen ningún tipo de enzima capaz de degradar componentes celulares", "La membrana lisosomal impide que las enzimas hidrolíticas puedan degradar cualquier sustancia, incluso dentro del propio organelo"], "correct": 0, "exp": "La compartimentalización mediante membrana es un mecanismo de seguridad celular: mantiene las potentes enzimas digestivas contenidas y activas solo dentro del lisosoma, evitando que dañen componentes celulares que no están destinados a ser degradados."}];
+
+let currentQuiz = [];
+let currentIndex = 0;
+let answered = false;
+let userAnswers = [];
+let scoreBySkill = {};
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function buildQuiz(){
+  let selected = [];
+  SKILL_ORDER.forEach(skillKey=>{
+    const pool = QUESTION_BANK.filter(q=>q.skill===skillKey);
+    const picked = shuffle(pool).slice(0,PICK_PER_SKILL);
+    selected = selected.concat(picked);
+  });
+  selected = shuffle(selected);
+  return selected.map(orig=>{
+    const idxArr = [0,1,2,3,4];
+    const shuffledIdx = shuffle(idxArr);
+    const newOptions = shuffledIdx.map(i=>orig.options[i]);
+    const newCorrect = shuffledIdx.indexOf(orig.correct);
+    return { skill: orig.skill, question: orig.q, options: newOptions, correct: newCorrect, exp: orig.exp };
+  });
+}
+
+function startQuiz(){
+  currentQuiz = buildQuiz();
+  currentIndex = 0;
+  answered = false;
+  userAnswers = [];
+  scoreBySkill = {};
+  SKILL_ORDER.forEach(s=>scoreBySkill[s]={correct:0,total:0});
+  document.getElementById('start-screen').classList.add('hidden');
+  document.getElementById('dashboard-screen').classList.add('hidden');
+  document.getElementById('review-screen').classList.add('hidden');
+  document.getElementById('quiz-screen').classList.remove('hidden');
+  renderQuestion();
+}
+
+function renderQuestion(){
+  answered = false;
+  const q = currentQuiz[currentIndex];
+  const total = currentQuiz.length;
+  document.getElementById('progress-fill').style.width = ((currentIndex)/total*100)+'%';
+  document.getElementById('progress-label').textContent = (currentIndex+1)+' / '+total;
+  document.getElementById('skill-tag').textContent = SKILL_NAMES[q.skill];
+  document.getElementById('qnum').textContent = 'Pregunta '+(currentIndex+1);
+  document.getElementById('question-text').textContent = q.question;
+
+  const optsDiv = document.getElementById('options');
+  optsDiv.innerHTML = '';
+  q.options.forEach((opt, i)=>{
+    const btn = document.createElement('button');
+    btn.className = 'option';
+    btn.innerHTML = '<span class="letter">'+LETTERS[i]+')</span><span>'+opt+'</span>';
+    btn.onclick = ()=>selectOption(i);
+    optsDiv.appendChild(btn);
+  });
+
+  document.getElementById('feedback').classList.add('hidden');
+  document.getElementById('next-btn').classList.add('hidden');
+}
+
+function selectOption(i){
+  if(answered) return;
+  answered = true;
+  const q = currentQuiz[currentIndex];
+  const correct = q.correct;
+  const options = document.querySelectorAll('#options .option');
+  options.forEach((opt, idx)=>{
+    opt.classList.add('locked');
+    if(idx===correct) opt.classList.add('correct');
+    else if(idx===i) opt.classList.add('incorrect');
+    else opt.classList.add('dim');
+  });
+
+  const isCorrect = (i===correct);
+  scoreBySkill[q.skill].total++;
+  if(isCorrect) scoreBySkill[q.skill].correct++;
+
+  userAnswers.push({ skill:q.skill, question:q.question, options:q.options, correctIdx:correct, chosenIdx:i, exp:q.exp, isCorrect });
+
+  const fb = document.getElementById('feedback');
+  fb.classList.remove('hidden');
+  fb.classList.toggle('wrong', !isCorrect);
+  fb.innerHTML = '<span class="pista-label">'+(isCorrect ? '✓ Correcto — Pista' : '✕ Incorrecto — Pista')+'</span>'+
+    '<strong>Respuesta correcta: '+LETTERS[correct]+') '+q.options[correct]+'</strong><br><br>'+q.exp;
+
+  document.getElementById('next-btn').classList.remove('hidden');
+}
+
+function nextQuestion(){
+  currentIndex++;
+  if(currentIndex >= currentQuiz.length){
+    showDashboard();
+  } else {
+    renderQuestion();
+  }
+}
+
+function showDashboard(){
+  document.getElementById('quiz-screen').classList.add('hidden');
+  document.getElementById('dashboard-screen').classList.remove('hidden');
+
+  const totalCorrect = userAnswers.filter(a=>a.isCorrect).length;
+  const totalQ = userAnswers.length;
+  document.getElementById('score-total').innerHTML = totalCorrect+'<span>/'+totalQ+'</span>';
+  const pct = Math.round((totalCorrect/totalQ)*100);
+  document.getElementById('score-caption').textContent = pct+'% de logro general';
+
+  const barsDiv = document.getElementById('skill-bars');
+  barsDiv.innerHTML = '';
+  const weakSkills = [];
+  const strongSkills = [];
+
+  SKILL_ORDER.forEach(skillKey=>{
+    const s = scoreBySkill[skillKey];
+    const skillPct = s.total>0 ? Math.round((s.correct/s.total)*100) : 0;
+    let color = 'var(--accent-coral)';
+    if(skillPct>=75) color='var(--accent-sage)';
+    else if(skillPct>=50) color='var(--accent-amber)';
+
+    const row = document.createElement('div');
+    row.className='skill-bar-row';
+    row.innerHTML = '<div class="skill-bar-head"><span class="name">'+SKILL_NAMES[skillKey]+'</span><span class="frac">'+s.correct+'/'+s.total+'</span></div>'+
+      '<div class="skill-bar-track"><div class="skill-bar-fill" style="width:'+skillPct+'%;background:'+color+';"></div></div>';
+    barsDiv.appendChild(row);
+
+    if(skillPct<75) weakSkills.push({name:SKILL_NAMES[skillKey], pct:skillPct});
+    else strongSkills.push(SKILL_NAMES[skillKey]);
+  });
+
+  const improveBox = document.getElementById('improve-box');
+  const improveList = document.getElementById('improve-list');
+  improveList.innerHTML='';
+  if(weakSkills.length>0){
+    improveBox.classList.remove('hidden');
+    weakSkills.sort((a,b)=>a.pct-b.pct).forEach(w=>{
+      const li = document.createElement('li');
+      li.innerHTML = '<strong>'+w.name+'</strong> ('+w.pct+'%) — refuerza con más ejercicios de este tipo de habilidad, revisando las pistas de las preguntas falladas.';
+      improveList.appendChild(li);
+    });
+  } else {
+    improveBox.classList.add('hidden');
+  }
+
+  const strongBox = document.getElementById('strong-box');
+  const strongText = document.getElementById('strong-text');
+  if(strongSkills.length>0){
+    strongBox.classList.remove('hidden');
+    strongText.textContent = strongSkills.join(', ') + '. Buen dominio, mantén la práctica con nuevos intentos.';
+  } else {
+    strongBox.classList.add('hidden');
+  }
+}
+
+function restartQuiz(){ startQuiz(); }
+
+function reviewAnswers(){
+  document.getElementById('dashboard-screen').classList.add('hidden');
+  const rev = document.getElementById('review-screen');
+  rev.classList.remove('hidden');
+  let html = '<p class="eyebrow">Revisión de respuestas</p>';
+  userAnswers.forEach((a, i)=>{
+    html += '<div style="margin-bottom:22px;padding-bottom:18px;border-bottom:1px solid var(--line);">'+
+      '<span class="skill-tag">'+SKILL_NAMES[a.skill]+'</span>'+
+      '<p class="question-text" style="font-size:16px;">'+(i+1)+'. '+a.question+'</p>'+
+      '<p style="font-size:14px;color:'+(a.isCorrect?'var(--accent-sage)':'var(--accent-coral)')+';margin:0 0 6px;">'+
+        (a.isCorrect ? '✓ Respondiste correctamente' : '✕ Tu respuesta: '+LETTERS[a.chosenIdx]+') '+a.options[a.chosenIdx])+
+      '</p>'+
+      '<p style="font-size:14px;color:var(--text-muted);margin:0 0 8px;">Correcta: '+LETTERS[a.correctIdx]+') '+a.options[a.correctIdx]+'</p>'+
+      '<div class="feedback" style="margin-top:6px;"><span class="pista-label">Pista</span>'+a.exp+'</div>'+
+    '</div>';
+  });
+  html += '<div class="actions"><button class="btn" onclick="restartQuiz(); document.getElementById(\'review-screen\').classList.add(\'hidden\');">Repetir con nuevas preguntas</button></div>';
+  rev.innerHTML = html;
+}
+</script>
+</body>
+</html>

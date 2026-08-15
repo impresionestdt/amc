@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PAES Biología · Clase 5 · Organelos Celulares II (Nivel Intermedio)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Source+Sans+3:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-deep:#1a1030;
+    --bg-panel:#241a42;
+    --bg-panel-2:#2c2050;
+    --accent-amber:#f0a24b;
+    --accent-sage:#7fb88f;
+    --accent-coral:#e85c5c;
+    --text-light:#f3ede1;
+    --text-muted:#bdb0d6;
+    --line:#3c2f5c;
+    --radius:14px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:radial-gradient(circle at 15% -10%, #372a5c 0%, var(--bg-deep) 55%) fixed;
+    color:var(--text-light);
+    font-family:'Source Sans 3', system-ui, sans-serif;
+    min-height:100vh;
+    padding:32px 16px 64px;
+  }
+  .wrap{max-width:820px;margin:0 auto;}
+  .eyebrow{font-family:'JetBrains Mono', monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent-amber);margin:0 0 8px;}
+  h1{font-family:'Fraunces', serif;font-weight:600;font-size:clamp(26px,4vw,38px);line-height:1.1;margin:0 0 6px;color:var(--text-light);}
+  .sub{color:var(--text-muted);font-size:15px;margin:0 0 28px;max-width:60ch;}
+  .card{background:linear-gradient(180deg, var(--bg-panel) 0%, var(--bg-panel-2) 100%);border:1px solid var(--line);border-radius:var(--radius);padding:28px;box-shadow:0 20px 40px -20px rgba(0,0,0,.5);}
+  #start-screen ul{color:var(--text-muted);font-size:14.5px;line-height:1.7;padding-left:20px;margin:18px 0 26px;}
+  #start-screen li{margin-bottom:4px;}
+  .btn{font-family:'Source Sans 3', sans-serif;font-weight:700;font-size:15px;border:none;border-radius:999px;padding:14px 30px;cursor:pointer;background:var(--accent-amber);color:#2a1608;transition:transform .15s ease, box-shadow .15s ease;box-shadow:0 8px 20px -8px rgba(0,0,0,.35);}
+  .btn:hover{transform:translateY(-1px);}
+  .btn:active{transform:translateY(0);}
+  .btn.ghost{background:transparent;color:var(--text-muted);border:1.5px solid var(--line);box-shadow:none;}
+  .progress-row{display:flex;align-items:center;gap:14px;margin-bottom:18px;}
+  .progress-track{flex:1;height:6px;border-radius:99px;background:var(--line);overflow:hidden;}
+  .progress-fill{height:100%;background:linear-gradient(90deg,var(--accent-sage),var(--accent-amber));border-radius:99px;transition:width .3s ease;}
+  .progress-label{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--text-muted);white-space:nowrap;}
+  .skill-tag{display:inline-block;font-family:'JetBrains Mono', monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--bg-deep);background:var(--accent-sage);padding:5px 11px;border-radius:999px;margin-bottom:14px;}
+  .qnum{color:var(--text-muted);font-size:13px;font-family:'JetBrains Mono',monospace;margin-bottom:6px;}
+  .question-text{font-family:'Fraunces', serif;font-weight:500;font-size:19px;line-height:1.45;margin:0 0 22px;}
+  .options{display:flex;flex-direction:column;gap:10px;}
+  .option{display:flex;align-items:flex-start;gap:12px;text-align:left;background:rgba(255,255,255,.03);border:1.5px solid var(--line);border-radius:10px;padding:13px 15px;cursor:pointer;color:var(--text-light);font-size:14.5px;line-height:1.4;transition:border-color .15s, background .15s;}
+  .option:hover:not(.locked){border-color:var(--accent-amber);}
+  .option .letter{font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--accent-amber);flex-shrink:0;}
+  .option.correct{border-color:var(--accent-sage);background:rgba(111,168,138,.14);}
+  .option.incorrect{border-color:var(--accent-coral);background:rgba(228,87,46,.14);}
+  .option.locked{cursor:default;}
+  .option.dim{opacity:.45;}
+  .feedback{margin-top:18px;padding:16px 18px;border-radius:10px;background:rgba(255,255,255,.04);border-left:4px solid var(--accent-sage);font-size:14px;line-height:1.6;color:var(--text-muted);}
+  .feedback.wrong{border-left-color:var(--accent-coral);}
+  .feedback strong{color:var(--text-light);}
+  .feedback .pista-label{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent-amber);display:block;margin-bottom:6px;}
+  .nav-row{display:flex;justify-content:flex-end;margin-top:22px;}
+  .score-hero{text-align:center;padding:10px 0 26px;}
+  .score-big{font-family:'Fraunces',serif;font-weight:700;font-size:56px;color:var(--accent-amber);line-height:1;}
+  .score-big span{font-size:24px;color:var(--text-muted);font-weight:500;}
+  .score-caption{color:var(--text-muted);font-size:14px;margin-top:6px;}
+  .skill-bars{display:flex;flex-direction:column;gap:16px;margin:22px 0 8px;}
+  .skill-bar-head{display:flex;justify-content:space-between;font-size:13.5px;margin-bottom:6px;}
+  .skill-bar-head .name{font-weight:600;}
+  .skill-bar-head .frac{font-family:'JetBrains Mono',monospace;color:var(--text-muted);}
+  .skill-bar-track{height:10px;border-radius:99px;background:var(--line);overflow:hidden;}
+  .skill-bar-fill{height:100%;border-radius:99px;}
+  .improve-box{margin-top:26px;background:rgba(228,87,46,.08);border:1px solid rgba(228,87,46,.35);border-radius:10px;padding:18px 20px;}
+  .improve-box h3{font-family:'Fraunces',serif;font-size:16px;margin:0 0 10px;color:var(--accent-coral);}
+  .improve-box ul{margin:0;padding-left:20px;color:var(--text-light);font-size:14px;line-height:1.75;}
+  .strong-box{margin-top:14px;background:rgba(111,168,138,.08);border:1px solid rgba(111,168,138,.35);border-radius:10px;padding:18px 20px;}
+  .strong-box h3{font-family:'Fraunces',serif;font-size:16px;margin:0 0 10px;color:var(--accent-sage);}
+  .strong-box p{margin:0;color:var(--text-light);font-size:14px;line-height:1.6;}
+  .actions{display:flex;gap:12px;margin-top:28px;flex-wrap:wrap;}
+  .hidden{display:none !important;}
+  footer{text-align:center;color:var(--text-muted);font-size:12px;margin-top:26px;opacity:.6;}
+</style>
+</head>
+<body> <div style="float: left; margin-right: 25px; margin-bottom: 25px;"><img src="Logo_AMC.png" alt="Logo" style="max-width: 150px;"></div>
+<div class="wrap">
+  <p class="eyebrow">PAES · Ciencias — Módulo Biología Común · Nivel Intermedio</p>
+  <h1>Organelos Celulares II</h1>
+  <p class="sub">Eje 1: Organización, estructura y actividad celular — Sub-eje: Organelos celulares y membrana plasmática — Clase 5: Organelos Celulares II (Mitocondrias, Cloroplastos, Lisosomas, Citoesqueleto)</p>
+
+  <div class="card" id="start-screen">
+    <p class="eyebrow" style="margin-bottom:14px;">Antes de comenzar</p>
+    <p style="color:var(--text-muted);font-size:14.5px;line-height:1.6;">Este quiz evalúa nivel <strong style='color:var(--text-light);'>intermedio</strong>, con 20 preguntas (4 por cada habilidad PAES), extraídas al azar de un banco amplio. Cada intento genera una versión distinta.</p>
+    <ul>
+      <li>Observar y plantear preguntas</li>
+      <li>Planificar y conducir una investigación</li>
+      <li>Procesar y analizar la evidencia</li>
+      <li>Evaluar</li>
+      <li>Comunicar</li>
+    </ul>
+    <button class="btn" onclick="startQuiz()">Comenzar quiz</button>
+  </div>
+
+  <div class="card hidden" id="quiz-screen">
+    <div class="progress-row">
+      <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+      <div class="progress-label" id="progress-label">1 / 20</div>
+    </div>
+    <span class="skill-tag" id="skill-tag"></span>
+    <p class="qnum" id="qnum"></p>
+    <p class="question-text" id="question-text"></p>
+    <div class="options" id="options"></div>
+    <div class="feedback hidden" id="feedback"></div>
+    <div class="nav-row">
+      <button class="btn hidden" id="next-btn" onclick="nextQuestion()">Siguiente →</button>
+    </div>
+  </div>
+
+  <div class="card hidden" id="dashboard-screen">
+    <p class="eyebrow">Resultados</p>
+    <div class="score-hero">
+      <div class="score-big" id="score-total">0<span>/20</span></div>
+      <p class="score-caption" id="score-caption">Puntaje global</p>
+    </div>
+    <div class="skill-bars" id="skill-bars"></div>
+    <div class="improve-box hidden" id="improve-box">
+      <h3>Puntos a mejorar</h3>
+      <ul id="improve-list"></ul>
+    </div>
+    <div class="strong-box hidden" id="strong-box">
+      <h3>Habilidades consolidadas</h3>
+      <p id="strong-text"></p>
+    </div>
+    <div class="actions">
+      <button class="btn" onclick="restartQuiz()">Repetir con nuevas preguntas</button>
+      <button class="btn ghost" onclick="reviewAnswers()">Revisar mis respuestas</button>
+    </div>
+  </div>
+
+  <div class="card hidden" id="review-screen"></div>
+
+  <footer>Banco de 40 preguntas · nivel intermedio · Clase 5 de 30 · basado en el temario DEMRE PAES Ciencias — Biología Común</footer>
+</div>
+
+<script>
+const SKILL_NAMES = {"OBS": "Observar y plantear preguntas", "PLAN": "Planificar y conducir una investigación", "PROC": "Procesar y analizar la evidencia", "EVAL": "Evaluar", "COM": "Comunicar"};
+const SKILL_ORDER = ["OBS", "PLAN", "PROC", "EVAL", "COM"];
+const LETTERS = ["A","B","C","D","E"];
+const PICK_PER_SKILL = 4;
+
+const QUESTION_BANK = [{"skill": "OBS", "q": "Se observa que la membrana interna de la mitocondria es rica en un fosfolípido específico (cardiolipina), ausente en la membrana externa mitocondrial y en la mayoría de las demás membranas celulares. ¿Pregunta más precisa?", "options": ["¿La presencia específica de cardiolipina en la membrana interna se relaciona con propiedades particulares necesarias para el funcionamiento de la cadena transportadora de electrones y la fosforilación oxidativa?", "¿La cardiolipina se encuentra distribuida de forma idéntica en todas las membranas celulares?", "¿La membrana externa mitocondrial contiene mayor cantidad de cardiolipina que la interna?", "¿La cardiolipina impide por completo cualquier función de la membrana interna mitocondrial?", "¿Esta composición lipídica específica no tiene ninguna relación con la función mitocondrial?"], "correct": 0, "exp": "La cardiolipina es un fosfolípido característico de la membrana interna mitocondrial, cuya estructura particular contribuye a la organización y funcionamiento óptimo de los complejos proteicos de la cadena respiratoria."}, {"skill": "OBS", "q": "Un investigador nota que, al comparar tilacoides de cloroplastos de plantas adaptadas a alta y baja intensidad lumínica, la proporción entre distintos complejos de pigmentos fotosintéticos varía, con mayor proporción de complejos antena en plantas de sombra. ¿Pregunta más precisa?", "options": ["¿La proporción de complejos antena de captación de luz en el tilacoide varía como una adaptación funcional a la intensidad lumínica del ambiente donde crece la planta?", "¿Las plantas de sombra no poseen ningún tipo de complejo fotosintético en sus tilacoides?", "¿La proporción de pigmentos fotosintéticos es idéntica en cualquier condición de luz?", "¿Los complejos antena se encuentran únicamente en plantas expuestas a alta intensidad lumínica?", "¿La variación en la proporción de complejos no tiene ninguna relación con la adaptación a la luz disponible?"], "correct": 0, "exp": "La mayor proporción de complejos antena (captadores de luz) en plantas de sombra es consistente con una adaptación funcional que maximiza la captación de la luz limitada disponible en ese ambiente."}, {"skill": "OBS", "q": "Se observa que la autofagia (degradación de componentes celulares propios mediada por lisosomas) aumenta notoriamente en células sometidas a ayuno de nutrientes, en comparación con células con acceso normal a nutrientes. ¿Pregunta más precisa?", "options": ["¿El aumento de autofagia bajo condiciones de ayuno constituye un mecanismo celular para reciclar componentes propios y obtener nutrientes o energía en situaciones de escasez externa?", "¿La autofagia disminuye siempre en condiciones de ayuno de nutrientes?", "¿Los lisosomas dejan de funcionar completamente durante el ayuno celular?", "¿La autofagia no tiene ninguna relación con la disponibilidad de nutrientes externos?", "¿El ayuno de nutrientes destruye por completo la capacidad lisosomal de la célula?"], "correct": 0, "exp": "El incremento de la autofagia bajo ayuno es consistente con su función adaptativa de reciclar componentes celulares internos para obtener nutrientes y energía cuando el aporte externo es limitado."}, {"skill": "OBS", "q": "Un estudiante observa que las mitocondrias de una célula en cultivo forman una red dinámica que constantemente se fusiona y se divide (fisión y fusión mitocondrial), en lugar de mantenerse como unidades completamente independientes y estáticas. ¿Pregunta más precisa?", "options": ["¿Los procesos de fisión y fusión mitocondrial cumplen un rol funcional en el mantenimiento de la calidad y homeostasis de la red mitocondrial de la célula?", "¿Las mitocondrias son estructuras completamente estáticas que nunca cambian su forma o número?", "¿La fusión mitocondrial ocurre exclusivamente durante la división celular?", "¿Los procesos de fisión y fusión no tienen ninguna relación con la función mitocondrial?", "¿Las mitocondrias pierden su ADN propio durante los procesos de fisión y fusión?"], "correct": 0, "exp": "Los procesos dinámicos de fisión y fusión mitocondrial son mecanismos que permiten mezclar contenido entre mitocondrias, aislar y eliminar componentes dañados, y adaptar la red mitocondrial a las necesidades metabólicas cambiantes de la célula."}, {"skill": "OBS", "q": "Se observa que los microtúbulos del citoesqueleto presentan una polaridad estructural definida (extremo positivo y extremo negativo), y que distintas proteínas motoras (quinesinas, dineínas) se desplazan preferentemente hacia un extremo específico. ¿Pregunta más precisa?", "options": ["¿La polaridad estructural de los microtúbulos, junto con la especificidad direccional de las proteínas motoras, permite un transporte intracelular direccionado y organizado de distintas cargas dentro de la célula?", "¿Los microtúbulos no poseen ninguna polaridad estructural definida?", "¿Las proteínas motoras se desplazan de forma completamente aleatoria, sin ninguna direccionalidad?", "¿La polaridad de los microtúbulos no tiene ninguna relación con el transporte intracelular?", "¿Quinesinas y dineínas cumplen exactamente la misma función direccional dentro de la célula?"], "correct": 0, "exp": "La polaridad de los microtúbulos, combinada con la especificidad direccional de distintas proteínas motoras, es el fundamento molecular del sistema de transporte intracelular organizado a través del citoesqueleto."}, {"skill": "OBS", "q": "Un investigador nota que, en tejidos con alta demanda de detoxificación (como el hígado), la cantidad de peroxisomas por célula es notoriamente mayor que en tejidos con menor actividad de este tipo (como el tejido conectivo). ¿Pregunta más precisa?", "options": ["¿La cantidad de peroxisomas por célula se relaciona con la demanda funcional de detoxificación específica de cada tipo de tejido?", "¿El tejido conectivo posee mayor cantidad de peroxisomas que el tejido hepático?", "¿Los peroxisomas no tienen ninguna relación con procesos de detoxificación celular?", "¿Todos los tejidos del organismo presentan exactamente la misma cantidad de peroxisomas?", "¿La cantidad de peroxisomas depende únicamente del tamaño del tejido, sin relación con su función?"], "correct": 0, "exp": "La correlación entre mayor demanda de detoxificación y mayor cantidad de peroxisomas es consistente con el rol funcional de este organelo en procesos metabólicos de neutralización de sustancias potencialmente tóxicas."}, {"skill": "OBS", "q": "Se observa que las mitocondrias de células musculares esqueléticas de deportistas de resistencia (entrenamiento aeróbico prolongado) presentan mayor cantidad y densidad de crestas mitocondriales que las de personas sedentarias. ¿Pregunta más precisa?", "options": ["¿El entrenamiento de resistencia induce adaptaciones estructurales en las mitocondrias (biogénesis mitocondrial, mayor densidad de crestas) que aumentan su capacidad de producción de energía?", "¿El entrenamiento de resistencia reduce por completo la cantidad de mitocondrias en el músculo esquelético?", "¿Las crestas mitocondriales no tienen ninguna relación con la capacidad de producción de energía?", "¿Las personas sedentarias presentan mayor densidad de crestas mitocondriales que los deportistas de resistencia?", "¿La actividad física no tiene ninguna influencia sobre la estructura mitocondrial?"], "correct": 0, "exp": "El aumento de la densidad de crestas mitocondriales en respuesta al entrenamiento de resistencia es un ejemplo de adaptación estructural (biogénesis mitocondrial) que incrementa la capacidad de producción de ATP del tejido muscular."}, {"skill": "OBS", "q": "Un estudiante observa que los filamentos intermedios del citoesqueleto (por ejemplo, queratina en células epiteliales) son mucho más estables y resistentes a la despolimerización que los microtúbulos o los microfilamentos de actina del mismo tipo celular. ¿Pregunta más precisa?", "options": ["¿La mayor estabilidad estructural de los filamentos intermedios respecto a otros componentes del citoesqueleto se relaciona con su función principal de brindar resistencia mecánica sostenida a la célula, en lugar de participar en procesos dinámicos rápidos?", "¿Los filamentos intermedios son idénticos en composición y función a los microtúbulos?", "¿La estabilidad de los filamentos intermedios indica que no cumplen ninguna función estructural?", "¿Los microfilamentos de actina son más estables que los filamentos intermedios en cualquier tipo celular?", "¿La resistencia mecánica celular no tiene ninguna relación con el tipo de filamento del citoesqueleto?"], "correct": 0, "exp": "La mayor estabilidad de los filamentos intermedios, en contraste con la naturaleza más dinámica de microtúbulos y microfilamentos, es consistente con su función principal de proporcionar resistencia mecánica estructural sostenida a la célula."}, {"skill": "PLAN", "q": "Para investigar si la fusión y fisión mitocondrial contribuyen a mantener la calidad de la red mitocondrial de una célula, ¿cuál es el diseño experimental más adecuado?", "options": ["Inhibir selectivamente los procesos de fusión y fisión mitocondrial en distintos grupos experimentales, y comparar indicadores de calidad mitocondrial (como la acumulación de mitocondrias dañadas o la eficiencia de producción de ATP) con un grupo control sin inhibición", "Inhibir simultáneamente todos los procesos mitocondriales sin poder aislar el efecto específico de la fusión y fisión", "No es necesario ningún grupo control para este tipo de experimento", "Medir solo el número total de mitocondrias, sin evaluar ningún indicador de calidad funcional", "Asumir el rol de estos procesos sin realizar ningún experimento de inhibición"], "correct": 0, "exp": "Inhibir de forma selectiva cada proceso (fusión, fisión) y comparar con un control apropiado, evaluando indicadores funcionales de calidad mitocondrial, permite establecer de forma rigurosa su contribución al mantenimiento de la red mitocondrial."}, {"skill": "PLAN", "q": "Se desea determinar si la polaridad de los microtúbulos determina la dirección del transporte mediado por quinesinas y dineínas. ¿Diseño experimental más riguroso?", "options": ["Marcar fluorescentemente una carga transportada junto con los extremos positivo y negativo de los microtúbulos, y realizar un seguimiento en tiempo real para determinar si el transporte mediado por cada proteína motora ocurre consistentemente hacia el mismo extremo", "Observar el transporte en un solo momento fijo, sin ningún seguimiento temporal", "No es necesario marcar los extremos de los microtúbulos para responder esta pregunta", "Asumir la dirección del transporte sin realizar ningún experimento de seguimiento", "Marcar solo la carga transportada, sin identificar la polaridad de los microtúbulos"], "correct": 0, "exp": "Solo mediante el seguimiento simultáneo de la carga transportada y la polaridad conocida del microtúbulo se puede establecer de forma experimental si existe una relación consistente entre la dirección del transporte y la polaridad estructural."}, {"skill": "PLAN", "q": "Para investigar si el entrenamiento de resistencia induce biogénesis mitocondrial (aumento de la cantidad de mitocondrias) en el músculo esquelético, ¿cuál es el diseño experimental más adecuado?", "options": ["Comparar la cantidad y densidad de mitocondrias en biopsias musculares de un grupo de sujetos antes y después de un programa de entrenamiento de resistencia, frente a un grupo control sin entrenamiento, bajo el mismo método de análisis", "Comparar solo sujetos entrenados con sujetos sedentarios, sin ninguna medición antes del entrenamiento", "No es necesario un grupo control sin entrenamiento para esta pregunta", "Medir solo el tamaño muscular, sin evaluar la cantidad de mitocondrias presentes", "Usar métodos de análisis distintos para las biopsias antes y después del entrenamiento"], "correct": 0, "exp": "Un diseño con medición antes y después del entrenamiento, junto con un grupo control sin entrenamiento, permite atribuir de forma más rigurosa cualquier cambio observado en la cantidad de mitocondrias específicamente al programa de entrenamiento."}, {"skill": "PLAN", "q": "Un investigador desea determinar si la proporción de complejos antena en el tilacoide cambia como respuesta adaptativa a la intensidad lumínica (y no por otro factor ambiental concurrente, como la temperatura). ¿Diseño experimental más riguroso?", "options": ["Cultivar plantas de la misma especie bajo distintas intensidades de luz, manteniendo constantes todas las demás variables ambientales (temperatura, humedad, nutrientes), y comparar la proporción de complejos antena en cada condición", "Cultivar plantas bajo distintas intensidades de luz y también distintas temperaturas simultáneamente, sin poder aislar el efecto de cada variable", "No es necesario controlar otras variables ambientales para esta pregunta", "Comparar plantas de especies distintas, cada una bajo una única condición de luz", "Medir la proporción de complejos antena sin variar la intensidad de luz entre grupos"], "correct": 0, "exp": "Mantener constantes todas las variables ambientales excepto la intensidad de luz (variable de interés) permite atribuir específicamente a esa variable cualquier cambio observado en la proporción de complejos antena."}, {"skill": "PLAN", "q": "Para investigar si la autofagia mediada por lisosomas aumenta específicamente en respuesta al ayuno de nutrientes (y no por otro tipo de estrés celular concurrente), ¿cuál es el diseño experimental más adecuado?", "options": ["Comparar el nivel de actividad autofágica en células sometidas específicamente a ayuno de nutrientes frente a células sometidas a otros tipos de estrés celular (por ejemplo, estrés oxidativo) y un grupo control sin ningún estrés, bajo el mismo método de medición", "Comparar solo células en ayuno con células en condiciones normales, sin ningún otro tipo de estrés de comparación", "No es necesario incluir otros tipos de estrés celular para esta pregunta", "Medir solo la cantidad de lisosomas presentes, sin evaluar el nivel de actividad autofágica", "Usar métodos de medición distintos para cada condición experimental evaluada"], "correct": 0, "exp": "Incluir múltiples condiciones de estrés celular, además del ayuno específicamente, permite determinar si el aumento de autofagia observado es una respuesta específica al ayuno de nutrientes o una respuesta más general a cualquier tipo de estrés."}, {"skill": "PLAN", "q": "Se desea investigar si la cardiolipina de la membrana interna mitocondrial es necesaria para el funcionamiento eficiente de la cadena transportadora de electrones. ¿Diseño experimental más riguroso?", "options": ["Comparar la eficiencia de la cadena transportadora de electrones (por ejemplo, mediante la producción de ATP) en mitocondrias con niveles normales de cardiolipina frente a mitocondrias con esta molécula experimentalmente reducida, bajo las mismas condiciones de sustrato y oxígeno disponible", "Comparar mitocondrias de organismos completamente distintos, sin ningún control sobre otras variables", "No es necesario ningún grupo de comparación para esta pregunta", "Medir solo la cantidad de cardiolipina presente, sin evaluar la función de la cadena transportadora de electrones", "Reducir simultáneamente múltiples componentes de la membrana mitocondrial sin poder aislar el efecto específico de la cardiolipina"], "correct": 0, "exp": "Comparar la eficiencia funcional de la cadena respiratoria entre condiciones con y sin niveles normales de cardiolipina, manteniendo iguales las demás condiciones, permite establecer de forma rigurosa la necesidad de este fosfolípido específico."}, {"skill": "PLAN", "q": "Para investigar si los filamentos intermedios brindan resistencia mecánica a las células epiteliales frente a fuerzas de estiramiento, ¿cuál es el diseño experimental más adecuado?", "options": ["Aplicar una fuerza de estiramiento controlada y medible a células epiteliales con filamentos intermedios funcionales frente a células con esta red experimentalmente alterada, comparando el grado de deformación o daño celular resultante en cada condición", "Aplicar la fuerza solo a células con filamentos intermedios alterados, sin ningún grupo control", "No es necesario ningún grupo de comparación para esta pregunta", "Medir solo la cantidad de filamentos intermedios presentes, sin aplicar ninguna fuerza mecánica", "Usar tipos celulares completamente distintos para cada condición experimental"], "correct": 0, "exp": "Comparar el efecto de una fuerza mecánica controlada entre condiciones con y sin una red funcional de filamentos intermedios permite establecer de forma experimental el rol protector de estos componentes del citoesqueleto."}, {"skill": "PLAN", "q": "Un investigador desea determinar si la cantidad de peroxisomas se ajusta dinámicamente según los cambios en la demanda metabólica de detoxificación de una célula. ¿Diseño experimental más riguroso?", "options": ["Inducir experimentalmente un aumento controlado en la demanda de detoxificación celular (por ejemplo, exponiendo la célula a un compuesto que genera peróxido de hidrógeno) y medir, a lo largo del tiempo, si la cantidad de peroxisomas por célula aumenta en respuesta, comparando con un grupo control sin ese estímulo", "Medir la cantidad de peroxisomas en un solo momento, sin ningún estímulo experimental de detoxificación", "No es necesario un grupo control para esta pregunta", "Inducir el estímulo de detoxificación sin realizar ningún seguimiento temporal posterior", "Asumir la respuesta dinámica sin realizar ningún experimento de inducción"], "correct": 0, "exp": "Inducir un cambio controlado en la demanda metabólica y realizar un seguimiento temporal de la cantidad de peroxisomas, comparado con un control sin ese estímulo, permite evaluar de forma rigurosa la capacidad de ajuste dinámico de este organelo."}, {"skill": "PROC", "q": "Se midió la eficiencia de producción de ATP en mitocondrias con niveles normales de cardiolipina (alta eficiencia) y con cardiolipina experimentalmente reducida al 20% del nivel normal (eficiencia considerablemente menor). ¿Qué conclusión es más adecuada?", "options": ["La cardiolipina contribuye significativamente a la eficiencia de la producción de ATP, ya que su reducción disminuye considerablemente esta variable respecto a los niveles normales", "La reducción de cardiolipina aumenta la eficiencia de producción de ATP", "La cardiolipina no tiene ninguna relación con la eficiencia de producción de ATP mitocondrial", "Ambas condiciones muestran exactamente la misma eficiencia de producción de ATP", "La cardiolipina se relaciona exclusivamente con la fotosíntesis, sin relación con la mitocondria"], "correct": 0, "exp": "La marcada disminución de la eficiencia de producción de ATP al reducir la cardiolipina confirma experimentalmente el rol funcional de este fosfolípido en el correcto funcionamiento de la cadena transportadora de electrones."}, {"skill": "PROC", "q": "Se comparó la proporción de complejos antena en tilacoides de plantas cultivadas bajo alta intensidad de luz (menor proporción) y baja intensidad de luz (mayor proporción), manteniendo constantes las demás condiciones ambientales. ¿Qué conclusión es más adecuada?", "options": ["Las plantas ajustan la proporción de complejos antena de forma inversamente relacionada con la intensidad de luz disponible, aumentando su capacidad de captación de luz cuando esta es limitada", "Las plantas cultivadas bajo alta intensidad de luz presentan mayor proporción de complejos antena que las de baja intensidad", "La proporción de complejos antena no tiene ninguna relación con la intensidad de luz disponible", "Todas las plantas, sin importar la intensidad de luz, presentan exactamente la misma proporción de complejos antena", "La intensidad de luz no puede ser controlada experimentalmente en un cultivo vegetal"], "correct": 0, "exp": "La relación inversa observada (mayor proporción de complejos antena bajo menor intensidad de luz) es consistente con una respuesta adaptativa que maximiza la captación de luz disponible en condiciones de baja intensidad lumínica."}, {"skill": "PROC", "q": "Se midió el nivel de actividad autofágica en células sometidas a ayuno de nutrientes (alto), a estrés oxidativo (moderado) y en condiciones normales sin ningún estrés (bajo). ¿Qué interpretación es la más adecuada?", "options": ["El ayuno de nutrientes induce el mayor nivel de actividad autofágica entre las condiciones evaluadas, aunque otros tipos de estrés celular (como el oxidativo) también pueden inducir esta respuesta en menor grado", "El estrés oxidativo induce mayor actividad autofágica que el ayuno de nutrientes", "La actividad autofágica es idéntica en las tres condiciones experimentales evaluadas", "Las condiciones normales, sin ningún tipo de estrés, inducen la mayor actividad autofágica", "La autofagia no puede ser inducida por ningún tipo de estrés celular"], "correct": 0, "exp": "El patrón de resultados (mayor actividad autofágica bajo ayuno, actividad intermedia bajo estrés oxidativo) sugiere que, aunque el ayuno es un inductor particularmente potente, la autofagia puede ser activada en distinto grado por diversos tipos de estrés celular."}, {"skill": "PROC", "q": "Se comparó la cantidad de mitocondrias en biopsias musculares de un grupo de sujetos antes (nivel basal) y después de 12 semanas de entrenamiento de resistencia (aumento significativo), frente a un grupo control sin entrenamiento (sin cambio significativo). ¿Qué conclusión es más adecuada?", "options": ["El entrenamiento de resistencia induce un aumento en la cantidad de mitocondrias del músculo esquelético (biogénesis mitocondrial), consistente con la ausencia de cambio observada en el grupo control sin entrenamiento", "El entrenamiento de resistencia reduce la cantidad de mitocondrias del músculo esquelético", "El grupo control sin entrenamiento mostró un aumento mayor de mitocondrias que el grupo entrenado", "La cantidad de mitocondrias no cambia bajo ninguna condición de entrenamiento físico", "Ambos grupos, con y sin entrenamiento, mostraron exactamente el mismo cambio en la cantidad de mitocondrias"], "correct": 0, "exp": "El aumento significativo observado específicamente en el grupo entrenado, en contraste con la ausencia de cambio en el grupo control, respalda la conclusión de que el entrenamiento de resistencia induce biogénesis mitocondrial."}, {"skill": "PROC", "q": "Se midió, mediante seguimiento por microscopía, la dirección de desplazamiento de una carga transportada por quinesina (hacia el extremo positivo del microtúbulo, generalmente hacia la periferia celular) y por dineína (hacia el extremo negativo, generalmente hacia el centro celular). ¿Qué conclusión es más adecuada?", "options": ["Quinesinas y dineínas median transporte en direcciones opuestas y consistentes a lo largo del microtúbulo, relacionadas con su especificidad por los distintos extremos de esta estructura polarizada", "Quinesinas y dineínas transportan carga siempre en la misma dirección, sin ninguna diferencia entre ellas", "La dirección del transporte no tiene ninguna relación con la polaridad del microtúbulo", "Las quinesinas transportan carga hacia el extremo negativo del microtúbulo, según estos datos", "Los microtúbulos no poseen ninguna polaridad estructural relevante para el transporte celular"], "correct": 0, "exp": "El patrón observado (direcciones opuestas y consistentes para cada proteína motora) confirma la relación entre la polaridad estructural del microtúbulo y la especificidad direccional del transporte mediado por cada tipo de proteína motora."}, {"skill": "PROC", "q": "Se comparó la cantidad de peroxisomas por célula en tejido hepático antes y después de exponer a los sujetos a un compuesto que incrementa la producción de peróxido de hidrógeno: antes=cantidad basal; después=aumento significativo de peroxisomas. ¿Qué conclusión es más adecuada?", "options": ["La cantidad de peroxisomas puede ajustarse dinámicamente en respuesta a un aumento en la demanda de detoxificación celular", "La cantidad de peroxisomas disminuye siempre en respuesta a un aumento en la producción de peróxido de hidrógeno", "La cantidad de peroxisomas es completamente fija, sin ninguna capacidad de ajuste dinámico", "El compuesto administrado no tiene ninguna relación con la cantidad de peroxisomas observada", "La demanda de detoxificación celular no puede ser inducida experimentalmente"], "correct": 0, "exp": "El aumento significativo de peroxisomas tras incrementar experimentalmente la demanda de detoxificación es consistente con la capacidad de la célula de ajustar dinámicamente la cantidad de este organelo según sus necesidades metabólicas."}, {"skill": "PROC", "q": "Se midió el grado de deformación de células epiteliales sometidas a una fuerza de estiramiento controlada, comparando células con filamentos intermedios funcionales (baja deformación, alta resistencia) y con esta red experimentalmente alterada (alta deformación, baja resistencia). ¿Qué conclusión es más adecuada?", "options": ["Los filamentos intermedios contribuyen significativamente a la resistencia mecánica de las células epiteliales frente a fuerzas de estiramiento, ya que su alteración reduce considerablemente esa resistencia", "La alteración de los filamentos intermedios aumenta la resistencia mecánica celular frente al estiramiento", "Los filamentos intermedios no tienen ninguna relación con la resistencia mecánica celular", "Ambas condiciones muestran exactamente el mismo grado de deformación bajo la fuerza aplicada", "La resistencia mecánica celular depende únicamente de la membrana plasmática, sin ninguna contribución del citoesqueleto"], "correct": 0, "exp": "La marcada diferencia en el grado de deformación entre ambas condiciones confirma el rol funcional de los filamentos intermedios en proporcionar resistencia mecánica estructural a las células epiteliales."}, {"skill": "EVAL", "q": "Un estudio concluyó que 'la cardiolipina no tiene ninguna función relevante en la mitocondria' basándose en que su eliminación total no impidió por completo la producción de ATP, aunque sí la redujo considerablemente. ¿Qué crítica es más pertinente?", "options": ["La conclusión es correcta porque la producción de ATP continuó ocurriendo, aunque a menor eficiencia, tras eliminar la cardiolipina", "Que la producción de ATP no se detenga completamente no significa que la cardiolipina sea irrelevante; una reducción significativa de la eficiencia (aunque no una eliminación total de la función) es evidencia de un rol funcional importante, y la conclusión de 'ninguna función relevante' no está respaldada por esos mismos datos", "La cardiolipina es la única molécula necesaria para la producción de ATP mitocondrial", "La reducción de eficiencia observada no tiene ninguna relación con la eliminación de cardiolipina", "No es necesario evaluar el grado de reducción de eficiencia para esta conclusión"], "correct": 1, "exp": "Interpretar una reducción significativa (pero no eliminación total) de una función como evidencia de 'ninguna función relevante' es una interpretación incorrecta de los propios datos descritos en el estudio."}, {"skill": "EVAL", "q": "Una investigación afirmó que 'todas las plantas ajustan su proporción de complejos antena exactamente de la misma manera frente a cualquier cambio de intensidad lumínica', basándose en el estudio de una sola especie vegetal. ¿Qué crítica es más pertinente?", "options": ["La conclusión es válida porque todas las especies vegetales responden de forma idéntica a los cambios de intensidad lumínica", "Generalizar el patrón de respuesta observado en una sola especie a 'todas las plantas' ignora la posible diversidad de estrategias adaptativas entre distintas especies vegetales frente a la disponibilidad de luz; se requeriría un estudio comparativo con múltiples especies para sostener esa generalización", "No es necesario estudiar más de una especie vegetal para esta generalización", "La intensidad lumínica no tiene ninguna relación con la proporción de complejos antena en ninguna especie vegetal", "Todas las especies vegetales poseen exactamente el mismo tipo de tilacoide"], "correct": 1, "exp": "La diversidad de estrategias fotosintéticas entre especies vegetales (adaptadas a distintos ambientes lumínicos) hace que generalizar un patrón específico observado en una sola especie a 'todas las plantas' sea una sobregeneralización injustificada."}, {"skill": "EVAL", "q": "Un estudio sobre autofagia concluyó que 'el ayuno de nutrientes es el único factor capaz de inducir esta respuesta celular' basándose en el efecto observado con esa condición específica, sin evaluar otros tipos de estrés. ¿Qué crítica es más pertinente?", "options": ["La conclusión es correcta porque el ayuno de nutrientes es el único inductor conocido de autofagia en cualquier tipo celular", "No haber evaluado otros tipos de estrés celular (como el estrés oxidativo, ya documentado en la literatura como inductor de autofagia) limita la validez de una afirmación de exclusividad como 'el único factor capaz de inducir esta respuesta'", "La autofagia nunca puede ser inducida por ningún tipo de estrés celular", "El ayuno de nutrientes no tiene ninguna relación con la inducción de autofagia", "No es necesario considerar otros tipos de estrés celular para evaluar la especificidad de un inductor de autofagia"], "correct": 1, "exp": "Afirmar exclusividad de un factor inductor sin haber comparado sistemáticamente con otros factores conocidos (documentados en la literatura científica) es una conclusión no respaldada por el diseño experimental limitado descrito."}, {"skill": "EVAL", "q": "Una publicación afirmó que 'el aumento de mitocondrias observado tras el entrenamiento de resistencia se debe exclusivamente al ejercicio, sin considerar ningún otro factor', a pesar de que los sujetos también modificaron su dieta durante el estudio. ¿Qué crítica es más pertinente?", "options": ["La conclusión es correcta porque el ejercicio es siempre el único factor relevante para la biogénesis mitocondrial", "La modificación simultánea de la dieta constituye una variable confundente no controlada, que podría contribuir (junto con o independientemente del ejercicio) al aumento observado en la cantidad de mitocondrias; atribuir el efecto exclusivamente al entrenamiento sin controlar esta variable no está metodológicamente justificado", "La dieta nunca tiene ninguna relación con la cantidad de mitocondrias de un tejido", "No es necesario controlar la dieta de los sujetos en este tipo de estudio", "El ejercicio y la dieta son exactamente la misma variable experimental"], "correct": 1, "exp": "Cuando una variable adicional (dieta) cambia simultáneamente junto con la variable de interés (ejercicio), sin ser controlada, no es posible atribuir con certeza el efecto observado exclusivamente a una sola de ellas."}, {"skill": "EVAL", "q": "Un estudio concluyó que 'la dirección de transporte mediada por quinesinas es universal e idéntica en cualquier tipo celular, sin ninguna excepción' basándose en el análisis de un solo tipo celular. ¿Qué crítica es más pertinente?", "options": ["La conclusión es válida porque un solo tipo celular es representativo de todos los tipos celulares existentes", "Aunque el patrón general de direccionalidad de quinesinas está bien documentado, generalizar 'sin ninguna excepción' a partir de un solo tipo celular, sin considerar la existencia de quinesinas especializadas con comportamientos distintos documentadas en la literatura, es una sobregeneralización injustificada", "Las quinesinas nunca transportan carga en ninguna dirección específica", "No es necesario considerar otros tipos celulares para esta generalización", "Todas las proteínas motoras del citoesqueleto son exactamente idénticas entre sí"], "correct": 1, "exp": "Afirmar una regla universal 'sin ninguna excepción' a partir de un solo caso de estudio, sin considerar la diversidad de proteínas motoras especializadas conocidas en la literatura científica, excede lo que ese estudio específico puede respaldar."}, {"skill": "EVAL", "q": "Una investigación afirmó que 'los peroxisomas siempre aumentan en cantidad de forma proporcional e indefinida ante cualquier aumento en la demanda de detoxificación, sin ningún límite'. ¿Qué crítica es más pertinente?", "options": ["La conclusión es correcta porque la capacidad de la célula de generar nuevos organelos es siempre ilimitada bajo cualquier circunstancia", "Es poco probable que la capacidad de respuesta celular (generación de nuevos peroxisomas) sea completamente ilimitada; la mayoría de los mecanismos de respuesta biológica presentan algún grado de saturación o límite fisiológico ante demandas muy elevadas o sostenidas, que no fue evaluado en el estudio descrito", "Los peroxisomas nunca pueden aumentar en cantidad bajo ninguna circunstancia", "La demanda de detoxificación no tiene ninguna relación con la cantidad de peroxisomas", "No es necesario considerar límites fisiológicos en la respuesta celular a un estímulo de detoxificación"], "correct": 1, "exp": "Extrapolar una relación proporcional observada bajo condiciones moderadas a una respuesta 'indefinida y sin ningún límite' ignora los principios generales de saturación fisiológica presentes en la mayoría de los sistemas biológicos de respuesta a un estímulo."}, {"skill": "EVAL", "q": "Un estudio sobre filamentos intermedios concluyó que 'todos los tipos de filamentos del citoesqueleto (microfilamentos, microtúbulos, filamentos intermedios) presentan exactamente el mismo grado de estabilidad estructural', basándose en una comparación superficial sin mediciones cuantitativas específicas. ¿Qué crítica es más pertinente?", "options": ["La conclusión es correcta porque todos los componentes del citoesqueleto son estructuralmente idénticos entre sí", "La ausencia de mediciones cuantitativas específicas de estabilidad (por ejemplo, tasas de despolimerización) para cada tipo de filamento no permite sostener una afirmación de equivalencia; la evidencia disponible en biología celular documenta diferencias claras de estabilidad entre estos tres tipos de componentes", "Los microfilamentos de actina son siempre más estables que los filamentos intermedios en cualquier condición", "No es necesario realizar ninguna medición cuantitativa para comparar la estabilidad de distintos componentes celulares", "Los filamentos intermedios y los microtúbulos son exactamente la misma estructura celular"], "correct": 1, "exp": "Sin mediciones cuantitativas específicas que respalden la comparación, afirmar una equivalencia exacta entre estructuras que la literatura documenta como diferentes en su comportamiento dinámico es una conclusión metodológicamente débil."}, {"skill": "COM", "q": "Un estudiante debe explicar por qué la fusión y fisión mitocondrial son procesos importantes para la salud celular, más allá de simplemente cambiar el tamaño de las mitocondrias. ¿Explicación más precisa?", "options": ["Estos procesos permiten mezclar el contenido (incluyendo ADN mitocondrial y proteínas) entre distintas mitocondrias, lo que ayuda a diluir daños localizados, y también permiten aislar y eliminar selectivamente porciones dañadas de la red mitocondrial mediante fisión, contribuyendo así al mantenimiento de la calidad general de la población mitocondrial", "Estos procesos solo cambian el tamaño de las mitocondrias, sin ningún efecto sobre su funcionamiento", "La fusión y fisión mitocondrial ocurren de forma completamente aleatoria, sin ningún propósito funcional", "Las mitocondrias no pueden intercambiar ningún tipo de contenido entre sí mediante estos procesos", "La fisión mitocondrial siempre daña la función de las mitocondrias resultantes"], "correct": 0, "exp": "La explicación completa debe ir más allá del cambio de tamaño, describiendo el rol funcional de estos procesos en el mantenimiento de la calidad de la red mitocondrial mediante intercambio de contenido y eliminación selectiva de componentes dañados."}, {"skill": "COM", "q": "Al explicar por qué las plantas de sombra presentan mayor proporción de complejos antena en sus tilacoides que las plantas de sol, ¿cuál es la explicación más precisa?", "options": ["Las plantas de sombra no realizan fotosíntesis, por lo que no requieren de ningún tipo de complejo antena", "Al recibir menor cantidad de luz disponible, las plantas de sombra desarrollan una mayor proporción de complejos antena para maximizar la captación de la luz limitada del ambiente, optimizando así su capacidad fotosintética en esas condiciones", "Las plantas de sol siempre presentan mayor proporción de complejos antena que las de sombra", "La proporción de complejos antena no tiene ninguna relación con la cantidad de luz disponible en el ambiente", "Los complejos antena se encuentran únicamente en plantas expuestas a luz directa"], "correct": 1, "exp": "La explicación adecuada relaciona la adaptación estructural del aparato fotosintético (mayor proporción de complejos antena) con la estrategia funcional de maximizar la captación de un recurso limitado (luz) en el ambiente de sombra."}, {"skill": "COM", "q": "Un estudiante debe explicar por qué la autofagia se considera un mecanismo de 'reciclaje celular' más que simplemente un proceso destructivo. ¿Explicación más precisa?", "options": ["La autofagia degrada componentes celulares dañados o innecesarios mediante enzimas lisosomales, pero los productos de esa degradación (aminoácidos, ácidos grasos, entre otros) pueden ser reutilizados por la célula para sintetizar nuevas moléculas o generar energía, especialmente en condiciones de escasez de nutrientes", "La autofagia destruye completamente la célula sin ningún beneficio funcional", "Los productos de la degradación autofágica nunca pueden ser reutilizados por la célula", "La autofagia ocurre exclusivamente en condiciones de abundancia de nutrientes, nunca en condiciones de escasez", "La autofagia es un proceso idéntico a la fagocitosis, sin ninguna diferencia relevante"], "correct": 0, "exp": "El término 'reciclaje celular' refleja específicamente que los componentes degradados por autofagia no se pierden, sino que sus productos pueden ser reutilizados por la célula, lo cual es particularmente relevante en condiciones de escasez de nutrientes."}, {"skill": "COM", "q": "Al explicar por qué el entrenamiento físico de resistencia induce un aumento en la cantidad de mitocondrias del músculo esquelético, ¿cuál es la explicación más precisa?", "options": ["El ejercicio de resistencia prolongado genera una demanda energética sostenida que, a través de vías de señalización celular específicas, estimula la biogénesis mitocondrial (producción de nuevas mitocondrias), permitiendo al músculo satisfacer de forma más eficiente esa mayor demanda energética en entrenamientos futuros", "El ejercicio físico nunca tiene ningún efecto sobre la cantidad de mitocondrias del músculo", "El aumento de mitocondrias ocurre de forma completamente independiente de la demanda energética del músculo", "El entrenamiento de resistencia reduce la cantidad de mitocondrias para ahorrar energía", "La biogénesis mitocondrial es un proceso que ocurre exclusivamente durante el reposo, nunca durante el ejercicio"], "correct": 0, "exp": "La explicación adecuada conecta la demanda energética sostenida del ejercicio de resistencia con la activación de vías de señalización celular que estimulan específicamente la producción de nuevas mitocondrias, una adaptación funcional al entrenamiento."}, {"skill": "COM", "q": "Un estudiante debe explicar por qué la polaridad estructural de los microtúbulos es esencial para el funcionamiento correcto del sistema de transporte intracelular. ¿Explicación más precisa?", "options": ["Sin una polaridad definida (extremos distintos identificables), las proteínas motoras no tendrían una referencia estructural consistente para determinar la dirección de su desplazamiento, lo que impediría un transporte organizado y direccionado de cargas específicas hacia distintos destinos dentro de la célula", "La polaridad de los microtúbulos no tiene ninguna relación con el transporte intracelular", "Todas las proteínas motoras se desplazan de forma idéntica, sin importar la polaridad del microtúbulo", "Los microtúbulos no poseen ninguna estructura diferenciable entre sus extremos", "El transporte intracelular ocurre siempre de forma completamente aleatoria, sin ninguna organización"], "correct": 0, "exp": "La explicación central es que la polaridad estructural provee el 'sistema de referencia' necesario para que las proteínas motoras puedan desplazarse de forma consistente y direccionada, en lugar de moverse de manera desorganizada por el citoplasma."}, {"skill": "COM", "q": "Al explicar por qué la cantidad de peroxisomas puede aumentar en respuesta a una mayor demanda de detoxificación celular, ¿cuál es la explicación más precisa?", "options": ["Los peroxisomas son organelos dinámicos capaces de proliferar (aumentar en número mediante división) en respuesta a señales celulares asociadas a una mayor carga de sustancias que requieren ser neutralizadas, lo que permite a la célula ajustar su capacidad de detoxificación según las necesidades metabólicas del momento", "Los peroxisomas son organelos completamente estáticos que nunca cambian en número dentro de la célula", "La cantidad de peroxisomas está determinada genéticamente y nunca puede cambiar en respuesta a estímulos ambientales", "Los peroxisomas se forman exclusivamente durante la división celular, sin ninguna capacidad de proliferación adicional", "La demanda de detoxificación celular no tiene ninguna relación con la biología de los peroxisomas"], "correct": 0, "exp": "La capacidad de los peroxisomas de proliferar dinámicamente en respuesta a la demanda metabólica es un ejemplo de plasticidad celular que permite ajustar la capacidad funcional del organelo según las necesidades del momento."}, {"skill": "COM", "q": "Un estudiante debe explicar por qué los filamentos intermedios son especialmente abundantes en tejidos sometidos a estrés mecánico constante, como la piel. ¿Explicación más precisa?", "options": ["Los filamentos intermedios proporcionan resistencia mecánica estructural sostenida a la célula, una función particularmente relevante en tejidos que deben soportar fuerzas mecánicas constantes (estiramiento, presión), como la piel, donde su abundancia contribuye a mantener la integridad celular frente a ese tipo de estrés", "Los filamentos intermedios no tienen ninguna relación con la resistencia mecánica de los tejidos", "La piel no está sometida a ningún tipo de estrés mecánico relevante", "Los filamentos intermedios son idénticos en función a los microtúbulos, sin ninguna especialización particular", "La abundancia de filamentos intermedios en la piel se debe únicamente al color de este tejido"], "correct": 0, "exp": "La relación entre la función estructural específica de los filamentos intermedios (resistencia mecánica sostenida) y su mayor abundancia en tejidos expuestos a estrés mecánico constante, como la piel, es un ejemplo claro de especialización funcional del citoesqueleto según el contexto tisular."}, {"skill": "PROC", "q": "Se comparó la eficiencia de captación de luz de tilacoides con distinta proporción de complejos antena bajo la misma intensidad lumínica baja: baja proporción=eficiencia de captación reducida; alta proporción=eficiencia de captación notoriamente mayor. ¿Qué conclusión es más adecuada?", "options": ["Una mayor proporción de complejos antena se asocia a una mayor eficiencia de captación de luz bajo condiciones de baja intensidad lumínica, consistente con su función de recolección de fotones", "Una menor proporción de complejos antena siempre produce mayor eficiencia de captación de luz", "La proporción de complejos antena no tiene ninguna relación con la eficiencia de captación de luz", "Ambas condiciones muestran exactamente la misma eficiencia de captación, sin importar la proporción de complejos antena", "La eficiencia de captación de luz depende únicamente de la temperatura ambiente, no de la estructura del tilacoide"], "correct": 0, "exp": "La relación positiva observada entre proporción de complejos antena y eficiencia de captación de luz, bajo la misma intensidad lumínica limitada, respalda la función de estos complejos en optimizar la recolección de fotones disponibles."}, {"skill": "EVAL", "q": "Un estudio concluyó que 'las mitocondrias funcionan siempre como unidades completamente aisladas, sin ningún tipo de comunicación entre ellas' basándose en observaciones realizadas antes del descubrimiento de los procesos de fusión y fisión mitocondrial. ¿Qué crítica es más pertinente considerando la evidencia actual?", "options": ["La conclusión sigue siendo válida en la actualidad, sin necesidad de ninguna actualización", "La evidencia actual sobre fusión y fisión mitocondrial demuestra que las mitocondrias forman una red dinámica capaz de intercambiar contenido, lo que contradice la idea de que funcionan siempre como unidades completamente aisladas; esta conclusión debería actualizarse a la luz de evidencia científica más reciente", "Las mitocondrias nunca han sido capaces de intercambiar contenido entre sí bajo ninguna circunstancia", "La fusión y fisión mitocondrial son procesos que ocurren exclusivamente en células vegetales", "No es necesario actualizar conclusiones científicas previas a la luz de nueva evidencia"], "correct": 1, "exp": "Un principio fundamental del pensamiento científico es que las conclusiones deben actualizarse a la luz de nueva evidencia; mantener una conclusión previa que ha sido contradicha por hallazgos posteriores documentados no es una postura científicamente rigurosa."}, {"skill": "COM", "q": "Un estudiante debe explicar por qué comparar la estabilidad de distintos tipos de filamentos del citoesqueleto requiere de mediciones cuantitativas específicas, y no solo de una impresión visual general. ¿Explicación más precisa?", "options": ["Las diferencias de estabilidad entre microfilamentos, microtúbulos y filamentos intermedios (por ejemplo, en su tasa de polimerización/despolimerización) pueden no ser evidentes a simple vista, por lo que se requieren métodos cuantitativos (como el seguimiento de la velocidad de recambio de subunidades) para establecer comparaciones rigurosas y respaldadas por datos objetivos", "Una impresión visual general siempre es suficiente para comparar con precisión la estabilidad de distintas estructuras celulares", "No existen diferencias reales de estabilidad entre los distintos componentes del citoesqueleto", "Las mediciones cuantitativas nunca aportan información adicional a la observación visual directa", "La estabilidad estructural de un componente celular no puede ser medida de ninguna forma cuantitativa"], "correct": 0, "exp": "La necesidad de mediciones cuantitativas específicas, en lugar de solo impresiones visuales, refleja un principio general de rigor científico: las comparaciones objetivas y verificables requieren de datos medibles, no solo de apreciaciones subjetivas."}];
+
+let currentQuiz = [];
+let currentIndex = 0;
+let answered = false;
+let userAnswers = [];
+let scoreBySkill = {};
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function buildQuiz(){
+  let selected = [];
+  SKILL_ORDER.forEach(skillKey=>{
+    const pool = QUESTION_BANK.filter(q=>q.skill===skillKey);
+    const picked = shuffle(pool).slice(0,PICK_PER_SKILL);
+    selected = selected.concat(picked);
+  });
+  selected = shuffle(selected);
+  return selected.map(orig=>{
+    const idxArr = [0,1,2,3,4];
+    const shuffledIdx = shuffle(idxArr);
+    const newOptions = shuffledIdx.map(i=>orig.options[i]);
+    const newCorrect = shuffledIdx.indexOf(orig.correct);
+    return { skill: orig.skill, question: orig.q, options: newOptions, correct: newCorrect, exp: orig.exp };
+  });
+}
+
+function startQuiz(){
+  currentQuiz = buildQuiz();
+  currentIndex = 0;
+  answered = false;
+  userAnswers = [];
+  scoreBySkill = {};
+  SKILL_ORDER.forEach(s=>scoreBySkill[s]={correct:0,total:0});
+  document.getElementById('start-screen').classList.add('hidden');
+  document.getElementById('dashboard-screen').classList.add('hidden');
+  document.getElementById('review-screen').classList.add('hidden');
+  document.getElementById('quiz-screen').classList.remove('hidden');
+  renderQuestion();
+}
+
+function renderQuestion(){
+  answered = false;
+  const q = currentQuiz[currentIndex];
+  const total = currentQuiz.length;
+  document.getElementById('progress-fill').style.width = ((currentIndex)/total*100)+'%';
+  document.getElementById('progress-label').textContent = (currentIndex+1)+' / '+total;
+  document.getElementById('skill-tag').textContent = SKILL_NAMES[q.skill];
+  document.getElementById('qnum').textContent = 'Pregunta '+(currentIndex+1);
+  document.getElementById('question-text').textContent = q.question;
+
+  const optsDiv = document.getElementById('options');
+  optsDiv.innerHTML = '';
+  q.options.forEach((opt, i)=>{
+    const btn = document.createElement('button');
+    btn.className = 'option';
+    btn.innerHTML = '<span class="letter">'+LETTERS[i]+')</span><span>'+opt+'</span>';
+    btn.onclick = ()=>selectOption(i);
+    optsDiv.appendChild(btn);
+  });
+
+  document.getElementById('feedback').classList.add('hidden');
+  document.getElementById('next-btn').classList.add('hidden');
+}
+
+function selectOption(i){
+  if(answered) return;
+  answered = true;
+  const q = currentQuiz[currentIndex];
+  const correct = q.correct;
+  const options = document.querySelectorAll('#options .option');
+  options.forEach((opt, idx)=>{
+    opt.classList.add('locked');
+    if(idx===correct) opt.classList.add('correct');
+    else if(idx===i) opt.classList.add('incorrect');
+    else opt.classList.add('dim');
+  });
+
+  const isCorrect = (i===correct);
+  scoreBySkill[q.skill].total++;
+  if(isCorrect) scoreBySkill[q.skill].correct++;
+
+  userAnswers.push({ skill:q.skill, question:q.question, options:q.options, correctIdx:correct, chosenIdx:i, exp:q.exp, isCorrect });
+
+  const fb = document.getElementById('feedback');
+  fb.classList.remove('hidden');
+  fb.classList.toggle('wrong', !isCorrect);
+  fb.innerHTML = '<span class="pista-label">'+(isCorrect ? '✓ Correcto — Pista' : '✕ Incorrecto — Pista')+'</span>'+
+    '<strong>Respuesta correcta: '+LETTERS[correct]+') '+q.options[correct]+'</strong><br><br>'+q.exp;
+
+  document.getElementById('next-btn').classList.remove('hidden');
+}
+
+function nextQuestion(){
+  currentIndex++;
+  if(currentIndex >= currentQuiz.length){
+    showDashboard();
+  } else {
+    renderQuestion();
+  }
+}
+
+function showDashboard(){
+  document.getElementById('quiz-screen').classList.add('hidden');
+  document.getElementById('dashboard-screen').classList.remove('hidden');
+
+  const totalCorrect = userAnswers.filter(a=>a.isCorrect).length;
+  const totalQ = userAnswers.length;
+  document.getElementById('score-total').innerHTML = totalCorrect+'<span>/'+totalQ+'</span>';
+  const pct = Math.round((totalCorrect/totalQ)*100);
+  document.getElementById('score-caption').textContent = pct+'% de logro general';
+
+  const barsDiv = document.getElementById('skill-bars');
+  barsDiv.innerHTML = '';
+  const weakSkills = [];
+  const strongSkills = [];
+
+  SKILL_ORDER.forEach(skillKey=>{
+    const s = scoreBySkill[skillKey];
+    const skillPct = s.total>0 ? Math.round((s.correct/s.total)*100) : 0;
+    let color = 'var(--accent-coral)';
+    if(skillPct>=75) color='var(--accent-sage)';
+    else if(skillPct>=50) color='var(--accent-amber)';
+
+    const row = document.createElement('div');
+    row.className='skill-bar-row';
+    row.innerHTML = '<div class="skill-bar-head"><span class="name">'+SKILL_NAMES[skillKey]+'</span><span class="frac">'+s.correct+'/'+s.total+'</span></div>'+
+      '<div class="skill-bar-track"><div class="skill-bar-fill" style="width:'+skillPct+'%;background:'+color+';"></div></div>';
+    barsDiv.appendChild(row);
+
+    if(skillPct<75) weakSkills.push({name:SKILL_NAMES[skillKey], pct:skillPct});
+    else strongSkills.push(SKILL_NAMES[skillKey]);
+  });
+
+  const improveBox = document.getElementById('improve-box');
+  const improveList = document.getElementById('improve-list');
+  improveList.innerHTML='';
+  if(weakSkills.length>0){
+    improveBox.classList.remove('hidden');
+    weakSkills.sort((a,b)=>a.pct-b.pct).forEach(w=>{
+      const li = document.createElement('li');
+      li.innerHTML = '<strong>'+w.name+'</strong> ('+w.pct+'%) — refuerza con más ejercicios de este tipo de habilidad, revisando las pistas de las preguntas falladas.';
+      improveList.appendChild(li);
+    });
+  } else {
+    improveBox.classList.add('hidden');
+  }
+
+  const strongBox = document.getElementById('strong-box');
+  const strongText = document.getElementById('strong-text');
+  if(strongSkills.length>0){
+    strongBox.classList.remove('hidden');
+    strongText.textContent = strongSkills.join(', ') + '. Buen dominio, mantén la práctica con nuevos intentos.';
+  } else {
+    strongBox.classList.add('hidden');
+  }
+}
+
+function restartQuiz(){ startQuiz(); }
+
+function reviewAnswers(){
+  document.getElementById('dashboard-screen').classList.add('hidden');
+  const rev = document.getElementById('review-screen');
+  rev.classList.remove('hidden');
+  let html = '<p class="eyebrow">Revisión de respuestas</p>';
+  userAnswers.forEach((a, i)=>{
+    html += '<div style="margin-bottom:22px;padding-bottom:18px;border-bottom:1px solid var(--line);">'+
+      '<span class="skill-tag">'+SKILL_NAMES[a.skill]+'</span>'+
+      '<p class="question-text" style="font-size:16px;">'+(i+1)+'. '+a.question+'</p>'+
+      '<p style="font-size:14px;color:'+(a.isCorrect?'var(--accent-sage)':'var(--accent-coral)')+';margin:0 0 6px;">'+
+        (a.isCorrect ? '✓ Respondiste correctamente' : '✕ Tu respuesta: '+LETTERS[a.chosenIdx]+') '+a.options[a.chosenIdx])+
+      '</p>'+
+      '<p style="font-size:14px;color:var(--text-muted);margin:0 0 8px;">Correcta: '+LETTERS[a.correctIdx]+') '+a.options[a.correctIdx]+'</p>'+
+      '<div class="feedback" style="margin-top:6px;"><span class="pista-label">Pista</span>'+a.exp+'</div>'+
+    '</div>';
+  });
+  html += '<div class="actions"><button class="btn" onclick="restartQuiz(); document.getElementById(\'review-screen\').classList.add(\'hidden\');">Repetir con nuevas preguntas</button></div>';
+  rev.innerHTML = html;
+}
+</script>
+</body>
+</html>

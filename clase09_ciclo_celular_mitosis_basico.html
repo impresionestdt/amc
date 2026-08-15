@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PAES Biología · Clase 9 · Ciclo Celular y Mitosis (Nivel Básico)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Source+Sans+3:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-deep:#0f2027;
+    --bg-panel:#15303a;
+    --bg-panel-2:#1b3a45;
+    --accent-amber:#e8a33d;
+    --accent-sage:#6fa88a;
+    --accent-coral:#e4572e;
+    --text-light:#f3ede1;
+    --text-muted:#a9c0c2;
+    --line:#2a4750;
+    --radius:14px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:radial-gradient(circle at 15% -10%, #1c4552 0%, var(--bg-deep) 55%) fixed;
+    color:var(--text-light);
+    font-family:'Source Sans 3', system-ui, sans-serif;
+    min-height:100vh;
+    padding:32px 16px 64px;
+  }
+  .wrap{max-width:820px;margin:0 auto;}
+  .eyebrow{font-family:'JetBrains Mono', monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent-amber);margin:0 0 8px;}
+  h1{font-family:'Fraunces', serif;font-weight:600;font-size:clamp(26px,4vw,38px);line-height:1.1;margin:0 0 6px;color:var(--text-light);}
+  .sub{color:var(--text-muted);font-size:15px;margin:0 0 28px;max-width:60ch;}
+  .card{background:linear-gradient(180deg, var(--bg-panel) 0%, var(--bg-panel-2) 100%);border:1px solid var(--line);border-radius:var(--radius);padding:28px;box-shadow:0 20px 40px -20px rgba(0,0,0,.5);}
+  #start-screen ul{color:var(--text-muted);font-size:14.5px;line-height:1.7;padding-left:20px;margin:18px 0 26px;}
+  #start-screen li{margin-bottom:4px;}
+  .btn{font-family:'Source Sans 3', sans-serif;font-weight:700;font-size:15px;border:none;border-radius:999px;padding:14px 30px;cursor:pointer;background:var(--accent-amber);color:#20140a;transition:transform .15s ease, box-shadow .15s ease;box-shadow:0 8px 20px -8px rgba(0,0,0,.35);}
+  .btn:hover{transform:translateY(-1px);}
+  .btn:active{transform:translateY(0);}
+  .btn.ghost{background:transparent;color:var(--text-muted);border:1.5px solid var(--line);box-shadow:none;}
+  .progress-row{display:flex;align-items:center;gap:14px;margin-bottom:18px;}
+  .progress-track{flex:1;height:6px;border-radius:99px;background:var(--line);overflow:hidden;}
+  .progress-fill{height:100%;background:linear-gradient(90deg,var(--accent-sage),var(--accent-amber));border-radius:99px;transition:width .3s ease;}
+  .progress-label{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--text-muted);white-space:nowrap;}
+  .skill-tag{display:inline-block;font-family:'JetBrains Mono', monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--bg-deep);background:var(--accent-sage);padding:5px 11px;border-radius:999px;margin-bottom:14px;}
+  .qnum{color:var(--text-muted);font-size:13px;font-family:'JetBrains Mono',monospace;margin-bottom:6px;}
+  .question-text{font-family:'Fraunces', serif;font-weight:500;font-size:19px;line-height:1.45;margin:0 0 22px;}
+  .options{display:flex;flex-direction:column;gap:10px;}
+  .option{display:flex;align-items:flex-start;gap:12px;text-align:left;background:rgba(255,255,255,.03);border:1.5px solid var(--line);border-radius:10px;padding:13px 15px;cursor:pointer;color:var(--text-light);font-size:14.5px;line-height:1.4;transition:border-color .15s, background .15s;}
+  .option:hover:not(.locked){border-color:var(--accent-amber);}
+  .option .letter{font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--accent-amber);flex-shrink:0;}
+  .option.correct{border-color:var(--accent-sage);background:rgba(111,168,138,.14);}
+  .option.incorrect{border-color:var(--accent-coral);background:rgba(228,87,46,.14);}
+  .option.locked{cursor:default;}
+  .option.dim{opacity:.45;}
+  .feedback{margin-top:18px;padding:16px 18px;border-radius:10px;background:rgba(255,255,255,.04);border-left:4px solid var(--accent-sage);font-size:14px;line-height:1.6;color:var(--text-muted);}
+  .feedback.wrong{border-left-color:var(--accent-coral);}
+  .feedback strong{color:var(--text-light);}
+  .feedback .pista-label{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent-amber);display:block;margin-bottom:6px;}
+  .nav-row{display:flex;justify-content:flex-end;margin-top:22px;}
+  .score-hero{text-align:center;padding:10px 0 26px;}
+  .score-big{font-family:'Fraunces',serif;font-weight:700;font-size:56px;color:var(--accent-amber);line-height:1;}
+  .score-big span{font-size:24px;color:var(--text-muted);font-weight:500;}
+  .score-caption{color:var(--text-muted);font-size:14px;margin-top:6px;}
+  .skill-bars{display:flex;flex-direction:column;gap:16px;margin:22px 0 8px;}
+  .skill-bar-head{display:flex;justify-content:space-between;font-size:13.5px;margin-bottom:6px;}
+  .skill-bar-head .name{font-weight:600;}
+  .skill-bar-head .frac{font-family:'JetBrains Mono',monospace;color:var(--text-muted);}
+  .skill-bar-track{height:10px;border-radius:99px;background:var(--line);overflow:hidden;}
+  .skill-bar-fill{height:100%;border-radius:99px;}
+  .improve-box{margin-top:26px;background:rgba(228,87,46,.08);border:1px solid rgba(228,87,46,.35);border-radius:10px;padding:18px 20px;}
+  .improve-box h3{font-family:'Fraunces',serif;font-size:16px;margin:0 0 10px;color:var(--accent-coral);}
+  .improve-box ul{margin:0;padding-left:20px;color:var(--text-light);font-size:14px;line-height:1.75;}
+  .strong-box{margin-top:14px;background:rgba(111,168,138,.08);border:1px solid rgba(111,168,138,.35);border-radius:10px;padding:18px 20px;}
+  .strong-box h3{font-family:'Fraunces',serif;font-size:16px;margin:0 0 10px;color:var(--accent-sage);}
+  .strong-box p{margin:0;color:var(--text-light);font-size:14px;line-height:1.6;}
+  .actions{display:flex;gap:12px;margin-top:28px;flex-wrap:wrap;}
+  .hidden{display:none !important;}
+  footer{text-align:center;color:var(--text-muted);font-size:12px;margin-top:26px;opacity:.6;}
+</style>
+</head>
+<body> <div style="float: left; margin-right: 25px; margin-bottom: 25px;"><img src="Logo_AMC.png" alt="Logo" style="max-width: 150px;"></div>
+<div class="wrap">
+  <p class="eyebrow">PAES · Ciencias — Módulo Biología Común · Nivel Básico</p>
+  <h1>Ciclo Celular y Mitosis</h1>
+  <p class="sub">Eje 2: Herencia y Ciclo Celular — Sub-eje: División celular — Clase 9: Ciclo Celular y Mitosis</p>
+
+  <div class="card" id="start-screen">
+    <p class="eyebrow" style="margin-bottom:14px;">Antes de comenzar</p>
+    <p style="color:var(--text-muted);font-size:14.5px;line-height:1.6;">Este quiz evalúa nivel <strong style='color:var(--text-light);'>básico</strong>, con 20 preguntas (4 por cada habilidad PAES), extraídas al azar de un banco amplio. Cada intento genera una versión distinta.</p>
+    <ul>
+      <li>Observar y plantear preguntas</li>
+      <li>Planificar y conducir una investigación</li>
+      <li>Procesar y analizar la evidencia</li>
+      <li>Evaluar</li>
+      <li>Comunicar</li>
+    </ul>
+    <button class="btn" onclick="startQuiz()">Comenzar quiz</button>
+  </div>
+
+  <div class="card hidden" id="quiz-screen">
+    <div class="progress-row">
+      <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+      <div class="progress-label" id="progress-label">1 / 20</div>
+    </div>
+    <span class="skill-tag" id="skill-tag"></span>
+    <p class="qnum" id="qnum"></p>
+    <p class="question-text" id="question-text"></p>
+    <div class="options" id="options"></div>
+    <div class="feedback hidden" id="feedback"></div>
+    <div class="nav-row">
+      <button class="btn hidden" id="next-btn" onclick="nextQuestion()">Siguiente →</button>
+    </div>
+  </div>
+
+  <div class="card hidden" id="dashboard-screen">
+    <p class="eyebrow">Resultados</p>
+    <div class="score-hero">
+      <div class="score-big" id="score-total">0<span>/20</span></div>
+      <p class="score-caption" id="score-caption">Puntaje global</p>
+    </div>
+    <div class="skill-bars" id="skill-bars"></div>
+    <div class="improve-box hidden" id="improve-box">
+      <h3>Puntos a mejorar</h3>
+      <ul id="improve-list"></ul>
+    </div>
+    <div class="strong-box hidden" id="strong-box">
+      <h3>Habilidades consolidadas</h3>
+      <p id="strong-text"></p>
+    </div>
+    <div class="actions">
+      <button class="btn" onclick="restartQuiz()">Repetir con nuevas preguntas</button>
+      <button class="btn ghost" onclick="reviewAnswers()">Revisar mis respuestas</button>
+    </div>
+  </div>
+
+  <div class="card hidden" id="review-screen"></div>
+
+  <footer>Banco de 40 preguntas · nivel básico · Clase 9 de 30 · basado en el temario DEMRE PAES Ciencias — Biología Común</footer>
+</div>
+
+<script>
+const SKILL_NAMES = {"OBS": "Observar y plantear preguntas", "PLAN": "Planificar y conducir una investigación", "PROC": "Procesar y analizar la evidencia", "EVAL": "Evaluar", "COM": "Comunicar"};
+const SKILL_ORDER = ["OBS", "PLAN", "PROC", "EVAL", "COM"];
+const LETTERS = ["A","B","C","D","E"];
+const PICK_PER_SKILL = 4;
+
+const QUESTION_BANK = [{"skill": "OBS", "q": "Un estudiante observa, al microscopio, que la mayoría de las células de un tejido en crecimiento se encuentran con su material genético disperso (cromatina) en el núcleo, mientras solo unas pocas células muestran estructuras compactas y visibles (cromosomas). ¿Pregunta más pertinente?", "options": ["¿La mayoría de las células observadas se encuentran en interfase, mientras las pocas células con cromosomas visibles están atravesando la fase de división (mitosis)?", "¿Todas las células de un tejido se encuentran siempre en el mismo momento del ciclo celular?", "¿La cromatina y los cromosomas son estructuras completamente distintas, sin ninguna relación entre sí?", "¿Las células en interfase no poseen ningún tipo de material genético?", "¿La compactación del material genético ocurre de forma aleatoria, sin relación con el ciclo celular?"], "correct": 0, "exp": "La mayor parte del ciclo celular corresponde a la interfase, donde el material genético se encuentra como cromatina dispersa; los cromosomas compactos y visibles son característicos de la fase M (mitosis), que dura una proporción mucho menor del ciclo."}, {"skill": "OBS", "q": "Se observa que, antes de que una célula entre en división, la cantidad de ADN medida en su núcleo se duplica exactamente, pasando de una cantidad determinada a exactamente el doble. ¿Pregunta más pertinente?", "options": ["¿Esta duplicación exacta del ADN corresponde a la fase S de la interfase, en la cual se replica todo el material genético antes de la división celular?", "¿La cantidad de ADN se duplica durante la fase M de la mitosis, y no antes?", "¿La duplicación del ADN ocurre de forma incompleta, generando solo una fracción del material genético original?", "¿La cantidad de ADN no tiene ninguna relación con el proceso de división celular?", "¿Todas las células duplican su ADN de forma aleatoria, sin ninguna fase específica del ciclo celular?"], "correct": 0, "exp": "La duplicación exacta de la cantidad de ADN antes de la división es característica de la fase S (síntesis) de la interfase, un paso necesario para asegurar que cada célula hija reciba una copia completa del material genético."}, {"skill": "OBS", "q": "Un investigador observa que, durante cierta etapa de la división celular, los cromosomas duplicados se alinean exactamente en el centro de la célula, formando una única línea equidistante de ambos polos. ¿Pregunta más precisa?", "options": ["¿Esta alineación central de los cromosomas corresponde a la metafase de la mitosis, una etapa necesaria para asegurar la correcta separación posterior de las cromátidas hermanas?", "¿Esta alineación corresponde a la etapa de anafase, donde los cromosomas ya se han separado?", "¿Los cromosomas se alinean de forma aleatoria en cualquier punto de la célula durante la mitosis?", "¿Esta observación no tiene ninguna relación con ninguna etapa específica de la división celular?", "¿La alineación central ocurre durante la interfase, antes de que comience la mitosis?"], "correct": 0, "exp": "La alineación de los cromosomas en el plano ecuatorial de la célula es característica de la metafase, una etapa que asegura que cada cromátida hermana quede correctamente orientada hacia un polo distinto antes de su separación en la anafase."}, {"skill": "OBS", "q": "Se observa que, en cierto momento de la mitosis, las cromátidas hermanas de cada cromosoma se separan y comienzan a desplazarse hacia polos opuestos de la célula. ¿Pregunta más precisa?", "options": ["¿Esta separación de cromátidas hermanas corresponde a la anafase, una etapa en la que el huso mitótico tracciona cada cromátida hacia un polo distinto de la célula?", "¿Esta separación corresponde a la etapa de profase, antes de que los cromosomas se hayan condensado?", "¿Las cromátidas hermanas permanecen siempre unidas durante toda la mitosis, sin ninguna separación?", "¿La separación de cromátidas no tiene ninguna relación con el huso mitótico?", "¿Esta observación corresponde a la citocinesis, la división del citoplasma?"], "correct": 0, "exp": "La separación de las cromátidas hermanas hacia polos opuestos, mediada por el acortamiento de los microtúbulos del huso mitótico, es el evento definitorio de la anafase, asegurando que cada célula hija reciba una copia idéntica de cada cromosoma."}, {"skill": "OBS", "q": "Un estudiante observa que, tras completarse la mitosis, la célula original se divide físicamente en dos células hijas independientes, cada una rodeada por su propia membrana plasmática. ¿Pregunta más precisa?", "options": ["¿Este proceso de división física del citoplasma, denominado citocinesis, es un paso distinto y posterior a la separación de los cromosomas ocurrida durante la mitosis?", "¿La citocinesis ocurre antes de que los cromosomas se hayan separado durante la anafase?", "¿La citocinesis y la mitosis son exactamente el mismo proceso, sin ninguna diferencia?", "¿La división física del citoplasma no tiene ninguna relación con el proceso de mitosis?", "¿Las dos células hijas resultantes comparten la misma membrana plasmática tras la división?"], "correct": 0, "exp": "La citocinesis es el proceso de división física del citoplasma que ocurre después de que la mitosis ha completado la separación del material genético, resultando en dos células hijas independientes, cada una con su propio núcleo y membrana."}, {"skill": "OBS", "q": "Se observa que ciertas células del organismo, como las neuronas maduras, permanecen indefinidamente sin dividirse, mientras otras, como las células de la piel, se dividen constantemente a lo largo de la vida del organismo. ¿Pregunta más precisa?", "options": ["¿La capacidad de división celular varía según el tipo celular, relacionándose con las necesidades específicas de renovación o reparación de cada tejido?", "¿Todas las células del organismo, sin excepción, se dividen exactamente con la misma frecuencia?", "¿Las neuronas maduras se dividen con mayor frecuencia que las células de la piel?", "¿La capacidad de división celular no tiene ninguna relación con el tipo de tejido al que pertenece la célula?", "¿Las células de la piel dejan de dividirse por completo después del nacimiento del organismo?"], "correct": 0, "exp": "La diferencia en la frecuencia de división entre distintos tipos celulares (neuronas que permanecen en un estado no proliferativo, células de piel que se renuevan constantemente) refleja las distintas necesidades funcionales de renovación y reparación de cada tejido."}, {"skill": "OBS", "q": "Un investigador observa que, cuando el ADN de una célula presenta daños significativos, la célula detiene su avance en el ciclo celular en un punto específico antes de continuar hacia la división. ¿Pregunta más precisa?", "options": ["¿La detención del ciclo celular ante daño en el ADN corresponde a la acción de un punto de control (checkpoint), que impide que la célula continúe dividiéndose con material genético dañado?", "¿La célula continúa dividiéndose normalmente, sin importar el estado de su ADN?", "¿Los puntos de control del ciclo celular no tienen ninguna relación con el estado del material genético?", "¿El daño en el ADN acelera el proceso de división celular, en lugar de detenerlo?", "¿Todas las células, sin excepción, carecen de cualquier mecanismo de control del ciclo celular?"], "correct": 0, "exp": "Los puntos de control (checkpoints) del ciclo celular son mecanismos reguladores que detienen el avance del ciclo cuando se detectan problemas, como daño en el ADN, evitando que ese material genético dañado se transmita a las células hijas."}, {"skill": "OBS", "q": "Se observa que las células cancerosas, a diferencia de las células normales del mismo tejido, continúan dividiéndose de forma descontrolada incluso cuando presentan daños en su ADN o se encuentran en condiciones desfavorables. ¿Pregunta más precisa?", "options": ["¿La división descontrolada de las células cancerosas se relaciona con una falla en los mecanismos normales de control del ciclo celular (puntos de control)?", "¿Las células cancerosas presentan exactamente el mismo control del ciclo celular que las células normales del mismo tejido?", "¿La división celular descontrolada no tiene ninguna relación con ningún mecanismo de regulación celular?", "¿Las células normales del tejido también se dividen de forma descontrolada en condiciones desfavorables?", "¿El daño en el ADN acelera siempre la división celular, tanto en células normales como cancerosas?"], "correct": 0, "exp": "La proliferación descontrolada característica de las células cancerosas es consistente con una falla en los mecanismos normales de control del ciclo celular (puntos de control), que en condiciones normales detendrían la división ante daño en el ADN u otras condiciones desfavorables."}, {"skill": "PLAN", "q": "Para comprobar experimentalmente que la fase S de la interfase es cuando ocurre la duplicación del ADN, ¿cuál es el procedimiento más adecuado?", "options": ["Medir la cantidad de ADN presente en el núcleo de células en distintos momentos del ciclo celular, comparando los valores obtenidos en G1, durante S, y en G2, para observar en qué momento se duplica la cantidad", "Medir la cantidad de ADN solo en un momento fijo del ciclo celular, sin ninguna comparación temporal", "No es necesario ningún tipo de medición para comprobar en qué fase ocurre la duplicación del ADN", "Medir solo el tamaño de la célula, sin evaluar la cantidad de ADN presente", "Comparar la cantidad de ADN entre células de tejidos completamente distintos, sin ningún control sobre la fase del ciclo celular"], "correct": 0, "exp": "Medir la cantidad de ADN en distintos momentos del ciclo celular, siguiendo su cambio a lo largo de las fases G1, S y G2, permite identificar experimentalmente el momento específico en que ocurre la duplicación del material genético."}, {"skill": "PLAN", "q": "Un estudiante desea investigar si la frecuencia de división celular varía entre distintos tejidos de un organismo (por ejemplo, piel vs. tejido nervioso). ¿Cuál es el diseño experimental adecuado?", "options": ["Medir el porcentaje de células en división (mitosis) en muestras de ambos tejidos, bajo el mismo método de observación y en el mismo momento, comparando los resultados obtenidos", "Medir la frecuencia de división solo en un tejido y generalizar el resultado al otro sin ninguna comparación", "No es necesario comparar distintos tejidos para responder esta pregunta", "Usar métodos de observación distintos para cada tejido evaluado", "Medir solo el tamaño de las células de cada tejido, sin evaluar su frecuencia de división"], "correct": 0, "exp": "Comparar sistemáticamente, bajo el mismo método, el porcentaje de células en división entre distintos tejidos permite establecer de forma válida si existen diferencias en la frecuencia de proliferación celular según el tipo de tejido."}, {"skill": "PLAN", "q": "Para determinar si un compuesto químico específico detiene el ciclo celular al inducir daño en el ADN, ¿cuál es el diseño experimental adecuado?", "options": ["Comparar el porcentaje de células que avanzan hacia la división en un grupo tratado con el compuesto frente a un grupo control sin tratamiento, bajo las mismas condiciones experimentales", "Tratar todas las células con el compuesto, sin ningún grupo control sin tratamiento", "No es necesario ningún grupo control para esta pregunta", "Medir solo el tamaño de las células tratadas, sin evaluar su avance en el ciclo celular", "Usar concentraciones distintas del compuesto para cada célula evaluada, sin ningún criterio estandarizado"], "correct": 0, "exp": "Comparar el avance en el ciclo celular entre un grupo tratado con el compuesto y un grupo control sin tratamiento, bajo las mismas condiciones, permite establecer de forma experimental si el compuesto efectivamente induce la detención del ciclo celular."}, {"skill": "PLAN", "q": "Se desea investigar si las células cancerosas de un tejido específico presentan una falla en los puntos de control del ciclo celular, en comparación con células normales del mismo tejido. ¿Diseño experimental más adecuado?", "options": ["Inducir daño en el ADN de células cancerosas y de células normales del mismo tejido, y comparar en ambos grupos si el ciclo celular se detiene apropiadamente tras el daño inducido", "Inducir daño solo en las células cancerosas, sin ningún grupo de células normales para comparar", "No es necesario ningún grupo de comparación con células normales para esta pregunta", "Medir solo el tamaño de las células cancerosas, sin evaluar su respuesta al daño en el ADN", "Usar tipos de daño distintos para cada grupo celular evaluado"], "correct": 0, "exp": "Comparar la respuesta al daño en el ADN entre células cancerosas y normales del mismo tejido, bajo la misma condición de daño inducido, permite establecer de forma experimental si existe una falla específica en los mecanismos de control del ciclo celular en las células cancerosas."}, {"skill": "PLAN", "q": "Un investigador desea determinar en qué etapa específica de la mitosis los cromosomas se alinean en el centro de la célula. ¿Cuál es el procedimiento experimental adecuado?", "options": ["Observar mediante microscopía, en una secuencia temporal continua, el comportamiento de los cromosomas a lo largo de todas las etapas de la mitosis, identificando el momento específico de la alineación central", "Observar la célula en un único momento fijo, sin ningún seguimiento de la secuencia completa de etapas", "No es necesario ningún seguimiento temporal para identificar esta etapa específica", "Observar solo la etapa final de la mitosis, sin considerar las etapas anteriores", "Asumir la etapa correspondiente sin realizar ninguna observación microscópica directa"], "correct": 0, "exp": "Un seguimiento temporal continuo de las distintas etapas de la mitosis mediante microscopía permite identificar con precisión en qué momento específico ocurre cada evento característico, como la alineación central de los cromosomas."}, {"skill": "PLAN", "q": "Para comprobar que la citocinesis es un proceso distinto y posterior a la separación de los cromosomas durante la mitosis, ¿cuál es el diseño experimental más adecuado?", "options": ["Realizar un seguimiento temporal por microscopía que permita observar si la división física del citoplasma (citocinesis) ocurre después de completada la separación de los cromosomas (anafase-telofase), en lugar de ocurrir de forma simultánea o previa", "Observar la célula solo en un momento fijo, sin ningún seguimiento de la secuencia temporal completa", "No es necesario ningún seguimiento temporal para comprobar el orden de estos dos procesos", "Asumir el orden de los procesos sin realizar ninguna observación experimental", "Observar solo la citocinesis, sin considerar el momento de la separación de cromosomas"], "correct": 0, "exp": "Un seguimiento temporal detallado que capture tanto la separación de los cromosomas como la posterior división física del citoplasma permite establecer experimentalmente la secuencia y el orden correcto entre ambos procesos."}, {"skill": "PLAN", "q": "Se desea investigar si el crecimiento de un tejido dañado se relaciona con un aumento en la frecuencia de división celular en la zona afectada. ¿Diseño experimental más adecuado?", "options": ["Comparar el porcentaje de células en división en la zona dañada del tejido con el porcentaje observado en una zona no dañada del mismo tejido, bajo el mismo método de observación y en el mismo momento", "Medir la frecuencia de división solo en la zona dañada, sin ninguna zona de comparación no dañada", "No es necesario comparar distintas zonas del tejido para esta pregunta", "Usar métodos de observación distintos para cada zona del tejido evaluada", "Medir solo el tamaño del tejido dañado, sin evaluar la frecuencia de división celular"], "correct": 0, "exp": "Comparar la frecuencia de división celular entre la zona dañada y una zona no dañada del mismo tejido, bajo condiciones estandarizadas, permite establecer de forma experimental si existe una relación entre el daño tisular y el aumento de la proliferación celular reparadora."}, {"skill": "PROC", "q": "Se midió la cantidad de ADN en el núcleo celular a lo largo del ciclo celular: fase G1=cantidad basal; fase S=aumento progresivo; fase G2=cantidad duplicada respecto a G1. ¿Qué conclusión es más adecuada?", "options": ["La duplicación completa del ADN ocurre durante la fase S de la interfase, alcanzando el doble de la cantidad original al llegar a la fase G2", "La duplicación del ADN ocurre durante la fase G1, antes de comenzar la fase S", "La cantidad de ADN permanece exactamente igual durante todo el ciclo celular", "La cantidad de ADN se reduce a la mitad durante la fase S", "La fase G2 presenta la misma cantidad de ADN que la fase G1, sin ningún cambio"], "correct": 0, "exp": "El patrón de aumento progresivo durante la fase S, alcanzando el doble de la cantidad original hacia la fase G2, es consistente con el proceso de replicación completa del ADN que ocurre específicamente durante esta fase de la interfase."}, {"skill": "PROC", "q": "Se comparó el porcentaje de células en división (mitosis) entre tejido de piel (alto porcentaje) y tejido nervioso maduro (porcentaje prácticamente nulo), bajo el mismo método de observación. ¿Qué conclusión es más adecuada?", "options": ["El tejido de piel presenta una frecuencia de división celular considerablemente mayor que el tejido nervioso maduro, consistente con sus distintas necesidades de renovación celular", "El tejido nervioso maduro presenta mayor frecuencia de división celular que el tejido de piel", "Ambos tejidos presentan exactamente la misma frecuencia de división celular", "La frecuencia de división celular no tiene ninguna relación con el tipo de tejido analizado", "El tejido de piel no presenta ningún tipo de división celular"], "correct": 0, "exp": "La marcada diferencia en la frecuencia de división observada es consistente con las distintas necesidades funcionales de cada tejido: alta renovación celular en la piel (expuesta a desgaste constante) frente a la capacidad limitada de división de las neuronas maduras."}, {"skill": "PROC", "q": "Se midió el porcentaje de células que avanzan hacia la división en un grupo tratado con un compuesto inductor de daño en el ADN (bajo porcentaje de avance) y en un grupo control sin tratamiento (alto porcentaje de avance). ¿Qué conclusión es más adecuada?", "options": ["El compuesto inductor de daño en el ADN activa mecanismos de control que detienen el avance del ciclo celular, consistente con el funcionamiento normal de los puntos de control", "El compuesto inductor de daño en el ADN acelera el avance del ciclo celular", "El daño en el ADN no tiene ninguna relación con el avance del ciclo celular", "Ambos grupos experimentales muestran exactamente el mismo porcentaje de avance hacia la división", "El grupo control muestra un porcentaje de avance menor que el grupo tratado con el compuesto"], "correct": 0, "exp": "La marcada reducción en el porcentaje de avance hacia la división en el grupo con daño inducido en el ADN, comparado con el grupo control, confirma experimentalmente la activación de mecanismos de control del ciclo celular ante la detección de daño genético."}, {"skill": "PROC", "q": "Se comparó la respuesta al daño en el ADN entre células cancerosas (continúan dividiéndose a pesar del daño) y células normales del mismo tejido (detienen su división ante el mismo daño). ¿Qué conclusión es más adecuada?", "options": ["Las células cancerosas presentan una falla en los mecanismos de control del ciclo celular que normalmente detendrían la división ante daño en el ADN, a diferencia de las células normales del mismo tejido", "Las células cancerosas presentan un control del ciclo celular más estricto que las células normales", "Ambos tipos celulares muestran exactamente la misma respuesta ante el daño en el ADN", "El daño en el ADN no tiene ninguna relación con el comportamiento de ninguno de los dos tipos celulares", "Las células normales continúan dividiéndose de la misma manera que las células cancerosas ante el daño en el ADN"], "correct": 0, "exp": "La diferencia marcada en la respuesta al daño en el ADN entre ambos tipos celulares (detención en células normales, continuación en células cancerosas) confirma la existencia de una falla específica en los mecanismos de control del ciclo celular característica de las células cancerosas."}, {"skill": "PROC", "q": "Se realizó un seguimiento temporal por microscopía de una célula en división, observando la siguiente secuencia: condensación de cromosomas, alineación central, separación de cromátidas hacia polos opuestos, formación de dos núcleos, y finalmente división del citoplasma. ¿Qué conclusión es más adecuada?", "options": ["La mitosis sigue una secuencia ordenada de etapas (profase, metafase, anafase, telofase), seguida por la citocinesis como un proceso distinto y posterior a la separación de los cromosomas", "La citocinesis ocurre antes de que los cromosomas se hayan separado durante la mitosis", "Todas las etapas observadas ocurren de forma simultánea, sin ningún orden secuencial", "La separación de cromátidas ocurre antes de la condensación de los cromosomas", "La formación de dos núcleos ocurre antes de la separación de las cromátidas hermanas"], "correct": 0, "exp": "La secuencia ordenada observada (condensación, alineación, separación, formación de núcleos, y finalmente citocinesis) confirma experimentalmente el orden característico de las etapas de la mitosis, con la citocinesis ocurriendo como paso final y distinto."}, {"skill": "PROC", "q": "Se comparó el porcentaje de células en división en la zona dañada de un tejido en proceso de reparación (porcentaje elevado) con una zona no dañada del mismo tejido (porcentaje basal, considerablemente menor). ¿Qué conclusión es más adecuada?", "options": ["El proceso de reparación tisular se relaciona con un aumento de la frecuencia de división celular específicamente en la zona dañada, en comparación con la actividad basal de la zona no dañada", "La zona no dañada del tejido presenta mayor frecuencia de división celular que la zona dañada en reparación", "El daño tisular no tiene ninguna relación con la frecuencia de división celular observada", "Ambas zonas del tejido muestran exactamente la misma frecuencia de división celular", "La reparación tisular ocurre sin ningún tipo de proceso de división celular"], "correct": 0, "exp": "El aumento significativo de la frecuencia de división específicamente en la zona dañada, en comparación con la actividad basal de la zona no dañada, es consistente con el rol de la proliferación celular como mecanismo central del proceso de reparación tisular."}, {"skill": "EVAL", "q": "Un estudiante concluye que 'todas las células del organismo se dividen exactamente con la misma frecuencia' basándose en la observación de un solo tipo celular (piel). ¿Qué crítica es más pertinente?", "options": ["La conclusión es válida porque un solo tipo celular es representativo de la frecuencia de división de cualquier célula del organismo", "La frecuencia de división celular varía considerablemente según el tipo de tejido (por ejemplo, las neuronas maduras prácticamente no se dividen); generalizar a partir de un solo tipo celular (piel, de alta renovación) a 'todas las células' ignora esta variabilidad bien documentada", "Todas las células del organismo, sin excepción, carecen de cualquier capacidad de división", "No es necesario considerar otros tipos celulares para hacer esta generalización", "Las células de la piel nunca se dividen bajo ninguna circunstancia"], "correct": 1, "exp": "La frecuencia de división celular varía considerablemente entre distintos tipos de tejido según sus necesidades funcionales específicas; generalizar a partir de un solo tipo celular no captura esa diversidad conocida."}, {"skill": "EVAL", "q": "Una investigación concluyó que 'la fase S es la única fase del ciclo celular en la que ocurre algún tipo de actividad metabólica relevante', ignorando los procesos que ocurren en G1 y G2. ¿Qué crítica es más sólida?", "options": ["La conclusión es correcta porque solo la duplicación del ADN, ocurrida en la fase S, constituye una actividad metabólica relevante del ciclo celular", "Las fases G1 y G2 de la interfase también involucran actividad metabólica relevante, como el crecimiento celular, la síntesis de proteínas y organelos, y la verificación de condiciones apropiadas antes de continuar el ciclo; limitar la actividad relevante exclusivamente a la fase S ignora estos procesos igualmente importantes", "Las fases G1 y G2 no tienen ninguna relación con el ciclo celular", "La célula permanece completamente inactiva durante las fases G1 y G2", "No es necesario considerar la actividad metabólica de otras fases distintas a la fase S"], "correct": 1, "exp": "Las fases G1 y G2, aunque no involucran la duplicación del ADN, son etapas metabólicamente activas que incluyen crecimiento celular, síntesis de componentes necesarios y verificación de condiciones mediante puntos de control; reducir la relevancia del ciclo celular únicamente a la fase S ignora estos procesos."}, {"skill": "EVAL", "q": "Un estudio sobre puntos de control del ciclo celular concluyó que 'cualquier célula con daño en su ADN detiene automáticamente su ciclo celular sin ninguna excepción', basándose en el estudio de células normales de un solo tejido. ¿Qué crítica es más pertinente?", "options": ["La conclusión es válida porque cualquier célula, sin excepción, responde exactamente de la misma manera ante el daño en su ADN", "Las células cancerosas, como se ha documentado, frecuentemente presentan fallas en estos mecanismos de control y continúan dividiéndose a pesar del daño en su ADN; generalizar que 'cualquier célula... sin ninguna excepción' detiene su ciclo ante daño genético, a partir del estudio de células normales, ignora esta excepción bien conocida", "Las células cancerosas nunca presentan ningún tipo de daño en su ADN", "Todos los tipos celulares, sin excepción, carecen de cualquier mecanismo de control del ciclo celular", "No es necesario considerar el comportamiento de células cancerosas para esta generalización"], "correct": 1, "exp": "La existencia bien documentada de células cancerosas que fallan en detener su ciclo celular ante daño en el ADN constituye una excepción conocida a la generalización de que 'cualquier célula, sin excepción' responde deteniendo su división ante ese tipo de daño."}, {"skill": "EVAL", "q": "Una publicación afirmó que 'la citocinesis y la mitosis son exactamente el mismo proceso, sin ninguna diferencia relevante entre ellos'. ¿Qué error se identifica en esta afirmación?", "options": ["La afirmación es correcta, ya que ambos términos se refieren exactamente al mismo proceso de división celular", "La mitosis se refiere específicamente a la división del material genético (núcleo), mientras la citocinesis es el proceso distinto y posterior de división física del citoplasma; tratarlos como 'exactamente el mismo proceso, sin ninguna diferencia' ignora esta distinción conceptual y temporal importante", "La citocinesis ocurre siempre antes de que comience la mitosis", "La mitosis no tiene ninguna relación con la división del material genético celular", "La citocinesis se refiere exclusivamente a la duplicación del ADN, sin ninguna relación con la división celular"], "correct": 1, "exp": "Confundir mitosis (división del núcleo y su material genético) con citocinesis (división física posterior del citoplasma) ignora una distinción conceptual y temporal bien establecida en biología celular; ambos son procesos relacionados pero distintos dentro de la división celular completa."}, {"skill": "EVAL", "q": "Un estudio concluyó que 'el aumento de división celular observado en una zona de tejido dañado se debe exclusivamente al proceso de reparación tisular, sin ninguna otra causa posible', sin descartar otras explicaciones alternativas. ¿Qué crítica es más pertinente?", "options": ["La conclusión es correcta porque la reparación tisular es la única causa posible de un aumento de división celular en cualquier contexto", "Un aumento de división celular en una zona específica podría deberse a otras causas además de la reparación tisular normal (por ejemplo, un proceso inflamatorio o, en casos patológicos, una proliferación anómala); descartar explícitamente esas alternativas es necesario antes de atribuir el aumento observado exclusivamente a la reparación tisular", "La división celular nunca aumenta en respuesta a ningún tipo de daño tisular", "No es necesario considerar explicaciones alternativas para un aumento de división celular observado en un tejido", "El proceso de reparación tisular no tiene ninguna relación con la frecuencia de división celular"], "correct": 1, "exp": "Sin haber descartado explícitamente otras posibles causas de un aumento de proliferación celular (como procesos inflamatorios o patológicos), atribuir la causa exclusivamente a la reparación tisular normal es una conclusión que no considera adecuadamente explicaciones alternativas plausibles."}, {"skill": "EVAL", "q": "Una investigación afirmó que 'los cromosomas están presentes en la célula únicamente durante la mitosis, siendo inexistentes durante toda la interfase'. ¿Qué crítica es más pertinente?", "options": ["La afirmación es correcta porque el material genético desaparece por completo durante la interfase, reapareciendo solo durante la mitosis", "El material genético (ADN) está presente durante todo el ciclo celular, incluida la interfase; lo que cambia es su grado de compactación: como cromatina dispersa durante la interfase, y como cromosomas compactos y visibles durante la mitosis, por lo que afirmar que los cromosomas 'son inexistentes' durante la interfase confunde la forma de organización del material genético con su presencia real", "Los cromosomas solo están presentes durante la fase S de la interfase", "El material genético no tiene ninguna relación con la estructura de la cromatina", "La cromatina y el material genético son estructuras completamente distintas y no relacionadas"], "correct": 1, "exp": "Confundir el cambio en el grado de compactación del material genético (cromatina dispersa en interfase vs. cromosomas compactos en mitosis) con su ausencia real durante la interfase es un error conceptual: el ADN está presente durante todo el ciclo celular, solo cambia su forma de organización visible."}, {"skill": "COM", "q": "Un estudiante debe explicar por qué la interfase, a pesar de no involucrar división celular visible, se considera una parte activa y necesaria del ciclo celular. ¿Explicación más precisa?", "options": ["Durante la interfase (fases G1, S, G2), la célula crece, sintetiza proteínas y organelos necesarios, y replica completamente su ADN, preparándose activamente para la división que ocurrirá posteriormente durante la mitosis", "La interfase es un periodo de completa inactividad celular, sin ningún tipo de proceso metabólico relevante", "La interfase corresponde a la etapa final del ciclo celular, después de completada la mitosis", "El ADN no se duplica durante la interfase, sino exclusivamente durante la mitosis", "La interfase no tiene ninguna relación con la preparación de la célula para su división posterior"], "correct": 0, "exp": "La explicación adecuada destaca que, aunque la interfase no involucra división celular visible, es un periodo de intensa actividad metabólica y de preparación (crecimiento, síntesis, replicación del ADN) necesario para que la posterior división celular ocurra correctamente."}, {"skill": "COM", "q": "Al explicar la diferencia entre cromatina y cromosoma, ¿cuál es la explicación más precisa?", "options": ["La cromatina y el cromosoma corresponden al mismo material genético (ADN asociado a proteínas), pero en distintos grados de compactación: la cromatina es la forma dispersa característica de la interfase, mientras el cromosoma es la forma altamente compactada y visible característica de la mitosis", "La cromatina y el cromosoma son estructuras químicamente distintas, sin ninguna relación entre sí", "El cromosoma está presente únicamente durante la interfase, mientras la cromatina aparece solo durante la mitosis", "La cromatina no contiene ningún tipo de material genético", "El cromosoma y la cromatina son visibles exactamente de la misma manera al microscopio óptico en cualquier momento del ciclo celular"], "correct": 0, "exp": "La explicación correcta identifica que ambos términos se refieren al mismo material (ADN con proteínas asociadas), diferenciándose únicamente en su grado de compactación según el momento del ciclo celular en que se observan."}, {"skill": "COM", "q": "Un estudiante debe explicar por qué la separación de las cromátidas hermanas durante la anafase es un evento crítico para asegurar que ambas células hijas reciban la misma información genética. ¿Explicación más precisa?", "options": ["Cada cromátida hermana es una copia idéntica del mismo cromosoma, generada durante la replicación del ADN en la fase S; al separarse hacia polos opuestos durante la anafase, cada célula hija recibe exactamente una copia de cada cromosoma, asegurando que ambas tengan la misma dotación genética completa que la célula original", "Las cromátidas hermanas contienen información genética distinta entre sí, por lo que su separación genera células hijas con información diferente", "La anafase no tiene ninguna relación con la distribución del material genético entre las células hijas", "Solo una de las dos células hijas recibe material genético tras la separación de las cromátidas durante la anafase", "Las cromátidas hermanas permanecen unidas después de la anafase, sin ninguna separación real"], "correct": 0, "exp": "La explicación debe conectar el origen de las cromátidas hermanas (copias idénticas generadas por replicación) con la consecuencia funcional de su separación ordenada (cada célula hija recibe una dotación genética completa e idéntica a la original)."}, {"skill": "COM", "q": "Al explicar por qué las células cancerosas se dividen de forma descontrolada, ¿cuál es la explicación más precisa?", "options": ["Las células cancerosas presentan alteraciones en los mecanismos normales de control del ciclo celular (puntos de control), que en condiciones normales detendrían la división ante daño en el ADN u otras condiciones desfavorables; esta falla regulatoria permite que la célula continúe dividiéndose de forma descontrolada", "Las células cancerosas poseen exactamente el mismo control del ciclo celular que las células normales del mismo tejido", "La división celular descontrolada no tiene ninguna relación con los mecanismos de control del ciclo celular", "Las células cancerosas se dividen con la misma frecuencia que las células normales del tejido", "El cáncer es un proceso que no involucra ningún tipo de alteración en la división celular"], "correct": 0, "exp": "La explicación adecuada conecta la característica distintiva del cáncer (división descontrolada) con su causa mecanística subyacente (falla en los puntos de control normales del ciclo celular que regulan la proliferación)."}, {"skill": "COM", "q": "Un estudiante debe explicar por qué distintos tejidos del organismo presentan distinta frecuencia de división celular, usando el ejemplo de la piel frente a las neuronas maduras. ¿Explicación más precisa?", "options": ["La piel, expuesta a desgaste constante y necesitando renovación continua, mantiene una alta frecuencia de división celular; en cambio, las neuronas maduras, que cumplen funciones especializadas de larga duración y generalmente no requieren renovación frecuente, permanecen en un estado de división muy limitado o nulo", "Todos los tejidos del organismo requieren exactamente la misma frecuencia de renovación celular", "Las neuronas maduras se dividen con mayor frecuencia que las células de la piel", "La frecuencia de división celular de un tejido no tiene ninguna relación con su función específica", "La piel no requiere de ningún tipo de renovación celular a lo largo de la vida del organismo"], "correct": 0, "exp": "La explicación conecta las necesidades funcionales específicas de cada tejido (renovación constante en la piel vs. estabilidad funcional a largo plazo en neuronas) con su frecuencia característica de división celular, ilustrando cómo la biología celular se ajusta a la función tisular."}, {"skill": "COM", "q": "Al explicar por qué los puntos de control (checkpoints) del ciclo celular son importantes para prevenir la transmisión de daño genético a las células hijas, ¿cuál es la explicación más precisa?", "options": ["Los puntos de control monitorean el estado del ADN y otras condiciones celulares en momentos clave del ciclo; si detectan un problema (como daño en el ADN), detienen el avance del ciclo celular, dando tiempo a la célula para reparar el daño o, si no es posible, evitando que ese material genético dañado sea replicado y transmitido a las células hijas", "Los puntos de control aceleran la división celular, sin importar el estado del ADN", "Los puntos de control no tienen ninguna relación con la calidad del material genético transmitido a las células hijas", "La detención del ciclo celular ante un punto de control siempre resulta en la muerte inmediata de la célula", "El daño en el ADN nunca es detectado por ningún mecanismo celular durante el ciclo celular"], "correct": 0, "exp": "La explicación debe describir el mecanismo de vigilancia (monitoreo del estado celular) y su consecuencia funcional protectora (detención del ciclo para permitir reparación o evitar la transmisión de daño genético), un sistema central para mantener la integridad genética a través de las generaciones celulares."}, {"skill": "COM", "q": "Un estudiante debe explicar por qué la citocinesis ocurre como un proceso distinto y posterior a la mitosis, en lugar de ocurrir simultáneamente con la separación de los cromosomas. ¿Explicación más precisa?", "options": ["La mitosis debe completar primero la distribución ordenada del material genético (asegurando que cada polo celular reciba una dotación completa de cromosomas) antes de que la célula pueda dividirse físicamente en dos; si la citocinesis ocurriera antes de completarse la separación cromosómica, existiría el riesgo de que ambas células hijas no recibieran una dotación genética completa y correcta", "La citocinesis siempre ocurre antes de que comience la separación de los cromosomas durante la mitosis", "El orden entre citocinesis y mitosis no tiene ninguna relevancia biológica", "La citocinesis y la separación de los cromosomas ocurren de forma completamente simultánea en todas las células", "La distribución del material genético no tiene ninguna relación con el momento en que ocurre la citocinesis"], "correct": 0, "exp": "La explicación debe conectar la secuencia temporal observada (mitosis completa, luego citocinesis) con su lógica funcional: garantizar que la separación física de la célula ocurra solo después de asegurar que cada mitad recibirá una dotación genética completa y correcta."}, {"skill": "PLAN", "q": "Un investigador desea comparar el porcentaje de células en mitosis entre dos muestras de tejido tomadas en distintos momentos del día, para investigar si existe una variación temporal en la actividad de división celular. ¿Cuál es el diseño experimental más adecuado?", "options": ["Tomar muestras del mismo tejido en distintos horarios estandarizados a lo largo del día, procesarlas con el mismo método de tinción y conteo, y comparar el porcentaje de células en mitosis observado en cada horario", "Tomar una sola muestra en un único horario y asumir que representa la actividad de cualquier otro momento del día", "No es necesario tomar muestras en distintos horarios para esta pregunta", "Usar métodos de tinción distintos para cada horario de muestra evaluado", "Comparar tejidos de distinto tipo en cada horario, sin mantener el mismo tejido de referencia"], "correct": 0, "exp": "Tomar muestras del mismo tejido en distintos horarios, bajo un método estandarizado de procesamiento y conteo, permite establecer de forma experimental si existe una variación temporal real en la frecuencia de división celular a lo largo del día."}, {"skill": "PROC", "q": "Se comparó el porcentaje de células en cada etapa de la mitosis (profase, metafase, anafase, telofase) en una muestra de tejido: profase=mayor porcentaje; metafase=porcentaje intermedio; anafase=menor porcentaje; telofase=porcentaje intermedio-bajo. ¿Qué interpretación es la más adecuada respecto a la duración relativa de cada etapa?", "options": ["Las etapas con mayor porcentaje de células observadas (como la profase) probablemente tienen una duración relativa más prolongada dentro de la mitosis, mientras las etapas con menor porcentaje (como la anafase) son relativamente más breves", "El porcentaje de células observado en cada etapa no tiene ninguna relación con la duración relativa de esa etapa", "La anafase es la etapa de mayor duración dentro de la mitosis, según estos datos", "Todas las etapas de la mitosis tienen exactamente la misma duración, sin importar el porcentaje de células observado en cada una", "La profase es la etapa de menor duración dentro de la mitosis, según estos datos"], "correct": 0, "exp": "En una población celular asincrónica, el porcentaje de células observadas en una etapa específica es proporcional a la duración relativa de esa etapa dentro del ciclo mitótico completo, un principio metodológico usado para estimar la duración relativa de cada fase."}, {"skill": "PROC", "q": "Se midió el porcentaje de células en división en muestras del mismo tejido tomadas en la mañana (porcentaje mayor) y en la noche (porcentaje menor), bajo el mismo método de conteo. ¿Qué conclusión es más adecuada?", "options": ["La frecuencia de división celular en este tejido podría variar según el momento del día, siendo mayor durante la mañana que durante la noche, en las condiciones evaluadas", "La frecuencia de división celular es idéntica en cualquier momento del día, según estos datos", "La noche presenta mayor frecuencia de división celular que la mañana", "El momento del día no puede influir de ninguna manera en la actividad de división celular de un tejido", "Estos datos no permiten ninguna conclusión sobre la variación temporal de la división celular"], "correct": 0, "exp": "La diferencia observada entre ambos momentos del día, bajo el mismo método de medición, es consistente con la posibilidad de una variación temporal (ritmo) en la actividad de división celular de este tejido, aunque confirmarlo con certeza requeriría de mediciones adicionales en más puntos del día."}, {"skill": "EVAL", "q": "Un estudio concluyó que 'el porcentaje de células observadas en cada etapa de la mitosis no tiene ninguna relación con la duración de esa etapa', a pesar de que su propio análisis mostró que la etapa con mayor porcentaje observado coincidía con la etapa conocida por su mayor duración relativa (profase). ¿Qué crítica es más pertinente?", "options": ["La conclusión es correcta porque el porcentaje de células observadas en una etapa nunca tiene ninguna relación con su duración relativa", "El propio patrón de datos descrito (mayor porcentaje coincidiendo con la etapa de mayor duración conocida) contradice directamente la conclusión de que no existe ninguna relación entre ambas variables; existe una inconsistencia entre los datos presentados y la conclusión extraída de ellos", "La profase es la etapa de menor duración dentro de la mitosis, contrario a lo que sugiere el patrón de datos", "No es necesario que una conclusión sea consistente con los propios datos que la originan", "El porcentaje de células en una etapa determina de forma exacta y absoluta su duración en segundos"], "correct": 1, "exp": "Existe una contradicción lógica entre el patrón de datos observado (coincidencia entre mayor porcentaje y mayor duración relativa conocida) y la conclusión de que no existe ninguna relación entre ambas variables; esta inconsistencia interna invalida la conclusión presentada."}, {"skill": "EVAL", "q": "Una investigación afirmó que 'la variación observada en la frecuencia de división celular entre la mañana y la noche en un tejido demuestra de forma concluyente la existencia de un ritmo biológico interno, sin ninguna otra explicación posible', basándose en la comparación de solo dos momentos del día. ¿Qué crítica es más pertinente?", "options": ["La conclusión es correcta porque comparar dos momentos del día es suficiente para demostrar de forma concluyente un ritmo biológico interno, sin ninguna otra explicación posible", "Comparar únicamente dos momentos del día no permite descartar otras explicaciones posibles (como una diferencia puntual debida a factores externos no controlados) ni caracterizar completamente un patrón rítmico, que requeriría de mediciones en más puntos a lo largo del tiempo y posiblemente en más de un ciclo completo para sostenerse como demostración concluyente", "No es posible que ningún tejido presente variaciones en su actividad de división celular a lo largo del día", "Un ritmo biológico interno nunca puede ser investigado mediante mediciones de frecuencia de división celular", "No es necesario considerar explicaciones alternativas a un ritmo biológico interno para esta conclusión"], "correct": 1, "exp": "Concluir de forma 'concluyente, sin ninguna otra explicación posible' a partir de solo dos puntos de comparación (mañana, noche) excede lo que ese diseño experimental limitado puede respaldar; se requeriría un muestreo más amplio a lo largo del tiempo, y descartar explícitamente otras causas posibles, antes de una afirmación tan categórica."}, {"skill": "COM", "q": "Un estudiante debe explicar por qué el porcentaje de células observadas en una etapa específica de la mitosis, dentro de una población celular asincrónica, puede utilizarse para estimar la duración relativa de esa etapa. ¿Explicación más precisa?", "options": ["En una población de células que se dividen de forma asincrónica (cada una en un momento distinto de su propio ciclo), la proporción de células observadas en una etapa específica en un momento dado refleja, en promedio, qué fracción del tiempo total del ciclo mitótico corresponde a esa etapa; etapas más prolongadas tendrán, en promedio, más células observadas en ellas en cualquier momento dado", "El porcentaje de células en una etapa específica no tiene ninguna relación con la duración de esa etapa", "Todas las etapas de la mitosis deben mostrar exactamente el mismo porcentaje de células observadas, sin importar su duración real", "Esta relación solo es válida si todas las células de la población se dividen exactamente al mismo tiempo (de forma sincrónica)", "La duración de una etapa de la mitosis no puede ser estimada mediante ningún método de conteo poblacional"], "correct": 0, "exp": "La explicación conecta el principio estadístico de muestreo poblacional asincrónico (una 'fotografía' de una población en distintos momentos de su ciclo) con la inferencia sobre duración relativa de cada etapa, un método clásico utilizado en biología celular para estimar la cinética del ciclo celular sin necesidad de seguir a una sola célula en tiempo real."}];
+
+let currentQuiz = [];
+let currentIndex = 0;
+let answered = false;
+let userAnswers = [];
+let scoreBySkill = {};
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function buildQuiz(){
+  let selected = [];
+  SKILL_ORDER.forEach(skillKey=>{
+    const pool = QUESTION_BANK.filter(q=>q.skill===skillKey);
+    const picked = shuffle(pool).slice(0,PICK_PER_SKILL);
+    selected = selected.concat(picked);
+  });
+  selected = shuffle(selected);
+  return selected.map(orig=>{
+    const idxArr = [0,1,2,3,4];
+    const shuffledIdx = shuffle(idxArr);
+    const newOptions = shuffledIdx.map(i=>orig.options[i]);
+    const newCorrect = shuffledIdx.indexOf(orig.correct);
+    return { skill: orig.skill, question: orig.q, options: newOptions, correct: newCorrect, exp: orig.exp };
+  });
+}
+
+function startQuiz(){
+  currentQuiz = buildQuiz();
+  currentIndex = 0;
+  answered = false;
+  userAnswers = [];
+  scoreBySkill = {};
+  SKILL_ORDER.forEach(s=>scoreBySkill[s]={correct:0,total:0});
+  document.getElementById('start-screen').classList.add('hidden');
+  document.getElementById('dashboard-screen').classList.add('hidden');
+  document.getElementById('review-screen').classList.add('hidden');
+  document.getElementById('quiz-screen').classList.remove('hidden');
+  renderQuestion();
+}
+
+function renderQuestion(){
+  answered = false;
+  const q = currentQuiz[currentIndex];
+  const total = currentQuiz.length;
+  document.getElementById('progress-fill').style.width = ((currentIndex)/total*100)+'%';
+  document.getElementById('progress-label').textContent = (currentIndex+1)+' / '+total;
+  document.getElementById('skill-tag').textContent = SKILL_NAMES[q.skill];
+  document.getElementById('qnum').textContent = 'Pregunta '+(currentIndex+1);
+  document.getElementById('question-text').textContent = q.question;
+
+  const optsDiv = document.getElementById('options');
+  optsDiv.innerHTML = '';
+  q.options.forEach((opt, i)=>{
+    const btn = document.createElement('button');
+    btn.className = 'option';
+    btn.innerHTML = '<span class="letter">'+LETTERS[i]+')</span><span>'+opt+'</span>';
+    btn.onclick = ()=>selectOption(i);
+    optsDiv.appendChild(btn);
+  });
+
+  document.getElementById('feedback').classList.add('hidden');
+  document.getElementById('next-btn').classList.add('hidden');
+}
+
+function selectOption(i){
+  if(answered) return;
+  answered = true;
+  const q = currentQuiz[currentIndex];
+  const correct = q.correct;
+  const options = document.querySelectorAll('#options .option');
+  options.forEach((opt, idx)=>{
+    opt.classList.add('locked');
+    if(idx===correct) opt.classList.add('correct');
+    else if(idx===i) opt.classList.add('incorrect');
+    else opt.classList.add('dim');
+  });
+
+  const isCorrect = (i===correct);
+  scoreBySkill[q.skill].total++;
+  if(isCorrect) scoreBySkill[q.skill].correct++;
+
+  userAnswers.push({ skill:q.skill, question:q.question, options:q.options, correctIdx:correct, chosenIdx:i, exp:q.exp, isCorrect });
+
+  const fb = document.getElementById('feedback');
+  fb.classList.remove('hidden');
+  fb.classList.toggle('wrong', !isCorrect);
+  fb.innerHTML = '<span class="pista-label">'+(isCorrect ? '✓ Correcto — Pista' : '✕ Incorrecto — Pista')+'</span>'+
+    '<strong>Respuesta correcta: '+LETTERS[correct]+') '+q.options[correct]+'</strong><br><br>'+q.exp;
+
+  document.getElementById('next-btn').classList.remove('hidden');
+}
+
+function nextQuestion(){
+  currentIndex++;
+  if(currentIndex >= currentQuiz.length){
+    showDashboard();
+  } else {
+    renderQuestion();
+  }
+}
+
+function showDashboard(){
+  document.getElementById('quiz-screen').classList.add('hidden');
+  document.getElementById('dashboard-screen').classList.remove('hidden');
+
+  const totalCorrect = userAnswers.filter(a=>a.isCorrect).length;
+  const totalQ = userAnswers.length;
+  document.getElementById('score-total').innerHTML = totalCorrect+'<span>/'+totalQ+'</span>';
+  const pct = Math.round((totalCorrect/totalQ)*100);
+  document.getElementById('score-caption').textContent = pct+'% de logro general';
+
+  const barsDiv = document.getElementById('skill-bars');
+  barsDiv.innerHTML = '';
+  const weakSkills = [];
+  const strongSkills = [];
+
+  SKILL_ORDER.forEach(skillKey=>{
+    const s = scoreBySkill[skillKey];
+    const skillPct = s.total>0 ? Math.round((s.correct/s.total)*100) : 0;
+    let color = 'var(--accent-coral)';
+    if(skillPct>=75) color='var(--accent-sage)';
+    else if(skillPct>=50) color='var(--accent-amber)';
+
+    const row = document.createElement('div');
+    row.className='skill-bar-row';
+    row.innerHTML = '<div class="skill-bar-head"><span class="name">'+SKILL_NAMES[skillKey]+'</span><span class="frac">'+s.correct+'/'+s.total+'</span></div>'+
+      '<div class="skill-bar-track"><div class="skill-bar-fill" style="width:'+skillPct+'%;background:'+color+';"></div></div>';
+    barsDiv.appendChild(row);
+
+    if(skillPct<75) weakSkills.push({name:SKILL_NAMES[skillKey], pct:skillPct});
+    else strongSkills.push(SKILL_NAMES[skillKey]);
+  });
+
+  const improveBox = document.getElementById('improve-box');
+  const improveList = document.getElementById('improve-list');
+  improveList.innerHTML='';
+  if(weakSkills.length>0){
+    improveBox.classList.remove('hidden');
+    weakSkills.sort((a,b)=>a.pct-b.pct).forEach(w=>{
+      const li = document.createElement('li');
+      li.innerHTML = '<strong>'+w.name+'</strong> ('+w.pct+'%) — refuerza con más ejercicios de este tipo de habilidad, revisando las pistas de las preguntas falladas.';
+      improveList.appendChild(li);
+    });
+  } else {
+    improveBox.classList.add('hidden');
+  }
+
+  const strongBox = document.getElementById('strong-box');
+  const strongText = document.getElementById('strong-text');
+  if(strongSkills.length>0){
+    strongBox.classList.remove('hidden');
+    strongText.textContent = strongSkills.join(', ') + '. Buen dominio, mantén la práctica con nuevos intentos.';
+  } else {
+    strongBox.classList.add('hidden');
+  }
+}
+
+function restartQuiz(){ startQuiz(); }
+
+function reviewAnswers(){
+  document.getElementById('dashboard-screen').classList.add('hidden');
+  const rev = document.getElementById('review-screen');
+  rev.classList.remove('hidden');
+  let html = '<p class="eyebrow">Revisión de respuestas</p>';
+  userAnswers.forEach((a, i)=>{
+    html += '<div style="margin-bottom:22px;padding-bottom:18px;border-bottom:1px solid var(--line);">'+
+      '<span class="skill-tag">'+SKILL_NAMES[a.skill]+'</span>'+
+      '<p class="question-text" style="font-size:16px;">'+(i+1)+'. '+a.question+'</p>'+
+      '<p style="font-size:14px;color:'+(a.isCorrect?'var(--accent-sage)':'var(--accent-coral)')+';margin:0 0 6px;">'+
+        (a.isCorrect ? '✓ Respondiste correctamente' : '✕ Tu respuesta: '+LETTERS[a.chosenIdx]+') '+a.options[a.chosenIdx])+
+      '</p>'+
+      '<p style="font-size:14px;color:var(--text-muted);margin:0 0 8px;">Correcta: '+LETTERS[a.correctIdx]+') '+a.options[a.correctIdx]+'</p>'+
+      '<div class="feedback" style="margin-top:6px;"><span class="pista-label">Pista</span>'+a.exp+'</div>'+
+    '</div>';
+  });
+  html += '<div class="actions"><button class="btn" onclick="restartQuiz(); document.getElementById(\'review-screen\').classList.add(\'hidden\');">Repetir con nuevas preguntas</button></div>';
+  rev.innerHTML = html;
+}
+</script>
+</body>
+</html>

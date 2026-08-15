@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PAES Biología · Clase 2 · Proteínas y Ácidos Nucleicos (Nivel Experto)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Source+Sans+3:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-deep:#1c0f0f;
+    --bg-panel:#2a1414;
+    --bg-panel-2:#341a1a;
+    --accent-amber:#d9a441;
+    --accent-sage:#6a9c7a;
+    --accent-coral:#e2492f;
+    --text-light:#f3ede1;
+    --text-muted:#c9a8a0;
+    --line:#4a2626;
+    --radius:14px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:radial-gradient(circle at 15% -10%, #4a2222 0%, var(--bg-deep) 55%) fixed;
+    color:var(--text-light);
+    font-family:'Source Sans 3', system-ui, sans-serif;
+    min-height:100vh;
+    padding:32px 16px 64px;
+  }
+  .wrap{max-width:820px;margin:0 auto;}
+  .eyebrow{font-family:'JetBrains Mono', monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent-amber);margin:0 0 8px;}
+  h1{font-family:'Fraunces', serif;font-weight:600;font-size:clamp(26px,4vw,38px);line-height:1.1;margin:0 0 6px;color:var(--text-light);}
+  .sub{color:var(--text-muted);font-size:15px;margin:0 0 28px;max-width:60ch;}
+  .card{background:linear-gradient(180deg, var(--bg-panel) 0%, var(--bg-panel-2) 100%);border:1px solid var(--line);border-radius:var(--radius);padding:28px;box-shadow:0 20px 40px -20px rgba(0,0,0,.5);}
+  #start-screen ul{color:var(--text-muted);font-size:14.5px;line-height:1.7;padding-left:20px;margin:18px 0 26px;}
+  #start-screen li{margin-bottom:4px;}
+  .btn{font-family:'Source Sans 3', sans-serif;font-weight:700;font-size:15px;border:none;border-radius:999px;padding:14px 30px;cursor:pointer;background:var(--accent-amber);color:#26160a;transition:transform .15s ease, box-shadow .15s ease;box-shadow:0 8px 20px -8px rgba(0,0,0,.35);}
+  .btn:hover{transform:translateY(-1px);}
+  .btn:active{transform:translateY(0);}
+  .btn.ghost{background:transparent;color:var(--text-muted);border:1.5px solid var(--line);box-shadow:none;}
+  .progress-row{display:flex;align-items:center;gap:14px;margin-bottom:18px;}
+  .progress-track{flex:1;height:6px;border-radius:99px;background:var(--line);overflow:hidden;}
+  .progress-fill{height:100%;background:linear-gradient(90deg,var(--accent-sage),var(--accent-amber));border-radius:99px;transition:width .3s ease;}
+  .progress-label{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--text-muted);white-space:nowrap;}
+  .skill-tag{display:inline-block;font-family:'JetBrains Mono', monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--bg-deep);background:var(--accent-sage);padding:5px 11px;border-radius:999px;margin-bottom:14px;}
+  .qnum{color:var(--text-muted);font-size:13px;font-family:'JetBrains Mono',monospace;margin-bottom:6px;}
+  .question-text{font-family:'Fraunces', serif;font-weight:500;font-size:19px;line-height:1.45;margin:0 0 22px;}
+  .options{display:flex;flex-direction:column;gap:10px;}
+  .option{display:flex;align-items:flex-start;gap:12px;text-align:left;background:rgba(255,255,255,.03);border:1.5px solid var(--line);border-radius:10px;padding:13px 15px;cursor:pointer;color:var(--text-light);font-size:14.5px;line-height:1.4;transition:border-color .15s, background .15s;}
+  .option:hover:not(.locked){border-color:var(--accent-amber);}
+  .option .letter{font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--accent-amber);flex-shrink:0;}
+  .option.correct{border-color:var(--accent-sage);background:rgba(111,168,138,.14);}
+  .option.incorrect{border-color:var(--accent-coral);background:rgba(228,87,46,.14);}
+  .option.locked{cursor:default;}
+  .option.dim{opacity:.45;}
+  .feedback{margin-top:18px;padding:16px 18px;border-radius:10px;background:rgba(255,255,255,.04);border-left:4px solid var(--accent-sage);font-size:14px;line-height:1.6;color:var(--text-muted);}
+  .feedback.wrong{border-left-color:var(--accent-coral);}
+  .feedback strong{color:var(--text-light);}
+  .feedback .pista-label{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent-amber);display:block;margin-bottom:6px;}
+  .nav-row{display:flex;justify-content:flex-end;margin-top:22px;}
+  .score-hero{text-align:center;padding:10px 0 26px;}
+  .score-big{font-family:'Fraunces',serif;font-weight:700;font-size:56px;color:var(--accent-amber);line-height:1;}
+  .score-big span{font-size:24px;color:var(--text-muted);font-weight:500;}
+  .score-caption{color:var(--text-muted);font-size:14px;margin-top:6px;}
+  .skill-bars{display:flex;flex-direction:column;gap:16px;margin:22px 0 8px;}
+  .skill-bar-head{display:flex;justify-content:space-between;font-size:13.5px;margin-bottom:6px;}
+  .skill-bar-head .name{font-weight:600;}
+  .skill-bar-head .frac{font-family:'JetBrains Mono',monospace;color:var(--text-muted);}
+  .skill-bar-track{height:10px;border-radius:99px;background:var(--line);overflow:hidden;}
+  .skill-bar-fill{height:100%;border-radius:99px;}
+  .improve-box{margin-top:26px;background:rgba(228,87,46,.08);border:1px solid rgba(228,87,46,.35);border-radius:10px;padding:18px 20px;}
+  .improve-box h3{font-family:'Fraunces',serif;font-size:16px;margin:0 0 10px;color:var(--accent-coral);}
+  .improve-box ul{margin:0;padding-left:20px;color:var(--text-light);font-size:14px;line-height:1.75;}
+  .strong-box{margin-top:14px;background:rgba(111,168,138,.08);border:1px solid rgba(111,168,138,.35);border-radius:10px;padding:18px 20px;}
+  .strong-box h3{font-family:'Fraunces',serif;font-size:16px;margin:0 0 10px;color:var(--accent-sage);}
+  .strong-box p{margin:0;color:var(--text-light);font-size:14px;line-height:1.6;}
+  .actions{display:flex;gap:12px;margin-top:28px;flex-wrap:wrap;}
+  .hidden{display:none !important;}
+  footer{text-align:center;color:var(--text-muted);font-size:12px;margin-top:26px;opacity:.6;}
+</style>
+</head>
+<body> <div style="float: left; margin-right: 25px; margin-bottom: 25px;"><img src="Logo_AMC.png" alt="Logo" style="max-width: 150px;"></div>
+<div class="wrap">
+  <p class="eyebrow">PAES · Ciencias — Módulo Biología Común · Nivel Experto</p>
+  <h1>Proteínas y Ácidos Nucleicos</h1>
+  <p class="sub">Eje 1: Organización, estructura y actividad celular — Sub-eje: Biomoléculas organizadas y teoría celular — Clase 2: Proteínas y Ácidos Nucleicos</p>
+
+  <div class="card" id="start-screen">
+    <p class="eyebrow" style="margin-bottom:14px;">Antes de comenzar</p>
+    <p style="color:var(--text-muted);font-size:14.5px;line-height:1.6;">Este quiz evalúa nivel <strong style='color:var(--text-light);'>experto</strong>, con 20 preguntas (4 por cada habilidad PAES), extraídas al azar de un banco amplio. Cada intento genera una versión distinta.</p>
+    <ul>
+      <li>Observar y plantear preguntas</li>
+      <li>Planificar y conducir una investigación</li>
+      <li>Procesar y analizar la evidencia</li>
+      <li>Evaluar</li>
+      <li>Comunicar</li>
+    </ul>
+    <button class="btn" onclick="startQuiz()">Comenzar quiz</button>
+  </div>
+
+  <div class="card hidden" id="quiz-screen">
+    <div class="progress-row">
+      <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+      <div class="progress-label" id="progress-label">1 / 20</div>
+    </div>
+    <span class="skill-tag" id="skill-tag"></span>
+    <p class="qnum" id="qnum"></p>
+    <p class="question-text" id="question-text"></p>
+    <div class="options" id="options"></div>
+    <div class="feedback hidden" id="feedback"></div>
+    <div class="nav-row">
+      <button class="btn hidden" id="next-btn" onclick="nextQuestion()">Siguiente →</button>
+    </div>
+  </div>
+
+  <div class="card hidden" id="dashboard-screen">
+    <p class="eyebrow">Resultados</p>
+    <div class="score-hero">
+      <div class="score-big" id="score-total">0<span>/20</span></div>
+      <p class="score-caption" id="score-caption">Puntaje global</p>
+    </div>
+    <div class="skill-bars" id="skill-bars"></div>
+    <div class="improve-box hidden" id="improve-box">
+      <h3>Puntos a mejorar</h3>
+      <ul id="improve-list"></ul>
+    </div>
+    <div class="strong-box hidden" id="strong-box">
+      <h3>Habilidades consolidadas</h3>
+      <p id="strong-text"></p>
+    </div>
+    <div class="actions">
+      <button class="btn" onclick="restartQuiz()">Repetir con nuevas preguntas</button>
+      <button class="btn ghost" onclick="reviewAnswers()">Revisar mis respuestas</button>
+    </div>
+  </div>
+
+  <div class="card hidden" id="review-screen"></div>
+
+  <footer>Banco de 40 preguntas · nivel experto · Clase 2 de 30 · basado en el temario DEMRE PAES Ciencias — Biología Común</footer>
+</div>
+
+<script>
+const SKILL_NAMES = {"OBS": "Observar y plantear preguntas", "PLAN": "Planificar y conducir una investigación", "PROC": "Procesar y analizar la evidencia", "EVAL": "Evaluar", "COM": "Comunicar"};
+const SKILL_ORDER = ["OBS", "PLAN", "PROC", "EVAL", "COM"];
+const LETTERS = ["A","B","C","D","E"];
+const PICK_PER_SKILL = 4;
+
+const QUESTION_BANK = [{"skill": "OBS", "q": "Una mutación puntual alejada del sitio activo (alostérica) reduce la Vmax de una enzima sin cambiar significativamente su Km. ¿Pregunta de investigación más precisa?", "options": ["¿La mutación destruye por completo la estructura primaria de la proteína?", "¿El residuo mutado forma parte directa del sitio activo, a pesar de estar alejado espacialmente?", "¿La mutación altera una vía de comunicación conformacional que afecta el paso catalítico posterior a la unión del sustrato, sin modificar la afinidad enzima-sustrato?", "¿La Km siempre debe cambiar si ocurre cualquier mutación en la proteína?", "¿La Vmax depende exclusivamente de la concentración de sustrato utilizada?"], "correct": 2, "exp": "Que la Km no cambie pero la Vmax sí sugiere que la mutación no afecta la unión al sustrato sino un paso catalítico posterior, transmitido por comunicación conformacional a distancia (efecto alostérico)."}, {"skill": "OBS", "q": "Dos proteínas ortólogas difieren en 40% de su secuencia de aminoácidos pero mantienen una estructura terciaria prácticamente idéntica. ¿Pregunta más precisa?", "options": ["¿La secuencia de aminoácidos no tiene ninguna relación con la estructura tridimensional final?", "¿Ambas proteínas deben tener una función completamente distinta si difieren en secuencia?", "¿El 40% de diferencia indica necesariamente un error de secuenciación?", "¿Existen posiciones críticas conservadas que restringen las variaciones de secuencia tolerables sin comprometer el plegamiento y la función?", "¿La estructura terciaria depende únicamente del número total de aminoácidos?"], "correct": 3, "exp": "Muchas posiciones pueden variar libremente sin afectar la estructura, mientras que un pequeño conjunto de residuos críticos (clave para el plegamiento) suele estar altamente conservado."}, {"skill": "OBS", "q": "Al aumentar la fuerza iónica de una solución con una proteína cargada, su punto isoeléctrico medido no varía, pero su solubilidad cambia de forma no monotónica (aumenta y luego disminuye). ¿Pregunta más precisa?", "options": ["¿El punto isoeléctrico de una proteína cambia siempre que se modifica la fuerza iónica?", "¿La solubilidad de una proteína depende únicamente de su punto isoeléctrico?", "¿La fuerza iónica no tiene ninguna relación con las interacciones entre moléculas de proteína?", "¿El comportamiento no monotónico indica un error experimental sin base bioquímica?", "¿La fuerza iónica del medio modula las interacciones electrostáticas proteína-proteína (salting-in/salting-out) de forma independiente al punto isoeléctrico intrínseco?"], "correct": 4, "exp": "El comportamiento de solubilidad en función de la fuerza iónica (aumento y luego disminución) es un fenómeno conocido (salting-in/salting-out) distinto e independiente del punto isoeléctrico."}, {"skill": "OBS", "q": "Un estudio de RMN muestra que una proteína intrínsecamente desordenada adopta una conformación definida solo al unirse a su pareja molecular específica. ¿Pregunta más precisa?", "options": ["¿Las proteínas intrínsecamente desordenadas carecen por completo de función biológica?", "¿Toda proteína debe tener una estructura terciaria fija antes de poder interactuar con otra molécula?", "¿La RMN no puede detectar proteínas sin estructura definida?", "¿El plegamiento inducido por unión constituye un mecanismo funcional alternativo al modelo clásico de 'secuencia determina estructura antes de la función'?", "¿La unión molecular nunca influye en la conformación de una proteína?"], "correct": 3, "exp": "Este fenómeno (folding coupled to binding) desafía el modelo clásico donde la estructura precede a la función, mostrando que en algunos casos la estructura se estabiliza solo al interactuar con la pareja funcional."}, {"skill": "OBS", "q": "La vida media de distintos ARNm correlaciona inversamente con la longitud de su cola poli-A y con la presencia de elementos ricos en AU (ARE) en su región 3' no traducida. ¿Pregunta más precisa?", "options": ["¿La longitud de la cola poli-A no tiene ninguna función biológica conocida?", "¿Todos los ARNm de una célula se degradan exactamente a la misma velocidad?", "¿La región 3' no traducida corresponde a una parte del ADN y no del ARN?", "¿La degradación del ARNm ocurre siempre de forma aleatoria, sin ningún elemento regulador?", "¿Los elementos reguladores en la región 3' no traducida (poli-A, ARE) determinan la tasa de degradación del ARNm como mecanismo postranscripcional de regulación génica?"], "correct": 4, "exp": "La correlación observada entre elementos estructurales del ARNm y su vida media apunta a un mecanismo de regulación postranscripcional que controla cuánta proteína se produce en el tiempo."}, {"skill": "OBS", "q": "Una enzima con dos dominios catalíticos independientes muestra cooperatividad positiva (curva sigmoidea) solo cuando ambos dominios están unidos covalentemente en la misma cadena, pero no como fragmentos separados. ¿Pregunta más precisa?", "options": ["¿La cooperatividad positiva ocurre siempre, independientemente de si los dominios están conectados o no?", "¿Los dominios catalíticos no tienen ninguna influencia entre sí bajo ninguna condición?", "¿Una curva sigmoidea siempre indica una relación lineal simple entre velocidad y sustrato?", "¿La expresión de fragmentos separados aumenta necesariamente la actividad enzimática total?", "¿La conexión física covalente entre dominios es necesaria para transmitir cambios conformacionales entre ellos, generando el comportamiento cooperativo observado?"], "correct": 4, "exp": "La pérdida de cooperatividad al separar los dominios sugiere que la comunicación conformacional (base de la cooperatividad) requiere continuidad física covalente entre ellos."}, {"skill": "OBS", "q": "Una chaperona se sobreexpresa notablemente bajo estrés térmico, coincidiendo con menor proporción de proteínas agregadas irreversiblemente respecto de células sin dicha sobreexpresión. ¿Pregunta más precisa?", "options": ["¿Las chaperonas moleculares provocan directamente la agregación de proteínas bajo estrés térmico?", "¿El estrés térmico nunca afecta la conformación de las proteínas celulares?", "¿El aumento de chaperonas reduce la formación de agregados proteicos irreversibles al asistir el replegamiento de proteínas parcialmente desnaturalizadas?", "¿La sobreexpresión de chaperonas ocurre de forma completamente independiente del estrés térmico?", "¿Las proteínas agregadas irreversiblemente recuperan siempre su función sin ninguna intervención celular?"], "correct": 2, "exp": "La correlación (más chaperona, menos agregación) sugiere un rol funcional protector de la chaperona frente al daño estructural inducido por el estrés térmico."}, {"skill": "OBS", "q": "Codones sinónimos no se usan con la misma frecuencia en el genoma, y esta frecuencia diferencial se correlaciona con la velocidad de traducción y el plegamiento correcto del polipéptido naciente. ¿Pregunta más precisa?", "options": ["¿Los codones sinónimos siempre codifican para aminoácidos distintos entre sí?", "¿La velocidad de traducción no tiene ninguna relación con el plegamiento de las proteínas?", "¿El uso de codones es idéntico en todos los organismos, sin ninguna variación?", "¿El plegamiento de una proteína ocurre siempre después de completada toda la traducción?", "¿El sesgo en el uso de codones sinónimos influye en la cinética de traducción de forma que afecta el plegamiento cotraduccional correcto de la proteína naciente?"], "correct": 4, "exp": "La correlación entre uso de codones, velocidad de traducción y plegamiento correcto sugiere que la 'pausa' generada por codones raros puede ser funcionalmente relevante para el plegamiento cotraduccional."}, {"skill": "PLAN", "q": "Para determinar si una mutación alostérica afecta la comunicación conformacional entre dominios sin alterar el sitio activo, ¿cuál es el diseño más riguroso?", "options": ["Medir solo la Vmax sin evaluar la Km ni ningún parámetro estructural adicional", "Comparar la enzima mutada únicamente con enzimas de otras especies", "Evaluar la actividad de la enzima a una sola concentración de sustrato", "No es necesario ningún método estructural complementario", "Comparar los parámetros cinéticos completos (Km y Vmax) de la enzima silvestre y la mutada, y complementar con un método estructural (dicroísmo circular o RMN) que evalúe cambios conformacionales"], "correct": 4, "exp": "Combinar datos cinéticos completos con evidencia estructural directa permite distinguir si el efecto observado se debe a un cambio conformacional a distancia, en vez de solo inferirlo indirectamente."}, {"skill": "PLAN", "q": "Un investigador desea establecer si la conexión covalente entre dos dominios catalíticos es necesaria para la cooperatividad observada. ¿Diseño más riguroso?", "options": ["Comparar solo la enzima completa sin ningún grupo de referencia con los dominios separados", "Usar concentraciones distintas de enzima entre ambas condiciones experimentales", "Medir únicamente el tamaño molecular de cada condición, sin evaluar su cinética", "No es necesario mantener constante la concentración total de proteína", "Comparar el comportamiento cinético de la enzima completa frente a una mezcla equimolar de los dominios expresados por separado, bajo idénticas condiciones de concentración total"], "correct": 4, "exp": "Solo manteniendo constante la concentración total de proteína entre ambas condiciones se puede atribuir la diferencia de cooperatividad específicamente a la conexión covalente entre dominios."}, {"skill": "PLAN", "q": "Para investigar el efecto de la longitud de la cola poli-A sobre la vida media de un ARNm, controlando el efecto de su secuencia codificante, ¿cuál es el diseño más adecuado?", "options": ["Comparar ARNm con secuencias codificantes completamente distintas además de distinta longitud de poli-A", "Medir la vida media de un solo ARNm sin variar la longitud de su cola poli-A", "Expresar las distintas construcciones en tipos celulares diferentes entre sí", "No es necesario medir la cinética de degradación a lo largo del tiempo", "Generar varias construcciones del mismo ARNm (idéntica secuencia codificante) con distintas longitudes de cola poli-A, expresarlas en el mismo tipo celular, y medir la cinética de degradación de cada una"], "correct": 4, "exp": "Mantener idéntica la secuencia codificante y el tipo celular, variando solo la longitud de poli-A, aísla el efecto específico de esa variable sobre la estabilidad del transcrito."}, {"skill": "PLAN", "q": "Se desea determinar si el sesgo de codones sinónimos afecta el plegamiento cotraduccional de una proteína. ¿Diseño más riguroso?", "options": ["Comparar proteínas con distinta secuencia de aminoácidos en lugar de la misma secuencia con codones distintos", "Medir solo la cantidad total de proteína producida, sin evaluar su plegamiento funcional", "Expresar ambas construcciones en organismos de especies distintas", "No es necesario controlar que ambas construcciones codifiquen la misma secuencia de aminoácidos", "Sintetizar dos construcciones que codifiquen exactamente la misma secuencia de aminoácidos, pero con codones de uso frecuente en una y raros en la otra, y comparar el porcentaje de proteína correctamente plegada"], "correct": 4, "exp": "Mantener idéntica la secuencia de aminoácidos y variar solo el uso de codones aísla el efecto específico de la velocidad de traducción sobre el plegamiento correcto."}, {"skill": "PLAN", "q": "Para investigar si una chaperona específica es necesaria para el plegamiento correcto bajo estrés térmico, ¿cuál es el diseño más adecuado?", "options": ["Comparar únicamente células con niveles normales de chaperona, sin ninguna condición de inhibición", "Aplicar distintos niveles de estrés térmico a cada grupo sin estandarizarlos", "Medir solo la cantidad total de chaperona presente, sin evaluar el plegamiento de la proteína de interés", "No es necesario un método de inhibición específica de la chaperona", "Comparar el porcentaje de proteína correctamente plegada bajo estrés térmico en células con expresión normal de la chaperona frente a células donde su expresión ha sido inhibida específicamente"], "correct": 4, "exp": "Comparar directamente el efecto funcional (plegamiento correcto) entre presencia y ausencia específica de la chaperona, bajo el mismo estrés, permite establecer su necesidad causal."}, {"skill": "PLAN", "q": "Para determinar experimentalmente el punto isoeléctrico real de una proteína, controlando el efecto de la fuerza iónica sobre su solubilidad aparente, ¿cuál es el diseño más riguroso?", "options": ["Medir la solubilidad a un solo valor de pH, variando libremente la fuerza iónica", "Variar simultáneamente el pH y la fuerza iónica sin poder aislar el efecto de cada variable", "No es necesario controlar la fuerza iónica al determinar el punto isoeléctrico", "Usar una fuerza iónica distinta en cada punto del gradiente de pH evaluado", "Medir la movilidad electroforética a lo largo de un gradiente de pH, manteniendo constante y baja la fuerza iónica en todas las condiciones"], "correct": 4, "exp": "Mantener baja y constante la fuerza iónica evita que efectos de salting-in/out enmascaren el verdadero punto isoeléctrico determinado por la carga neta de la proteína."}, {"skill": "PLAN", "q": "Para investigar si el plegamiento de una proteína intrínsecamente desordenada depende específicamente de la unión a su pareja molecular (y no de un cambio de pH concurrente), ¿cuál es el diseño más adecuado?", "options": ["Medir la estructura solo en presencia de su pareja molecular, sin ninguna condición de comparación", "Cambiar el pH y agregar la pareja molecular simultáneamente, sin distinguir el efecto de cada variable", "No es necesario ningún grupo de control adicional", "Evaluar la estructura únicamente mediante inspección visual de su solución", "Medir la estructura en tres condiciones: sola sin pareja; con pareja en las mismas condiciones de pH/temperatura; y sola pero sometida a los cambios de pH que induciría la pareja, para descartar ese factor alternativo"], "correct": 4, "exp": "El tercer grupo (proteína sola con cambio de pH equivalente) permite descartar que el pH, y no la unión molecular en sí, sea la causa real del plegamiento observado."}, {"skill": "PLAN", "q": "Se desea determinar si la afinidad de dos enzimas ortólogas por el mismo sustrato varía a pesar de compartir estructura terciaria similar. ¿Diseño más adecuado?", "options": ["Comparar las enzimas usando sustratos distintos para cada una", "Medir la actividad de cada enzima a una sola concentración de sustrato", "Usar condiciones experimentales distintas (pH o temperatura) para cada enzima", "No es necesario purificar las enzimas antes de esta comparación", "Purificar ambas enzimas y medir sus curvas de saturación bajo condiciones idénticas de pH, temperatura y concentración de enzima, calculando y comparando la Km de cada una"], "correct": 4, "exp": "Solo bajo condiciones experimentales idénticas y con el mismo sustrato se puede atribuir cualquier diferencia de Km a propiedades intrínsecas de cada enzima ortóloga."}, {"skill": "PROC", "q": "En un ensayo cinético, la enzima silvestre mostró Km=3mM,Vmax=50µmol/min; una variante con mutación alostérica mostró Km=3,1mM,Vmax=18µmol/min. ¿Interpretación más adecuada?", "options": ["La mutación afecta principalmente la afinidad de la enzima por el sustrato", "Ambos parámetros indican que la enzima mutada es idéntica a la silvestre en su comportamiento", "La Km observada indica que la mutación ocurrió directamente en el sitio activo", "La disminución de Vmax siempre implica un aumento proporcional de la Km", "La mutación redujo sustancialmente la Vmax sin alterar significativamente la Km, sugiriendo que afecta un paso posterior a la unión del sustrato más que la afinidad"], "correct": 4, "exp": "Km prácticamente igual indica que la afinidad por el sustrato no cambió; la caída de Vmax apunta a un efecto sobre el paso catalítico o de recambio, no sobre la unión inicial."}, {"skill": "PROC", "q": "Se comparó una enzima multidominio como cadena completa (curva sigmoidea, Hill=2,8) frente a sus dominios separados (curva hiperbólica, Hill≈1). ¿Conclusión más adecuada?", "options": ["La cooperatividad positiva se mantiene igual, independientemente de si los dominios están conectados", "Un coeficiente de Hill cercano a 1 indica alta cooperatividad positiva", "La separación de los dominios aumenta la cooperatividad observada", "El coeficiente de Hill no tiene relación con el comportamiento cooperativo", "La conexión covalente entre dominios es necesaria para la cooperatividad positiva observada, ya que al separarlos se pierde ese comportamiento y la cinética vuelve a un patrón no cooperativo"], "correct": 4, "exp": "El cambio de Hill=2,8 (alta cooperatividad) a Hill≈1 (sin cooperatividad) al separar los dominios evidencia que la conexión física es necesaria para el fenómeno observado."}, {"skill": "PROC", "q": "Se midió la vida media de un ARNm con distintas colas poli-A: 20A=25min; 60A=90min; 150A=210min; 250A=215min. ¿Interpretación más rigurosa?", "options": ["La vida media disminuye de forma constante al aumentar la longitud de la cola poli-A", "La longitud de la cola poli-A no tiene ninguna relación con la vida media del ARNm", "El efecto de la cola poli-A es exactamente proporcional en todo el rango medido", "Una cola poli-A de 20 adeninas produce la mayor estabilidad entre las evaluadas", "La vida media aumenta con la longitud de la cola poli-A hasta cierto punto (entre 150 y 250), donde el efecto adicional se vuelve marginal, sugiriendo un mecanismo de protección con un posible límite de saturación"], "correct": 4, "exp": "El patrón muestra rendimientos decrecientes: el efecto protector de alargar la cola poli-A se aproxima a una meseta más allá de cierto punto, sugiriendo saturación del mecanismo protector."}, {"skill": "PROC", "q": "Se comparó el % de proteína funcional usando codones frecuentes (92%) frente a codones raros sinónimos para la misma secuencia (46%). ¿Conclusión más adecuada?", "options": ["El uso de codones sinónimos no tiene ningún efecto sobre el plegamiento de la proteína resultante", "Los codones raros siempre producen una proteína con una secuencia de aminoácidos distinta", "La diferencia observada se debe únicamente al azar experimental", "El porcentaje de proteína funcional depende solo de la temperatura de expresión, no de los codones", "El uso de codones sinónimos, aunque no cambia la secuencia de aminoácidos, influye significativamente en el porcentaje de proteína correctamente plegada, posiblemente al modular la velocidad de traducción"], "correct": 4, "exp": "A pesar de codificar la misma proteína, la diferencia de resultado funcional entre ambas construcciones apunta a un efecto de la velocidad de traducción sobre el plegamiento cotraduccional."}, {"skill": "PROC", "q": "Se midió el % de proteína agregada irreversiblemente tras estrés térmico: con chaperona normal=12%; con chaperona silenciada=58%. ¿Conclusión más adecuada?", "options": ["La chaperona no tiene ningún efecto sobre la agregación proteica bajo estrés térmico", "El silenciamiento de la chaperona reduce la formación de agregados proteicos", "Ambos grupos experimentales muestran resultados equivalentes en cuanto a agregación", "La agregación proteica ocurre de forma independiente del estrés térmico aplicado", "La chaperona cumple un rol protector significativo frente al estrés térmico, ya que su ausencia se asocia a un porcentaje mucho mayor de proteínas agregadas irreversiblemente"], "correct": 4, "exp": "La marcada diferencia entre condiciones (12% vs 58%) respalda un efecto protector causal de la chaperona frente a la agregación inducida por estrés térmico."}, {"skill": "PROC", "q": "En determinación de punto isoeléctrico, a fuerza iónica baja el pI aparente fue 6,8; a fuerza iónica alta, 6,3, aunque la secuencia (y pI teórico) no cambió. ¿Interpretación más rigurosa?", "options": ["El pI real de la proteína cambia dependiendo de la fuerza iónica del medio utilizado", "La fuerza iónica no tiene ninguna influencia sobre la determinación experimental del pI", "Ambas mediciones son igualmente válidas como reflejo del pI teórico real", "La diferencia observada indica necesariamente un error de secuenciación de la proteína", "La fuerza iónica puede introducir un artefacto en la determinación experimental del pI aparente, por lo que se recomienda estandarizar esta variable para acercarse al pI teórico real"], "correct": 4, "exp": "Como la secuencia no cambió, la diferencia de pI medido entre condiciones debe atribuirse a un efecto metodológico (fuerza iónica) y no a un cambio real de la propiedad intrínseca."}, {"skill": "PROC", "q": "Un estudio de RMN mostró señales dispersas (sin estructura fija) en ausencia de la pareja molecular, y señales bien definidas al agregarla, a pH y temperatura constantes. ¿Conclusión más adecuada?", "options": ["La proteína ya poseía una estructura fija desde el inicio, independiente de la pareja molecular", "El cambio de señales se debe únicamente a variaciones de temperatura no controladas", "Las proteínas intrínsecamente desordenadas nunca pueden adoptar una conformación estable", "La unión a la pareja molecular no tiene ninguna relación con la estructura observada por RMN", "La adquisición de estructura definida depende específicamente de la unión a la pareja molecular (no de pH o temperatura, que se mantuvieron constantes), apoyando el plegamiento inducido por unión"], "correct": 4, "exp": "Al mantener pH y temperatura constantes, la única variable que cambió fue la presencia de la pareja molecular, lo que permite atribuirle específicamente el cambio estructural observado."}, {"skill": "PROC", "q": "Se comparó la Km de dos enzimas ortólogas por el mismo sustrato, bajo condiciones idénticas: especie A=1,2mM; especie B=8,5mM, con Vmax similar. ¿Conclusión más adecuada?", "options": ["Ambas enzimas presentan exactamente la misma afinidad por el sustrato, dado que tienen estructura similar", "La especie B presenta mayor afinidad por el sustrato que la especie A", "La diferencia de Km observada no tiene ninguna relevancia funcional o evolutiva", "Una Km más alta siempre indica una enzima con mayor eficiencia catalítica global", "A pesar de la similitud estructural, la especie A presenta una afinidad considerablemente mayor por el sustrato que la especie B, lo que podría reflejar adaptaciones funcionales específicas de cada especie"], "correct": 4, "exp": "Una Km mucho menor en la especie A (1,2 vs 8,5 mM) bajo condiciones idénticas indica una afinidad sustancialmente mayor, a pesar de la similitud estructural general entre ambas enzimas."}, {"skill": "EVAL", "q": "Un estudio concluyó que 'la mutación alostérica no tiene ningún efecto funcional' basándose únicamente en que la Km no cambió, sin considerar la Vmax. ¿Crítica más sólida?", "options": ["La Km es el único parámetro relevante para evaluar el efecto funcional de cualquier mutación", "La Vmax nunca se ve afectada por mutaciones fuera del sitio activo", "La conclusión es válida sin necesidad de evaluar ningún otro parámetro cinético", "Las mutaciones alostéricas nunca afectan ningún aspecto de la función enzimática", "Evaluar solo la Km ignora que la Vmax sí puede verse afectada por mutaciones alostéricas que modifican pasos catalíticos posteriores a la unión del sustrato"], "correct": 4, "exp": "Una conclusión sobre el efecto funcional completo de una mutación requiere considerar todos los parámetros cinéticos relevantes, no solo uno de ellos."}, {"skill": "EVAL", "q": "Una investigación comparó proteínas con distinta secuencia de aminoácidos además de distintos codones, concluyendo que 'el uso de codones determina el plegamiento'. ¿Crítica más sólida?", "options": ["La conclusión es válida sin necesidad de mantener constante la secuencia de aminoácidos", "El uso de codones nunca puede influir en el plegamiento de una proteína", "La secuencia de aminoácidos y el uso de codones son exactamente la misma variable", "No es necesario aislar variables en estudios sobre plegamiento cotraduccional", "Al variar simultáneamente la secuencia de aminoácidos y el uso de codones, no es posible aislar el efecto específico de los codones sobre el plegamiento"], "correct": 4, "exp": "Sin mantener constante la secuencia de aminoácidos, cualquier diferencia observada podría deberse a la secuencia y no al uso de codones, invalidando la atribución causal."}, {"skill": "EVAL", "q": "Un estudio sobre punto isoeléctrico no controló la fuerza iónica entre mediciones y concluyó que 'el pI varía según el día del experimento'. ¿Crítica más pertinente?", "options": ["El punto isoeléctrico de una proteína cambia naturalmente y sin causa identificable de un día a otro", "La fuerza iónica del medio nunca afecta la determinación experimental del pI", "La conclusión del estudio es completamente correcta y no requiere ningún ajuste", "El pI de una proteína depende únicamente de la temperatura ambiente del laboratorio", "La variabilidad observada probablemente se debe a diferencias no controladas en la fuerza iónica entre los días, un factor conocido por introducir artefactos, y no a un cambio real de la proteína"], "correct": 4, "exp": "Antes de atribuir la variabilidad a un cambio biológico real, se debe descartar el efecto conocido de una variable no controlada (fuerza iónica) sobre la medición."}, {"skill": "EVAL", "q": "Una investigación silenció genéticamente una chaperona, pero no verificó mediante ningún método la eficacia real del silenciamiento antes de medir el efecto sobre la agregación proteica. ¿Crítica más relevante?", "options": ["No es necesario verificar la eficacia de un silenciamiento génico antes de interpretar sus efectos", "La medición de agregación proteica es suficiente por sí sola para validar el silenciamiento", "El silenciamiento génico siempre funciona con el 100% de eficacia", "La ausencia de verificación no afecta en absoluto la validez de las conclusiones", "Sin confirmar experimentalmente la eficacia del silenciamiento, no se puede asegurar que el aumento de agregación se deba realmente a la ausencia de la chaperona y no a otro factor no controlado"], "correct": 4, "exp": "Un silenciamiento génico puede ser parcial o inefectivo; sin verificación (por ejemplo, western blot) no se puede confirmar el supuesto causal central del estudio."}, {"skill": "EVAL", "q": "Un estudio de RMN concluyó que 'toda proteína intrínsecamente desordenada adquiere estructura estable al unirse a cualquier otra molécula', basado en un solo par proteína-pareja. ¿Crítica más pertinente?", "options": ["Un solo par proteína-pareja molecular es siempre suficiente para generalizar el comportamiento de todas las proteínas desordenadas", "Las proteínas intrínsecamente desordenadas nunca pueden adquirir estructura estable bajo ninguna condición", "La conclusión es válida y no requiere ninguna evidencia adicional", "La unión a cualquier molécula produce siempre exactamente el mismo efecto estructural", "Generalizar a partir de un único par a 'cualquier otra molécula' y 'toda proteína desordenada' excede lo que un solo caso puede respaldar; se requeriría evaluar múltiples proteínas y parejas distintas"], "correct": 4, "exp": "Un solo experimento con un par específico no permite establecer una regla universal aplicable a todas las proteínas desordenadas y todas las posibles parejas moleculares."}, {"skill": "EVAL", "q": "Una investigación comparó la Km de dos enzimas ortólogas usando sustratos ligeramente distintos (análogos, no idénticos) para cada especie. ¿Crítica más sólida?", "options": ["Usar sustratos análogos, aunque no idénticos, no afecta la validez de la comparación de Km", "La conclusión es completamente válida sin necesidad de estandarizar el sustrato", "Los sustratos análogos son siempre química y funcionalmente idénticos entre sí", "La Km no depende del sustrato utilizado en la medición", "El uso de sustratos distintos (aunque análogos) impide una comparación directa y válida de la afinidad intrínseca; se requeriría usar exactamente el mismo sustrato en ambas mediciones"], "correct": 4, "exp": "La Km es específica para cada combinación enzima-sustrato; comparar con sustratos distintos, aunque parecidos, introduce una variable de confusión que invalida la comparación directa."}, {"skill": "EVAL", "q": "Un estudio infirió el coeficiente de Hill a partir de solo tres concentraciones de sustrato, en lugar de una curva de saturación completa. ¿Limitación más relevante?", "options": ["Tres puntos de concentración son siempre suficientes para determinar con precisión el coeficiente de Hill", "El número de concentraciones evaluadas no afecta la confiabilidad de la estimación cinética", "No es necesario construir una curva de saturación para estudiar la cooperatividad", "El coeficiente de Hill puede determinarse sin necesidad de ningún dato experimental de concentración", "Estimar un parámetro como el coeficiente de Hill a partir de muy pocos puntos reduce la precisión y confiabilidad del ajuste, aumentando el riesgo de una estimación poco robusta"], "correct": 4, "exp": "Un ajuste estadístico confiable requiere suficientes puntos de datos a lo largo del rango de concentraciones; muy pocos puntos aumentan la incertidumbre de la estimación del parámetro."}, {"skill": "EVAL", "q": "Un estudio concluyó que 'la longitud de la cola poli-A es el único factor que determina la vida media del ARNm' basándose en un solo transcrito, sin considerar otros elementos reguladores conocidos (como ARE). ¿Crítica más pertinente?", "options": ["La longitud de la cola poli-A es efectivamente el único mecanismo conocido que regula la vida media de cualquier ARNm", "No existen otros elementos reguladores de la estabilidad del ARN mensajero además de la cola poli-A", "Un solo transcrito es siempre representativo de todos los ARNm de una célula", "No es necesario considerar otros mecanismos reguladores al estudiar la vida media del ARNm", "La conclusión ignora la existencia de otros mecanismos reguladores ya descritos (como elementos ricos en AU) y generaliza a partir de un único transcrito sin considerar la interacción entre distintos factores"], "correct": 4, "exp": "La biología molecular describe múltiples mecanismos que regulan conjuntamente la estabilidad del ARNm; atribuir todo el efecto a un solo factor, a partir de un solo caso, es una sobresimplificación."}, {"skill": "COM", "q": "Un estudiante debe explicar por qué una mutación alostérica puede reducir la Vmax sin cambiar la Km. ¿Explicación más precisa?", "options": ["Cualquier mutación en una enzima siempre afecta tanto la Km como la Vmax de forma proporcional", "La Vmax depende exclusivamente de la concentración de sustrato utilizada, no de la enzima", "Una mutación alostérica siempre ocurre directamente dentro del sitio activo de la enzima", "La Km y la Vmax son parámetros que miden exactamente lo mismo desde perspectivas distintas", "Si la mutación no afecta el sitio de unión al sustrato, la Km se mantiene; pero si altera un paso catalítico posterior a la unión, reduce la Vmax al disminuir la velocidad de conversión de sustrato en producto"], "correct": 4, "exp": "Distinguir entre el paso de unión (reflejado en Km) y el paso catalítico posterior (reflejado en Vmax) permite explicar por qué una mutación puede afectar solo uno de los dos parámetros."}, {"skill": "COM", "q": "Al explicar el plegamiento cotraduccional influenciado por el uso de codones sinónimos, ¿cuál es la explicación bioquímicamente más precisa?", "options": ["Los codones sinónimos siempre codifican para aminoácidos distintos, alterando directamente la secuencia proteica", "La velocidad de traducción no tiene ninguna relación con el proceso de plegamiento proteico", "El plegamiento de una proteína ocurre siempre completamente después de finalizada toda la traducción", "Los codones raros aceleran siempre la síntesis proteica en comparación con los codones frecuentes", "Los codones raros son traducidos más lentamente (menor disponibilidad de ARNt), generando pausas que favorecen el plegamiento correcto de dominios completos antes de sintetizarse el resto de la cadena"], "correct": 4, "exp": "La velocidad de traducción diferencial según el codón puede sincronizarse con los tiempos requeridos para el plegamiento correcto de dominios individuales durante la síntesis (plegamiento cotraduccional)."}, {"skill": "COM", "q": "Un estudiante debe comunicar por qué es importante controlar la fuerza iónica al determinar el punto isoeléctrico de una proteína. ¿Explicación más precisa?", "options": ["La fuerza iónica del medio determina directamente y sin ambigüedad el punto isoeléctrico real de cualquier proteína", "No existe ninguna relación conocida entre la fuerza iónica y la solubilidad de las proteínas", "El punto isoeléctrico de una proteína es una propiedad que cambia libremente cada vez que se repite la medición", "Controlar la fuerza iónica no aporta ninguna mejora a la precisión de este tipo de mediciones", "La fuerza iónica puede modificar las interacciones electrostáticas entre moléculas de proteína (salting-in/out), alterando su solubilidad aparente de forma independiente al verdadero punto isoeléctrico intrínseco"], "correct": 4, "exp": "Sin controlar esta variable, la medición del pI puede estar sesgada por un fenómeno distinto (cambios de solubilidad por fuerza iónica) al que en principio se busca medir."}, {"skill": "COM", "q": "Al explicar por qué la sobreexpresión de una chaperona reduce la agregación proteica irreversible bajo estrés térmico, ¿cuál es la explicación más precisa?", "options": ["Las chaperonas degradan directamente las proteínas mal plegadas, eliminándolas sin ningún proceso de replegamiento", "La sobreexpresión de chaperonas aumenta la temperatura a la que ocurre la desnaturalización proteica", "Las chaperonas actúan exclusivamente sobre el ADN, sin ninguna relación directa con las proteínas", "El estrés térmico no tiene ningún efecto sobre la conformación de las proteínas celulares", "Las chaperonas se unen transitoriamente a regiones hidrofóbicas expuestas en proteínas parcialmente desnaturalizadas, evitando interacciones inespecíficas entre ellas (que generarían agregados) y facilitando su replegamiento correcto"], "correct": 4, "exp": "El mecanismo protector de las chaperonas consiste en 'proteger' temporalmente regiones expuestas propensas a agregación, dando tiempo y oportunidad para el replegamiento correcto."}, {"skill": "COM", "q": "Un estudiante debe explicar, usando el concepto de 'plegamiento inducido por unión', por qué algunas proteínas permanecen desestructuradas hasta interactuar con su pareja molecular. ¿Explicación más precisa?", "options": ["Estas proteínas carecen por completo de secuencia de aminoácidos hasta que se unen a su pareja molecular", "La estructura tridimensional de estas proteínas es siempre completamente aleatoria, incluso al unirse a su pareja", "El plegamiento inducido por unión ocurre exclusivamente en moléculas de ADN, nunca en proteínas", "Estas proteínas nunca pueden cumplir ninguna función biológica en su estado desordenado", "La energía de interacción con la pareja molecular específica estabiliza una conformación que, en ausencia de esa pareja, no sería energéticamente favorable de mantener, por lo que permanecen desordenadas hasta formar el complejo"], "correct": 4, "exp": "El plegamiento se vuelve energéticamente favorable solo en presencia de la pareja de unión, lo que explica por qué la proteína permanece desordenada en solución libre."}, {"skill": "COM", "q": "Al comunicar los resultados de un experimento que muestra cooperatividad positiva solo cuando dos dominios están conectados covalentemente, ¿cuál es la explicación mecanística más precisa?", "options": ["La cooperatividad positiva no depende de ninguna comunicación estructural entre dominios de la enzima", "Los dominios separados siempre muestran mayor cooperatividad que la enzima completa conectada", "Una curva sigmoidea indica ausencia total de interacción entre los sitios de unión al sustrato", "La conexión covalente entre dominios no tiene ninguna influencia sobre el comportamiento cinético", "La conexión covalente permite la transmisión de cambios conformacionales de un dominio a otro tras la unión del primer sustrato, aumentando la afinidad del segundo sitio; al separar los dominios se pierde esa comunicación estructural"], "correct": 4, "exp": "La cooperatividad depende de que un cambio conformacional inducido en un sitio se propague físicamente hasta el otro, lo cual requiere que ambos dominios estén unidos en la misma cadena."}, {"skill": "COM", "q": "Un estudiante debe explicar por qué comparar la Km de dos enzimas ortólogas requiere usar exactamente el mismo sustrato en ambas mediciones. ¿Explicación más precisa?", "options": ["La Km es una propiedad exclusiva del sustrato, independiente por completo de la enzima utilizada", "Usar sustratos distintos entre ambas mediciones no afecta en absoluto la validez de la comparación", "La Km es idéntica para cualquier combinación de enzima y sustrato, sin excepción", "No existe ninguna forma de comparar objetivamente la afinidad de dos enzimas distintas", "La Km depende tanto de la enzima como de la identidad química específica del sustrato; usar sustratos distintos, aunque similares, introduce una variable de confusión que impide atribuir las diferencias exclusivamente a la enzima"], "correct": 4, "exp": "Como la Km caracteriza una interacción enzima-sustrato específica, cualquier cambio en el sustrato invalida la comparación directa entre las afinidades de dos enzimas distintas."}, {"skill": "COM", "q": "Al explicar por qué la longitud de la cola poli-A y los elementos ARE pueden actuar de forma conjunta en la regulación de la vida media de un ARNm, ¿cuál es la explicación más precisa?", "options": ["Solo uno de los dos mecanismos puede estar presente en un ARNm dado, nunca ambos simultáneamente", "Los elementos ARE y la cola poli-A regulan procesos celulares completamente independientes y no relacionados con la vida media del ARNm", "La vida media del ARNm depende únicamente del tipo de aminoácidos que codifica, no de sus regiones reguladoras", "La cola poli-A y los elementos ARE siempre actúan en la misma dirección, aumentando juntos la estabilidad del ARNm", "Ambos mecanismos actúan en la misma región reguladora: una cola poli-A larga puede proteger de la degradación, mientras los elementos ARE pueden reclutar proteínas que la aceleran, de modo que la vida media final depende del balance entre ambos"], "correct": 4, "exp": "La vida media resultante de un ARNm suele ser producto de la interacción neta entre múltiples elementos reguladores presentes simultáneamente en su región 3' no traducida."}];
+
+let currentQuiz = [];
+let currentIndex = 0;
+let answered = false;
+let userAnswers = [];
+let scoreBySkill = {};
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function buildQuiz(){
+  let selected = [];
+  SKILL_ORDER.forEach(skillKey=>{
+    const pool = QUESTION_BANK.filter(q=>q.skill===skillKey);
+    const picked = shuffle(pool).slice(0,PICK_PER_SKILL);
+    selected = selected.concat(picked);
+  });
+  selected = shuffle(selected);
+  return selected.map(orig=>{
+    const idxArr = [0,1,2,3,4];
+    const shuffledIdx = shuffle(idxArr);
+    const newOptions = shuffledIdx.map(i=>orig.options[i]);
+    const newCorrect = shuffledIdx.indexOf(orig.correct);
+    return { skill: orig.skill, question: orig.q, options: newOptions, correct: newCorrect, exp: orig.exp };
+  });
+}
+
+function startQuiz(){
+  currentQuiz = buildQuiz();
+  currentIndex = 0;
+  answered = false;
+  userAnswers = [];
+  scoreBySkill = {};
+  SKILL_ORDER.forEach(s=>scoreBySkill[s]={correct:0,total:0});
+  document.getElementById('start-screen').classList.add('hidden');
+  document.getElementById('dashboard-screen').classList.add('hidden');
+  document.getElementById('review-screen').classList.add('hidden');
+  document.getElementById('quiz-screen').classList.remove('hidden');
+  renderQuestion();
+}
+
+function renderQuestion(){
+  answered = false;
+  const q = currentQuiz[currentIndex];
+  const total = currentQuiz.length;
+  document.getElementById('progress-fill').style.width = ((currentIndex)/total*100)+'%';
+  document.getElementById('progress-label').textContent = (currentIndex+1)+' / '+total;
+  document.getElementById('skill-tag').textContent = SKILL_NAMES[q.skill];
+  document.getElementById('qnum').textContent = 'Pregunta '+(currentIndex+1);
+  document.getElementById('question-text').textContent = q.question;
+
+  const optsDiv = document.getElementById('options');
+  optsDiv.innerHTML = '';
+  q.options.forEach((opt, i)=>{
+    const btn = document.createElement('button');
+    btn.className = 'option';
+    btn.innerHTML = '<span class="letter">'+LETTERS[i]+')</span><span>'+opt+'</span>';
+    btn.onclick = ()=>selectOption(i);
+    optsDiv.appendChild(btn);
+  });
+
+  document.getElementById('feedback').classList.add('hidden');
+  document.getElementById('next-btn').classList.add('hidden');
+}
+
+function selectOption(i){
+  if(answered) return;
+  answered = true;
+  const q = currentQuiz[currentIndex];
+  const correct = q.correct;
+  const options = document.querySelectorAll('#options .option');
+  options.forEach((opt, idx)=>{
+    opt.classList.add('locked');
+    if(idx===correct) opt.classList.add('correct');
+    else if(idx===i) opt.classList.add('incorrect');
+    else opt.classList.add('dim');
+  });
+
+  const isCorrect = (i===correct);
+  scoreBySkill[q.skill].total++;
+  if(isCorrect) scoreBySkill[q.skill].correct++;
+
+  userAnswers.push({ skill:q.skill, question:q.question, options:q.options, correctIdx:correct, chosenIdx:i, exp:q.exp, isCorrect });
+
+  const fb = document.getElementById('feedback');
+  fb.classList.remove('hidden');
+  fb.classList.toggle('wrong', !isCorrect);
+  fb.innerHTML = '<span class="pista-label">'+(isCorrect ? '✓ Correcto — Pista' : '✕ Incorrecto — Pista')+'</span>'+
+    '<strong>Respuesta correcta: '+LETTERS[correct]+') '+q.options[correct]+'</strong><br><br>'+q.exp;
+
+  document.getElementById('next-btn').classList.remove('hidden');
+}
+
+function nextQuestion(){
+  currentIndex++;
+  if(currentIndex >= currentQuiz.length){
+    showDashboard();
+  } else {
+    renderQuestion();
+  }
+}
+
+function showDashboard(){
+  document.getElementById('quiz-screen').classList.add('hidden');
+  document.getElementById('dashboard-screen').classList.remove('hidden');
+
+  const totalCorrect = userAnswers.filter(a=>a.isCorrect).length;
+  const totalQ = userAnswers.length;
+  document.getElementById('score-total').innerHTML = totalCorrect+'<span>/'+totalQ+'</span>';
+  const pct = Math.round((totalCorrect/totalQ)*100);
+  document.getElementById('score-caption').textContent = pct+'% de logro general';
+
+  const barsDiv = document.getElementById('skill-bars');
+  barsDiv.innerHTML = '';
+  const weakSkills = [];
+  const strongSkills = [];
+
+  SKILL_ORDER.forEach(skillKey=>{
+    const s = scoreBySkill[skillKey];
+    const skillPct = s.total>0 ? Math.round((s.correct/s.total)*100) : 0;
+    let color = 'var(--accent-coral)';
+    if(skillPct>=75) color='var(--accent-sage)';
+    else if(skillPct>=50) color='var(--accent-amber)';
+
+    const row = document.createElement('div');
+    row.className='skill-bar-row';
+    row.innerHTML = '<div class="skill-bar-head"><span class="name">'+SKILL_NAMES[skillKey]+'</span><span class="frac">'+s.correct+'/'+s.total+'</span></div>'+
+      '<div class="skill-bar-track"><div class="skill-bar-fill" style="width:'+skillPct+'%;background:'+color+';"></div></div>';
+    barsDiv.appendChild(row);
+
+    if(skillPct<75) weakSkills.push({name:SKILL_NAMES[skillKey], pct:skillPct});
+    else strongSkills.push(SKILL_NAMES[skillKey]);
+  });
+
+  const improveBox = document.getElementById('improve-box');
+  const improveList = document.getElementById('improve-list');
+  improveList.innerHTML='';
+  if(weakSkills.length>0){
+    improveBox.classList.remove('hidden');
+    weakSkills.sort((a,b)=>a.pct-b.pct).forEach(w=>{
+      const li = document.createElement('li');
+      li.innerHTML = '<strong>'+w.name+'</strong> ('+w.pct+'%) — refuerza con más ejercicios de este tipo de habilidad, revisando las pistas de las preguntas falladas.';
+      improveList.appendChild(li);
+    });
+  } else {
+    improveBox.classList.add('hidden');
+  }
+
+  const strongBox = document.getElementById('strong-box');
+  const strongText = document.getElementById('strong-text');
+  if(strongSkills.length>0){
+    strongBox.classList.remove('hidden');
+    strongText.textContent = strongSkills.join(', ') + '. Buen dominio, mantén la práctica con nuevos intentos.';
+  } else {
+    strongBox.classList.add('hidden');
+  }
+}
+
+function restartQuiz(){ startQuiz(); }
+
+function reviewAnswers(){
+  document.getElementById('dashboard-screen').classList.add('hidden');
+  const rev = document.getElementById('review-screen');
+  rev.classList.remove('hidden');
+  let html = '<p class="eyebrow">Revisión de respuestas</p>';
+  userAnswers.forEach((a, i)=>{
+    html += '<div style="margin-bottom:22px;padding-bottom:18px;border-bottom:1px solid var(--line);">'+
+      '<span class="skill-tag">'+SKILL_NAMES[a.skill]+'</span>'+
+      '<p class="question-text" style="font-size:16px;">'+(i+1)+'. '+a.question+'</p>'+
+      '<p style="font-size:14px;color:'+(a.isCorrect?'var(--accent-sage)':'var(--accent-coral)')+';margin:0 0 6px;">'+
+        (a.isCorrect ? '✓ Respondiste correctamente' : '✕ Tu respuesta: '+LETTERS[a.chosenIdx]+') '+a.options[a.chosenIdx])+
+      '</p>'+
+      '<p style="font-size:14px;color:var(--text-muted);margin:0 0 8px;">Correcta: '+LETTERS[a.correctIdx]+') '+a.options[a.correctIdx]+'</p>'+
+      '<div class="feedback" style="margin-top:6px;"><span class="pista-label">Pista</span>'+a.exp+'</div>'+
+    '</div>';
+  });
+  html += '<div class="actions"><button class="btn" onclick="restartQuiz(); document.getElementById(\'review-screen\').classList.add(\'hidden\');">Repetir con nuevas preguntas</button></div>';
+  rev.innerHTML = html;
+}
+</script>
+</body>
+</html>
