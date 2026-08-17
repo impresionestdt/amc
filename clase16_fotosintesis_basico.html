@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PAES Biología · Clase 16 · Fotosíntesis (Nivel Básico)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Source+Sans+3:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-deep:#0f2027;
+    --bg-panel:#15303a;
+    --bg-panel-2:#1b3a45;
+    --accent-amber:#e8a33d;
+    --accent-sage:#6fa88a;
+    --accent-coral:#e4572e;
+    --text-light:#f3ede1;
+    --text-muted:#a9c0c2;
+    --line:#2a4750;
+    --radius:14px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:radial-gradient(circle at 15% -10%, #1c4552 0%, var(--bg-deep) 55%) fixed;
+    color:var(--text-light);
+    font-family:'Source Sans 3', system-ui, sans-serif;
+    min-height:100vh;
+    padding:32px 16px 64px;
+  }
+  .wrap{max-width:820px;margin:0 auto;}
+  .eyebrow{font-family:'JetBrains Mono', monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent-amber);margin:0 0 8px;}
+  h1{font-family:'Fraunces', serif;font-weight:600;font-size:clamp(26px,4vw,38px);line-height:1.1;margin:0 0 6px;color:var(--text-light);}
+  .sub{color:var(--text-muted);font-size:15px;margin:0 0 28px;max-width:60ch;}
+  .card{background:linear-gradient(180deg, var(--bg-panel) 0%, var(--bg-panel-2) 100%);border:1px solid var(--line);border-radius:var(--radius);padding:28px;box-shadow:0 20px 40px -20px rgba(0,0,0,.5);}
+  #start-screen ul{color:var(--text-muted);font-size:14.5px;line-height:1.7;padding-left:20px;margin:18px 0 26px;}
+  #start-screen li{margin-bottom:4px;}
+  .btn{font-family:'Source Sans 3', sans-serif;font-weight:700;font-size:15px;border:none;border-radius:999px;padding:14px 30px;cursor:pointer;background:var(--accent-amber);color:#20140a;transition:transform .15s ease, box-shadow .15s ease;box-shadow:0 8px 20px -8px rgba(0,0,0,.35);}
+  .btn:hover{transform:translateY(-1px);}
+  .btn:active{transform:translateY(0);}
+  .btn.ghost{background:transparent;color:var(--text-muted);border:1.5px solid var(--line);box-shadow:none;}
+  .progress-row{display:flex;align-items:center;gap:14px;margin-bottom:18px;}
+  .progress-track{flex:1;height:6px;border-radius:99px;background:var(--line);overflow:hidden;}
+  .progress-fill{height:100%;background:linear-gradient(90deg,var(--accent-sage),var(--accent-amber));border-radius:99px;transition:width .3s ease;}
+  .progress-label{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--text-muted);white-space:nowrap;}
+  .skill-tag{display:inline-block;font-family:'JetBrains Mono', monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--bg-deep);background:var(--accent-sage);padding:5px 11px;border-radius:999px;margin-bottom:14px;}
+  .qnum{color:var(--text-muted);font-size:13px;font-family:'JetBrains Mono',monospace;margin-bottom:6px;}
+  .question-text{font-family:'Fraunces', serif;font-weight:500;font-size:19px;line-height:1.45;margin:0 0 22px;}
+  .options{display:flex;flex-direction:column;gap:10px;}
+  .option{display:flex;align-items:flex-start;gap:12px;text-align:left;background:rgba(255,255,255,.03);border:1.5px solid var(--line);border-radius:10px;padding:13px 15px;cursor:pointer;color:var(--text-light);font-size:14.5px;line-height:1.4;transition:border-color .15s, background .15s;}
+  .option:hover:not(.locked){border-color:var(--accent-amber);}
+  .option .letter{font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--accent-amber);flex-shrink:0;}
+  .option.correct{border-color:var(--accent-sage);background:rgba(111,168,138,.14);}
+  .option.incorrect{border-color:var(--accent-coral);background:rgba(228,87,46,.14);}
+  .option.locked{cursor:default;}
+  .option.dim{opacity:.45;}
+  .feedback{margin-top:18px;padding:16px 18px;border-radius:10px;background:rgba(255,255,255,.04);border-left:4px solid var(--accent-sage);font-size:14px;line-height:1.6;color:var(--text-muted);}
+  .feedback.wrong{border-left-color:var(--accent-coral);}
+  .feedback strong{color:var(--text-light);}
+  .feedback .pista-label{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent-amber);display:block;margin-bottom:6px;}
+  .nav-row{display:flex;justify-content:flex-end;margin-top:22px;}
+  .score-hero{text-align:center;padding:10px 0 26px;}
+  .score-big{font-family:'Fraunces',serif;font-weight:700;font-size:56px;color:var(--accent-amber);line-height:1;}
+  .score-big span{font-size:24px;color:var(--text-muted);font-weight:500;}
+  .score-caption{color:var(--text-muted);font-size:14px;margin-top:6px;}
+  .skill-bars{display:flex;flex-direction:column;gap:16px;margin:22px 0 8px;}
+  .skill-bar-head{display:flex;justify-content:space-between;font-size:13.5px;margin-bottom:6px;}
+  .skill-bar-head .name{font-weight:600;}
+  .skill-bar-head .frac{font-family:'JetBrains Mono',monospace;color:var(--text-muted);}
+  .skill-bar-track{height:10px;border-radius:99px;background:var(--line);overflow:hidden;}
+  .skill-bar-fill{height:100%;border-radius:99px;}
+  .improve-box{margin-top:26px;background:rgba(228,87,46,.08);border:1px solid rgba(228,87,46,.35);border-radius:10px;padding:18px 20px;}
+  .improve-box h3{font-family:'Fraunces',serif;font-size:16px;margin:0 0 10px;color:var(--accent-coral);}
+  .improve-box ul{margin:0;padding-left:20px;color:var(--text-light);font-size:14px;line-height:1.75;}
+  .strong-box{margin-top:14px;background:rgba(111,168,138,.08);border:1px solid rgba(111,168,138,.35);border-radius:10px;padding:18px 20px;}
+  .strong-box h3{font-family:'Fraunces',serif;font-size:16px;margin:0 0 10px;color:var(--accent-sage);}
+  .strong-box p{margin:0;color:var(--text-light);font-size:14px;line-height:1.6;}
+  .actions{display:flex;gap:12px;margin-top:28px;flex-wrap:wrap;}
+  .hidden{display:none !important;}
+  footer{text-align:center;color:var(--text-muted);font-size:12px;margin-top:26px;opacity:.6;}
+</style>
+</head>
+<body> <div style="float: left; margin-right: 25px; margin-bottom: 25px;"><img src="Logo_AMC.png" alt="Logo" style="max-width: 150px;"></div>
+<div class="wrap">
+  <p class="eyebrow">PAES · Ciencias — Módulo Biología Común · Nivel Básico</p>
+  <h1>Fotosíntesis (Fase Lumínica y Fase Oscura)</h1>
+  <p class="sub">Eje 3: Procesos Químicos de la Vida e Integración — Sub-eje: Transformación de Energía en Sistemas Biológicos — Clase 16: Fotosíntesis</p>
+
+  <div class="card" id="start-screen">
+    <p class="eyebrow" style="margin-bottom:14px;">Antes de comenzar</p>
+    <p style="color:var(--text-muted);font-size:14.5px;line-height:1.6;">Este quiz evalúa nivel <strong style='color:var(--text-light);'>básico</strong>, con 20 preguntas (4 por cada habilidad PAES), extraídas al azar de un banco de 40. Cada intento genera una versión distinta.</p>
+    <ul>
+      <li>Observar y plantear preguntas</li>
+      <li>Planificar y conducir una investigación</li>
+      <li>Procesar y analizar la evidencia</li>
+      <li>Evaluar</li>
+      <li>Comunicar</li>
+    </ul>
+    <button class="btn" onclick="startQuiz()">Comenzar quiz</button>
+  </div>
+
+  <div class="card hidden" id="quiz-screen">
+    <div class="progress-row">
+      <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+      <div class="progress-label" id="progress-label">1 / 20</div>
+    </div>
+    <span class="skill-tag" id="skill-tag"></span>
+    <p class="qnum" id="qnum"></p>
+    <p class="question-text" id="question-text"></p>
+    <div class="options" id="options"></div>
+    <div class="feedback hidden" id="feedback"></div>
+    <div class="nav-row">
+      <button class="btn hidden" id="next-btn" onclick="nextQuestion()">Siguiente →</button>
+    </div>
+  </div>
+
+  <div class="card hidden" id="dashboard-screen">
+    <p class="eyebrow">Resultados</p>
+    <div class="score-hero">
+      <div class="score-big" id="score-total">0<span>/20</span></div>
+      <p class="score-caption" id="score-caption">Puntaje global</p>
+    </div>
+    <div class="skill-bars" id="skill-bars"></div>
+    <div class="improve-box hidden" id="improve-box">
+      <h3>Puntos a mejorar</h3>
+      <ul id="improve-list"></ul>
+    </div>
+    <div class="strong-box hidden" id="strong-box">
+      <h3>Habilidades consolidadas</h3>
+      <p id="strong-text"></p>
+    </div>
+    <div class="actions">
+      <button class="btn" onclick="restartQuiz()">Repetir con nuevas preguntas</button>
+      <button class="btn ghost" onclick="reviewAnswers()">Revisar mis respuestas</button>
+    </div>
+  </div>
+
+  <div class="card hidden" id="review-screen"></div>
+
+  <footer>Banco de 40 preguntas · nivel básico · Clase 16 de 30 · basado en el temario DEMRE PAES Ciencias — Biología Común</footer>
+</div>
+
+<script>
+const SKILL_NAMES = {"OBS": "Observar y plantear preguntas", "PLAN": "Planificar y conducir una investigación", "PROC": "Procesar y analizar la evidencia", "EVAL": "Evaluar", "COM": "Comunicar"};
+const SKILL_ORDER = ["OBS", "PLAN", "PROC", "EVAL", "COM"];
+const LETTERS = ["A","B","C","D","E"];
+const PICK_PER_SKILL = 4;
+
+const QUESTION_BANK = [{"skill": "OBS", "q": "Un estudiante coloca una planta acuática (elodea) en un frasco cerrado, en oscuridad, y no observa burbujas de gas. Al exponerla a la luz, comienzan a formarse burbujas rápidamente. ¿Pregunta más pertinente?", "options": ["¿La liberación del gas observado depende directamente de la presencia de luz, sugiriendo que corresponde a la fase lumínica de la fotosíntesis?", "¿La planta libera el mismo gas en oscuridad y en luz, sin ninguna diferencia?", "¿La formación de burbujas no tiene ninguna relación con la fotosíntesis de la planta?", "¿La luz inhibe por completo cualquier proceso metabólico de la planta?", "¿El gas liberado corresponde siempre a dióxido de carbono, sin importar la condición de luz?"], "correct": 0, "exp": "La dependencia directa de la liberación de gas (oxígeno) respecto de la presencia de luz es la evidencia central que vincula esta observación con la fase lumínica de la fotosíntesis, que ocurre en los tilacoides del cloroplasto."}, {"skill": "OBS", "q": "Se cultivan plantas idénticas con concentraciones crecientes de CO2 en el aire, y se mide su tasa de fotosíntesis: esta aumenta progresivamente hasta cierto punto, donde se estabiliza a pesar de seguir aumentando el CO2. ¿Pregunta más pertinente?", "options": ["¿Existe un punto a partir del cual el CO2 deja de ser el factor limitante de la tasa fotosintética, siendo entonces otro factor el que restringe el proceso?", "¿El CO2 nunca influye en la tasa de fotosíntesis de una planta?", "¿La tasa de fotosíntesis disminuye siempre que aumenta la concentración de CO2?", "¿La estabilización de la tasa ocurre por ausencia total de luz en el experimento?", "¿Todas las plantas responden de forma idéntica a cualquier concentración de CO2, sin ningún límite?"], "correct": 0, "exp": "El patrón de aumento seguido de estabilización es característico de un factor limitante: mientras el CO2 es escaso, incrementa la tasa; una vez que otro factor (como la luz o la temperatura) se vuelve limitante, aumentar más el CO2 ya no incrementa la tasa."}, {"skill": "OBS", "q": "Un estudiante nota que las hojas de la mayoría de las plantas se ven verdes bajo luz blanca, y que un espectrofotómetro muestra que la clorofila absorbe fuertemente luz azul y roja, pero absorbe muy poco luz verde. ¿Pregunta más precisa?", "options": ["¿El color verde percibido en las hojas corresponde a la luz que la clorofila refleja o transmite, en lugar de absorber, por lo que no es utilizada eficientemente en la fotosíntesis?", "¿La clorofila absorbe toda la luz visible por igual, sin ninguna diferencia entre colores?", "¿El color verde de las hojas indica que la luz verde es la más utilizada en la fotosíntesis?", "¿La absorción de luz no tiene ninguna relación con el color observado en una hoja?", "¿Las hojas se ven verdes porque no contienen ningún tipo de pigmento fotosintético?"], "correct": 0, "exp": "El color que percibimos corresponde a la luz reflejada/transmitida, no a la absorbida; como la clorofila absorbe poco la luz verde, esta se refleja mayoritariamente, dando a las hojas su color característico, mientras el azul y el rojo (más absorbidos) son los más aprovechados en la fotosíntesis."}, {"skill": "OBS", "q": "Al observar un corte de cloroplasto al microscopio electrónico, se identifican dos compartimentos claramente distintos: unas membranas apiladas en forma de disco (tilacoides) y un espacio fluido que las rodea (estroma). ¿Pregunta más pertinente?", "options": ["¿La existencia de estos dos compartimentos distintos se relaciona con que las dos etapas de la fotosíntesis (fase lumínica y fase oscura) ocurren en ubicaciones separadas dentro del cloroplasto?", "¿Ambos compartimentos cumplen exactamente la misma función dentro de la fotosíntesis?", "¿La fotosíntesis ocurre completamente fuera del cloroplasto, sin relación con estas estructuras?", "¿El estroma es el único lugar donde ocurre toda la fotosíntesis, incluyendo la fase lumínica?", "¿Los tilacoides no cumplen ninguna función relacionada con la captura de luz?"], "correct": 0, "exp": "La compartimentalización del cloroplasto refleja la separación funcional de la fotosíntesis: la fase lumínica ocurre en la membrana de los tilacoides (donde están los fotosistemas), mientras la fase oscura (Ciclo de Calvin) ocurre en el estroma."}, {"skill": "OBS", "q": "Una planta con suministro normal de CO2 y luz suficiente detiene por completo la producción de glucosa apenas se le retira la fuente de luz, incluso si el CO2 sigue disponible en el ambiente. ¿Pregunta más pertinente?", "options": ["¿La producción de glucosa en la fase oscura depende indirectamente de productos generados durante la fase lumínica (ATP y NADPH), por lo que se detiene al faltar luz aunque haya CO2 disponible?", "¿La fase oscura ocurre de forma completamente independiente de cualquier producto de la fase lumínica?", "¿El CO2 es el único factor necesario para que ocurra la fase oscura, sin depender de la luz en ningún sentido?", "¿La producción de glucosa no tiene ninguna relación con la disponibilidad de luz?", "¿La fase oscura ocurre únicamente durante la noche, sin relación con la fase lumínica?"], "correct": 0, "exp": "Aunque la fase oscura no requiere luz de forma directa, depende del ATP y NADPH generados en la fase lumínica; al faltar luz, se agotan rápidamente estos productos y el Ciclo de Calvin se detiene, aunque el CO2 siga disponible."}, {"skill": "OBS", "q": "Se coloca elodea bajo distintas intensidades de luz y se cuenta el número de burbujas de O2 liberadas por minuto: el número aumenta con la intensidad hasta cierto punto, luego de lo cual permanece constante aunque la luz siga aumentando. ¿Pregunta más precisa?", "options": ["¿Existe un punto de saturación lumínica a partir del cual algún otro factor (como el CO2 o la capacidad enzimática) limita la tasa fotosintética, en lugar de la intensidad de luz?", "¿La intensidad de luz nunca influye en la tasa de liberación de oxígeno de una planta acuática?", "¿El número de burbujas liberadas disminuye siempre que aumenta la intensidad de luz?", "¿La tasa fotosintética aumenta de forma indefinida mientras más intensa sea la luz, sin ningún límite?", "¿La liberación de burbujas de O2 no tiene ninguna relación con la fotosíntesis de la planta?"], "correct": 0, "exp": "El patrón de aumento seguido de una meseta es característico de la saturación lumínica: una vez que la maquinaria fotosintética alcanza su capacidad máxima de procesamiento, aumentar más la luz ya no incrementa la tasa, porque otro factor pasa a ser limitante."}, {"skill": "OBS", "q": "En un experimento clásico, se suministra CO2 marcado radiactivamente (14C) a una planta en fotosíntesis activa, y tiempo después se detecta la radiactividad incorporada en moléculas de azúcar (glucosa) dentro de la célula. ¿Pregunta más pertinente?", "options": ["¿El carbono proveniente del CO2 atmosférico es efectivamente incorporado y transformado en moléculas orgánicas de azúcar durante la fase oscura de la fotosíntesis?", "¿El CO2 nunca es incorporado en ninguna molécula orgánica producida por la planta?", "¿La radiactividad detectada proviene del agua absorbida por la raíz, sin relación con el CO2?", "¿La glucosa producida por la planta no contiene ningún átomo de carbono proveniente del ambiente?", "¿El CO2 se transforma directamente en oxígeno, sin pasar por ninguna molécula orgánica intermedia?"], "correct": 0, "exp": "Este tipo de experimento (asociado a los trabajos de Calvin) demuestra que el carbono inorgánico del CO2 atmosférico es fijado y transformado en compuestos orgánicos como la glucosa, a través de la serie de reacciones del Ciclo de Calvin en la fase oscura."}, {"skill": "OBS", "q": "Se comparan dos macetas con la misma especie de planta: una recibe solo luz azul y roja, y otra recibe solo luz verde, manteniendo la misma intensidad total. La planta con luz verde crece considerablemente menos. ¿Pregunta más precisa?", "options": ["¿La menor eficiencia fotosintética bajo luz verde se relaciona con que los pigmentos fotosintéticos absorben poco esta longitud de onda, en comparación con la luz azul y roja?", "¿La luz verde es absorbida con la misma eficiencia que la luz azul y roja por los pigmentos fotosintéticos?", "¿El crecimiento de una planta no tiene ninguna relación con el color de luz que recibe?", "¿La luz verde es completamente inútil para cualquier proceso metabólico de la planta?", "¿La planta con luz azul y roja crece menos que la planta con luz verde?"], "correct": 0, "exp": "Dado que la clorofila absorbe poco la luz verde (que es mayormente reflejada), esta longitud de onda es menos aprovechada para impulsar las reacciones de la fase lumínica, resultando en menor eficiencia fotosintética y menor crecimiento en comparación con luz azul o roja."}, {"skill": "COM", "q": "Un estudiante debe explicar la ecuación general de la fotosíntesis y el significado de cada uno de sus componentes. ¿Explicación más precisa?", "options": ["La ecuación 6CO2 + 6H2O + luz → C6H12O6 + 6O2 indica que dióxido de carbono y agua, en presencia de energía lumínica, se transforman en glucosa (compuesto orgánico de reserva energética) y oxígeno (liberado como subproducto)", "La ecuación indica que la glucosa y el oxígeno son los reactivos, mientras el CO2 y el agua son los productos finales", "La luz no participa como fuente de energía en ninguna parte de la ecuación general de la fotosíntesis", "El oxígeno liberado en la ecuación proviene directamente del CO2, no del agua", "La ecuación general de la fotosíntesis no incluye ningún compuesto de carbono entre sus productos"], "correct": 0, "exp": "La explicación debe identificar correctamente reactivos (CO2, agua, energía lumínica) y productos (glucosa, oxígeno) de la ecuación general, resumiendo el proceso global mediante el cual la energía luminosa se transforma en energía química almacenada en enlaces orgánicos."}, {"skill": "EVAL", "q": "Un estudiante concluyó que 'el oxígeno liberado durante la fotosíntesis proviene del CO2 absorbido, y no del agua', basándose en que ambos compuestos participan en la ecuación general de la fotosíntesis. ¿Qué crítica es más pertinente?", "options": ["La conclusión es correcta porque el oxígeno liberado proviene exclusivamente del CO2 absorbido por la planta", "Experimentos con agua marcada isotópicamente han demostrado que el oxígeno liberado durante la fotosíntesis proviene de la fotólisis del agua durante la fase lumínica, y no del CO2 (cuyo oxígeno termina mayormente en la glucosa y en agua producida); la sola presencia de ambos compuestos en la ecuación general no permite inferir el origen específico del oxígeno liberado", "El agua no participa en ningún momento en la liberación de oxígeno durante la fotosíntesis", "El CO2 no aporta ningún átomo a los productos de la fotosíntesis", "El oxígeno liberado proviene simultáneamente y en partes iguales tanto del CO2 como del agua"], "correct": 1, "exp": "La sola presencia de dos compuestos en una ecuación general no permite inferir cuál es la fuente específica de un producto determinado; se requieren experimentos de marcaje isotópico (como los realizados con agua marcada) para establecer que el oxígeno liberado proviene específicamente de la fotólisis del agua."}, {"skill": "EVAL", "q": "Una publicación afirmó que 'una planta con suficiente luz y CO2 fotosintetiza a su tasa máxima posible, sin importar la temperatura del ambiente'. ¿Qué crítica es más pertinente?", "options": ["La afirmación es correcta porque la temperatura nunca influye en la tasa de fotosíntesis mientras haya suficiente luz y CO2 disponibles", "Las enzimas involucradas en la fotosíntesis (como las del Ciclo de Calvin) tienen una temperatura óptima de funcionamiento; temperaturas muy bajas o muy altas reducen su actividad incluso con luz y CO2 suficientes, por lo que afirmar que la tasa máxima se alcanza 'sin importar la temperatura' ignora este factor limitante adicional", "La luz y el CO2 son los únicos factores que pueden limitar la tasa de fotosíntesis de una planta", "La temperatura únicamente afecta a la fase lumínica, sin ninguna relación con la fase oscura", "Las enzimas fotosintéticas funcionan igual de bien a cualquier temperatura, sin ningún límite conocido"], "correct": 1, "exp": "Aun con luz y CO2 suficientes, la temperatura puede limitar la tasa fotosintética al afectar la actividad de las enzimas involucradas, especialmente las del Ciclo de Calvin; ignorar este factor lleva a una conclusión incompleta sobre los límites reales del proceso."}, {"skill": "PLAN", "q": "Para comprobar que el O2 liberado por una planta acuática proviene de la fotosíntesis y no de otro proceso, ¿cuál es el procedimiento experimental más adecuado?", "options": ["Comparar la cantidad de O2 liberado por la planta en presencia de luz frente a la cantidad liberada en oscuridad, manteniendo las demás condiciones (temperatura, CO2) iguales", "Medir el O2 liberado solo en presencia de luz, sin ningún grupo de comparación en oscuridad", "No es necesario ningún grupo de comparación para esta pregunta", "Medir solo la temperatura del agua, sin evaluar la cantidad de O2 liberado", "Usar plantas de especies distintas en cada condición de luz evaluada"], "correct": 0, "exp": "Comparar la liberación de O2 con luz frente a oscuridad, manteniendo iguales las demás condiciones, permite aislar el efecto específico de la luz y confirmar que el gas liberado corresponde al proceso fotosintético."}, {"skill": "PLAN", "q": "Un investigador desea determinar si el CO2 es un factor limitante de la fotosíntesis en una planta, en un rango específico de concentraciones. ¿Diseño experimental más adecuado?", "options": ["Medir la tasa de fotosíntesis de la planta bajo distintas concentraciones controladas de CO2, manteniendo constantes la luz y la temperatura, y comparar los resultados obtenidos", "Medir la tasa de fotosíntesis solo con una concentración fija de CO2, sin ninguna variación", "No es necesario variar la concentración de CO2 para responder esta pregunta", "Variar simultáneamente la luz, la temperatura y el CO2 sin ningún control entre las variables", "Medir solo el crecimiento de la planta, sin evaluar directamente su tasa de fotosíntesis"], "correct": 0, "exp": "Variar sistemáticamente solo el CO2, manteniendo constantes las demás variables (luz, temperatura), permite establecer de forma controlada si este factor específico limita la tasa de fotosíntesis en el rango evaluado."}, {"skill": "PLAN", "q": "Para investigar si la temperatura afecta la actividad de las enzimas de la fase oscura de la fotosíntesis, ¿cuál es el diseño experimental más adecuado?", "options": ["Medir la tasa de fotosíntesis de la planta bajo distintas temperaturas controladas, manteniendo constantes la luz y el CO2, y comparar los resultados obtenidos entre los distintos grupos", "Medir la tasa de fotosíntesis solo a una temperatura fija, sin ninguna variación", "No es necesario variar la temperatura para responder esta pregunta", "Variar la temperatura y la luz al mismo tiempo, sin mantener ninguna variable constante", "Medir solo el color de las hojas, sin evaluar la tasa de fotosíntesis"], "correct": 0, "exp": "Variar únicamente la temperatura, manteniendo constantes la luz y el CO2, permite aislar el efecto específico de esta variable sobre la actividad enzimática y la tasa fotosintética resultante."}, {"skill": "PLAN", "q": "Se desea comprobar que la fase oscura de la fotosíntesis depende de productos generados en la fase lumínica (ATP y NADPH). ¿Cuál es el diseño experimental más adecuado?", "options": ["Comparar la producción de glucosa en plantas con suministro normal de luz frente a plantas mantenidas en oscuridad, manteniendo igual la disponibilidad de CO2 en ambos grupos", "Comparar solo plantas con suministro normal de luz, sin ningún grupo mantenido en oscuridad", "No es necesario ningún grupo en oscuridad para esta pregunta", "Medir solo la cantidad de CO2 disponible, sin evaluar la producción de glucosa", "Usar especies de plantas distintas para cada condición de luz evaluada"], "correct": 0, "exp": "Comparar la producción de glucosa entre plantas con luz y sin luz, manteniendo igual el CO2 disponible, permite aislar el efecto de la disponibilidad de productos de la fase lumínica sobre el funcionamiento de la fase oscura."}, {"skill": "PLAN", "q": "Un estudiante desea determinar el punto de saturación lumínica de una planta acuática (elodea). ¿Cuál es el procedimiento experimental adecuado?", "options": ["Medir el número de burbujas de O2 liberadas por minuto bajo intensidades de luz crecientes, manteniendo constantes la temperatura y el CO2, hasta identificar el punto en que la tasa deja de aumentar", "Medir el número de burbujas solo bajo una intensidad fija de luz, sin ninguna variación", "No es necesario variar la intensidad de luz para identificar este punto", "Variar la temperatura del agua en lugar de la intensidad de luz", "Medir solo el tamaño de la planta, sin evaluar la liberación de burbujas"], "correct": 0, "exp": "Medir sistemáticamente la tasa de liberación de O2 bajo intensidades crecientes de luz, controlando las demás variables, permite identificar con precisión el punto de saturación lumínica donde otro factor pasa a ser limitante."}, {"skill": "PLAN", "q": "Para comprobar que la clorofila absorbe de forma diferente las distintas longitudes de onda de luz visible, ¿cuál es el procedimiento experimental adecuado?", "options": ["Utilizar un espectrofotómetro para medir la cantidad de luz absorbida por un extracto de clorofila en distintas longitudes de onda del espectro visible, y comparar los valores obtenidos", "Medir la absorción de luz solo en una única longitud de onda, sin ninguna comparación", "No es necesario medir distintas longitudes de onda para esta pregunta", "Observar solo el color visible de la hoja, sin realizar ninguna medición espectrofotométrica", "Medir la absorción de luz en una muestra sin clorofila, sin ningún extracto vegetal"], "correct": 0, "exp": "El uso de un espectrofotómetro para medir sistemáticamente la absorción de un extracto de clorofila a lo largo del espectro visible permite construir un espectro de absorción, identificando qué longitudes de onda son más y menos aprovechadas."}, {"skill": "PLAN", "q": "Se desea comprobar experimentalmente que el carbono de la glucosa producida por una planta proviene del CO2 atmosférico y no del agua absorbida por la raíz. ¿Diseño experimental más adecuado?", "options": ["Suministrar CO2 marcado radiactivamente (14C) a la planta y hacer un seguimiento de dónde aparece esa radiactividad en las moléculas orgánicas producidas, como la glucosa", "Suministrar agua marcada radiactivamente, sin marcar el CO2 suministrado", "No es necesario marcar radiactivamente ninguna fuente de carbono para esta pregunta", "Medir solo la cantidad de glucosa producida, sin marcar ninguna fuente de carbono", "Suministrar CO2 y agua marcados simultáneamente, sin poder distinguir el origen de cada uno"], "correct": 0, "exp": "Marcar específicamente el CO2 suministrado y seguir su destino permite establecer de forma experimental que el carbono presente en la glucosa producida proviene del CO2 atmosférico fijado durante la fase oscura."}, {"skill": "PLAN", "q": "Un investigador desea comparar la eficiencia fotosintética de una planta bajo luz verde frente a luz azul y roja, manteniendo la misma intensidad total de luz en ambas condiciones. ¿Diseño experimental adecuado?", "options": ["Medir la tasa de fotosíntesis (por ejemplo, mediante liberación de O2) de la planta bajo cada color de luz por separado, manteniendo constante la intensidad total y las demás condiciones ambientales", "Medir la tasa de fotosíntesis solo bajo un color de luz, sin ninguna comparación con otro color", "No es necesario mantener constante la intensidad total de luz entre ambas condiciones", "Variar simultáneamente el color de luz y la temperatura sin ningún control entre variables", "Medir solo el color final de las hojas, sin evaluar la tasa de fotosíntesis"], "correct": 0, "exp": "Comparar la tasa fotosintética bajo distintos colores de luz, manteniendo constante la intensidad total y las demás condiciones, permite aislar el efecto específico de la longitud de onda sobre la eficiencia del proceso."}, {"skill": "PROC", "q": "Se midió la tasa de fotosíntesis de una planta bajo concentraciones crecientes de CO2: la tasa aumentó proporcionalmente hasta 0,04% de CO2, y luego se mantuvo estable a pesar de seguir aumentando la concentración. ¿Qué conclusión es más adecuada?", "options": ["El CO2 es un factor limitante de la fotosíntesis hasta la concentración de 0,04%, a partir de la cual otro factor pasa a limitar la tasa fotosintética", "El CO2 nunca influye en la tasa de fotosíntesis de esta planta", "La tasa de fotosíntesis disminuye de forma continua a medida que aumenta el CO2", "El CO2 sigue siendo el factor limitante sin importar la concentración alcanzada", "La estabilización observada se debe exclusivamente a la ausencia de luz en el experimento"], "correct": 0, "exp": "El patrón de aumento proporcional seguido de estabilización confirma que el CO2 actúa como factor limitante solo hasta cierta concentración, tras la cual otro factor (luz o temperatura) restringe el proceso."}, {"skill": "PROC", "q": "Se comparó la liberación de O2 de una planta acuática en presencia de luz (alta liberación) y en oscuridad (liberación prácticamente nula), manteniendo iguales las demás condiciones. ¿Qué conclusión es más adecuada?", "options": ["La liberación de O2 observada depende directamente de la presencia de luz, consistente con su origen en la fase lumínica de la fotosíntesis", "La liberación de O2 es independiente de la presencia de luz", "La oscuridad aumenta la liberación de O2 en comparación con la luz", "Ambas condiciones muestran exactamente la misma liberación de O2", "La luz inhibe por completo la liberación de cualquier gas por parte de la planta"], "correct": 0, "exp": "La marcada diferencia en la liberación de O2 entre ambas condiciones confirma que este proceso depende directamente de la luz, consistente con su origen en las reacciones de la fase lumínica de la fotosíntesis."}, {"skill": "PROC", "q": "Se midió la tasa de fotosíntesis de una planta a distintas temperaturas: aumentó entre 10°C y 30°C, y disminuyó bruscamente por encima de 40°C. ¿Qué conclusión es más adecuada?", "options": ["Las enzimas involucradas en la fotosíntesis tienen una temperatura óptima de funcionamiento, perdiendo su actividad a temperaturas excesivamente altas", "La tasa de fotosíntesis aumenta indefinidamente mientras más alta sea la temperatura", "La temperatura no tiene ninguna relación con la tasa de fotosíntesis observada", "La disminución a altas temperaturas se debe exclusivamente a la falta de CO2 disponible", "Las enzimas fotosintéticas funcionan igual de bien a cualquier temperatura evaluada"], "correct": 0, "exp": "El patrón de aumento seguido de una caída brusca a temperaturas altas es consistente con la existencia de una temperatura óptima para las enzimas fotosintéticas, cuya estructura se ve alterada (desnaturalización) a temperaturas excesivas."}, {"skill": "PROC", "q": "Se comparó la producción de glucosa en plantas con suministro normal de luz (producción activa) frente a plantas mantenidas en oscuridad con el mismo CO2 disponible (producción prácticamente nula). ¿Qué conclusión es más adecuada?", "options": ["La producción de glucosa en la fase oscura depende de productos generados durante la fase lumínica, que se agotan al faltar la luz aunque haya CO2 disponible", "La producción de glucosa depende exclusivamente del CO2 disponible, sin relación con la luz", "La oscuridad aumenta la producción de glucosa en comparación con la luz", "Ambos grupos muestran exactamente la misma producción de glucosa", "La luz inhibe por completo la producción de glucosa en la planta"], "correct": 0, "exp": "La marcada diferencia en producción de glucosa, con CO2 igualmente disponible en ambos grupos, confirma que la fase oscura depende de productos de la fase lumínica (ATP y NADPH) que se agotan rápidamente en oscuridad."}, {"skill": "PROC", "q": "Se midió el número de burbujas de O2 liberadas por una elodea bajo intensidades de luz crecientes: aumentó proporcionalmente hasta cierta intensidad, y luego se mantuvo constante a pesar de seguir aumentando la luz. ¿Qué conclusión es más adecuada?", "options": ["Existe un punto de saturación lumínica a partir del cual otro factor, distinto de la intensidad de luz, limita la tasa fotosintética de la planta", "La intensidad de luz nunca influye en la tasa de liberación de O2 de esta planta", "La tasa de liberación de O2 disminuye siempre que aumenta la intensidad de luz", "La tasa fotosintética aumenta de forma indefinida mientras más intensa sea la luz", "La estabilización observada se debe exclusivamente a la falta de agua en el sistema"], "correct": 0, "exp": "El patrón de aumento seguido de una meseta confirma la existencia de un punto de saturación lumínica, a partir del cual la capacidad de procesamiento de la maquinaria fotosintética (u otro factor como el CO2) se vuelve limitante."}, {"skill": "PROC", "q": "Se detectó radiactividad proveniente de CO2 marcado (14C) en moléculas de glucosa producidas por una planta en fotosíntesis activa, tras cierto tiempo de exposición. ¿Qué conclusión es más adecuada?", "options": ["El carbono del CO2 atmosférico es efectivamente incorporado y transformado en moléculas orgánicas de glucosa durante la fase oscura de la fotosíntesis", "El CO2 atmosférico nunca es incorporado en ninguna molécula orgánica de la planta", "La radiactividad detectada proviene exclusivamente del agua absorbida por la raíz", "La glucosa producida no contiene ningún átomo proveniente del CO2 suministrado", "El CO2 se transforma directamente en oxígeno, sin generar ninguna molécula orgánica"], "correct": 0, "exp": "La detección de radiactividad específicamente en la glucosa, proveniente del CO2 marcado suministrado, confirma experimentalmente que el carbono inorgánico atmosférico es fijado y transformado en compuestos orgánicos durante el Ciclo de Calvin."}, {"skill": "PROC", "q": "Se comparó el crecimiento de una planta bajo luz verde (crecimiento reducido) frente a una planta bajo luz azul y roja de la misma intensidad total (crecimiento considerablemente mayor). ¿Qué conclusión es más adecuada?", "options": ["La luz verde es menos eficiente para impulsar la fotosíntesis en comparación con la luz azul y roja, consistente con la baja absorción de esta longitud de onda por parte de la clorofila", "La luz verde es igual de eficiente que la luz azul y roja para impulsar la fotosíntesis", "La luz azul y roja son completamente inútiles para el crecimiento de la planta", "Ambas plantas muestran exactamente el mismo crecimiento, sin ninguna diferencia", "El color de la luz no tiene ninguna relación con el crecimiento de una planta"], "correct": 0, "exp": "El menor crecimiento bajo luz verde, en comparación con azul y roja de la misma intensidad, es consistente con la baja absorción de esta longitud de onda por la clorofila, lo que la hace menos eficiente para impulsar las reacciones fotosintéticas."}, {"skill": "PROC", "q": "Se midió la absorción de luz de un extracto de clorofila con un espectrofotómetro: alta absorción en longitudes de onda azul (~430 nm) y roja (~660 nm), y baja absorción en la región verde (~550 nm). ¿Qué conclusión es más adecuada?", "options": ["La clorofila aprovecha preferentemente la luz azul y roja para las reacciones fotosintéticas, mientras la luz verde es mayormente reflejada o transmitida y poco utilizada", "La clorofila absorbe la luz verde con la misma eficiencia que la luz azul y roja", "La clorofila absorbe exclusivamente luz verde, sin ninguna absorción en azul o rojo", "La absorción de luz por la clorofila es idéntica en todas las longitudes de onda del espectro visible", "La clorofila no absorbe ninguna longitud de onda del espectro visible"], "correct": 0, "exp": "El espectro de absorción medido, con picos en azul y rojo y un valle en verde, confirma que la clorofila aprovecha preferentemente esas longitudes de onda para impulsar la fotosíntesis, mientras la luz verde es mayoritariamente reflejada."}, {"skill": "EVAL", "q": "Un estudiante concluyó que 'la fotosíntesis ocurre exclusivamente durante el día, y nunca continúa ningún proceso metabólico relacionado durante la noche', basándose en que la fase lumínica requiere luz. ¿Qué crítica es más pertinente?", "options": ["La conclusión es correcta porque ningún proceso relacionado con la fotosíntesis puede ocurrir en ausencia de luz, ni de día ni de noche", "Aunque la fase lumínica requiere luz directa, algunos procesos de la fase oscura pueden continuar brevemente durante la noche utilizando ATP y NADPH remanentes, antes de agotarse; afirmar que 'nunca continúa ningún proceso' ignora esta posibilidad transitoria", "La fase oscura de la fotosíntesis requiere luz directa de la misma manera que la fase lumínica", "La fotosíntesis no tiene ninguna relación con la disponibilidad de luz en ningún momento del día", "Todos los procesos metabólicos de la planta se detienen por completo durante la noche"], "correct": 1, "exp": "Si bien la fase lumínica requiere luz directa, la fase oscura puede continuar brevemente usando productos remanentes (ATP, NADPH) hasta agotarse; afirmar categóricamente que 'nunca continúa ningún proceso' relacionado durante la noche es una generalización que ignora esta transición gradual."}, {"skill": "EVAL", "q": "Una investigación concluyó que 'el CO2 es siempre el único factor limitante de la fotosíntesis, sin importar las condiciones', basándose en un experimento donde solo se varió la concentración de CO2 dentro de un rango bajo. ¿Qué crítica es más sólida?", "options": ["La conclusión es correcta porque el CO2 es, bajo cualquier condición, el único factor que puede limitar la tasa de fotosíntesis", "Como se observa en experimentos con concentraciones más altas de CO2, la tasa se estabiliza y otros factores (luz, temperatura) pasan a ser limitantes; generalizar que el CO2 es 'siempre el único factor limitante, sin importar las condiciones' ignora esta dependencia del contexto experimental", "La luz y la temperatura nunca pueden actuar como factores limitantes de la fotosíntesis", "El CO2 nunca tiene ninguna influencia sobre la tasa de fotosíntesis de una planta", "No es necesario considerar otros factores ambientales para esta conclusión"], "correct": 1, "exp": "Cuál factor resulta limitante depende del contexto (rango de concentración, intensidad de luz, temperatura); generalizar que el CO2 es 'siempre el único factor limitante, sin importar las condiciones' ignora que, superado cierto punto, otros factores pasan a restringir la tasa fotosintética."}, {"skill": "EVAL", "q": "Un estudio afirmó que 'las plantas obtienen todo el carbono que necesitan del agua absorbida por sus raíces, sin ninguna relación con el CO2 atmosférico'. ¿Qué error se identifica en esta afirmación?", "options": ["La afirmación es correcta porque el agua es la única fuente de carbono utilizada por las plantas para producir compuestos orgánicos", "Experimentos con CO2 marcado radiactivamente demuestran que el carbono de la glucosa proviene del CO2 atmosférico fijado durante la fase oscura, no del agua; el agua aporta principalmente los electrones e hidrógenos mediante la fotólisis en la fase lumínica, pero no el carbono", "El agua no cumple ninguna función relevante durante la fotosíntesis", "El CO2 atmosférico nunca es utilizado por las plantas para ningún proceso metabólico", "El carbono de la glucosa proviene exclusivamente del oxígeno del aire, sin relación con el CO2 ni el agua"], "correct": 1, "exp": "La evidencia experimental (como el marcaje con 14C) demuestra que el carbono orgánico proviene del CO2 atmosférico, fijado en el Ciclo de Calvin; confundir esto con el rol del agua (fuente de electrones e hidrógeno en la fase lumínica, no de carbono) es un error conceptual central."}, {"skill": "EVAL", "q": "Una publicación afirmó que 'aumentar la intensidad de luz siempre incrementa la tasa de fotosíntesis de una planta, sin ningún límite posible', ignorando el fenómeno de saturación lumínica. ¿Qué crítica es más pertinente?", "options": ["La afirmación es correcta porque no existe ningún límite biológico a la capacidad de una planta de aumentar su tasa fotosintética con más luz", "Como se observa experimentalmente, la tasa de fotosíntesis alcanza un punto de saturación a partir del cual aumentar la intensidad de luz ya no incrementa la tasa, porque otro factor (como el CO2 o la capacidad enzimática) se vuelve limitante; afirmar un aumento 'sin ningún límite posible' ignora este fenómeno bien documentado", "La intensidad de luz nunca influye en la tasa de fotosíntesis de una planta", "La tasa de fotosíntesis disminuye siempre que aumenta la intensidad de luz", "No es necesario considerar ningún punto de saturación al evaluar el efecto de la luz"], "correct": 1, "exp": "El fenómeno de saturación lumínica, ampliamente documentado, muestra que la tasa fotosintética deja de aumentar más allá de cierta intensidad de luz; afirmar un incremento 'sin ningún límite posible' contradice esta evidencia experimental."}, {"skill": "EVAL", "q": "Un estudiante concluyó que 'todas las longitudes de onda de luz visible son aprovechadas exactamente con la misma eficiencia por la clorofila para la fotosíntesis', a partir de observar que las hojas reciben luz blanca (que contiene todos los colores). ¿Qué crítica es más pertinente?", "options": ["La conclusión es correcta porque, al recibir luz blanca, la clorofila aprovecha por igual cualquier longitud de onda contenida en ella", "Los espectros de absorción de la clorofila muestran picos claros en azul y rojo, y una absorción mucho menor en verde; concluir que todas las longitudes de onda se aprovechan 'exactamente con la misma eficiencia' ignora esta variación bien documentada en la absorción según el color de luz", "La clorofila no absorbe ninguna longitud de onda de luz visible, sin importar el color", "Solo la luz verde es aprovechada eficientemente por la clorofila para la fotosíntesis", "La luz blanca no contiene ninguna longitud de onda azul o roja"], "correct": 1, "exp": "El espectro de absorción de la clorofila (con picos en azul y rojo, y un valle en verde) demuestra que no todas las longitudes de onda se aprovechan igual; la conclusión de eficiencia idéntica ignora esta evidencia espectral bien establecida."}, {"skill": "EVAL", "q": "Una investigación afirmó que 'la fase oscura de la fotosíntesis ocurre exclusivamente durante la noche, en oposición directa a la fase lumínica que ocurre de día', basándose en el nombre de esta etapa. ¿Qué crítica es más pertinente?", "options": ["La afirmación es correcta porque el nombre 'fase oscura' indica que este proceso ocurre exclusivamente durante la noche", "El nombre 'fase oscura' se refiere a que esta etapa no requiere luz de forma directa, no a que ocurra exclusivamente de noche; de hecho, en condiciones normales ocurre simultáneamente con la fase lumínica durante el día, utilizando el ATP y NADPH que esta produce en tiempo real", "La fase oscura y la fase lumínica ocurren siempre exactamente al mismo tiempo, sin ninguna diferencia en sus requerimientos", "La fase lumínica también puede ocurrir durante la noche, sin necesidad de luz", "La fase oscura no depende en ningún caso de productos generados por la fase lumínica"], "correct": 1, "exp": "El nombre 'fase oscura' es en cierto modo engañoso: se refiere a que no requiere luz de forma directa, pero en la práctica ocurre simultáneamente con la fase lumínica durante el día, dependiendo de sus productos (ATP, NADPH) generados en tiempo real."}, {"skill": "COM", "q": "Un estudiante debe explicar por qué la fotosíntesis se divide en dos fases (lumínica y oscura) que ocurren en distintas partes del cloroplasto. ¿Explicación más precisa?", "options": ["La fase lumínica ocurre en la membrana de los tilacoides, donde se captura la energía luminosa y se produce ATP y NADPH; la fase oscura ocurre en el estroma, donde estos productos se utilizan para fijar CO2 y sintetizar glucosa, por lo que cada fase requiere de una estructura distinta adaptada a su función específica", "Ambas fases ocurren exactamente en la misma estructura del cloroplasto, sin ninguna diferencia de ubicación", "La fase oscura ocurre en los tilacoides, mientras la fase lumínica ocurre en el estroma", "La fotosíntesis ocurre completamente fuera del cloroplasto, sin relación con los tilacoides ni el estroma", "El estroma no cumple ninguna función relacionada con la fijación de CO2"], "correct": 0, "exp": "La explicación debe conectar la compartimentalización estructural del cloroplasto (tilacoides vs. estroma) con la separación funcional de las dos fases de la fotosíntesis, cada una adaptada a los requerimientos específicos de sus reacciones."}, {"skill": "COM", "q": "Al explicar por qué las plantas se ven predominantemente verdes, ¿cuál es la explicación más precisa?", "options": ["La clorofila absorbe fuertemente la luz azul y roja para utilizarla en la fotosíntesis, pero absorbe poco la luz verde, la cual es mayormente reflejada o transmitida, siendo esta luz reflejada la que percibimos como el color característico de las hojas", "La clorofila absorbe toda la luz visible por igual, incluyendo la luz verde, sin ninguna diferencia entre colores", "El color verde de las hojas se debe a que la clorofila no absorbe ningún tipo de luz", "La luz verde es la longitud de onda más aprovechada por la clorofila para la fotosíntesis", "Las hojas se ven verdes por un pigmento distinto a la clorofila, sin ninguna relación con la fotosíntesis"], "correct": 0, "exp": "La explicación debe distinguir entre la luz absorbida (utilizada en la fotosíntesis) y la luz reflejada (percibida como color); como la clorofila absorbe poco la luz verde, esta se refleja y es la que da a las hojas su color característico."}, {"skill": "COM", "q": "Un estudiante debe explicar por qué la fase oscura de la fotosíntesis se detiene al faltar luz, a pesar de no requerir luz de forma directa. ¿Explicación más precisa?", "options": ["La fase oscura depende de productos generados durante la fase lumínica (ATP y NADPH); al faltar luz, la fase lumínica se detiene y estos productos se agotan rápidamente, deteniendo indirectamente las reacciones de la fase oscura", "La fase oscura requiere luz de forma tan directa como la fase lumínica, por lo que se detiene inmediatamente al faltar luz", "La fase oscura no tiene ninguna relación con los productos generados por la fase lumínica", "La fase oscura continúa indefinidamente sin luz, sin ningún límite en el tiempo", "La ausencia de luz no tiene ninguna relación con el funcionamiento de la fase oscura"], "correct": 0, "exp": "La explicación adecuada distingue entre requerimiento directo de luz (fase lumínica) y dependencia indirecta (fase oscura, que depende de productos de la fase lumínica); al faltar luz, se agotan esos productos y la fase oscura se detiene."}, {"skill": "COM", "q": "Al explicar por qué el punto de saturación lumínica indica que otro factor, distinto de la luz, pasa a limitar la fotosíntesis, ¿cuál es la explicación más precisa?", "options": ["Una vez que la maquinaria fotosintética (enzimas, transportadores de electrones) alcanza su capacidad máxima de procesamiento, aumentar la intensidad de luz ya no genera un aumento proporcional en la tasa fotosintética, porque el sistema no puede procesar más energía luminosa de la que ya está capturando", "Aumentar la intensidad de luz siempre incrementa la tasa fotosintética de forma proporcional, sin ningún límite", "El punto de saturación lumínica indica que la planta ha dejado de realizar fotosíntesis por completo", "La capacidad de procesamiento de la maquinaria fotosintética no tiene ningún límite máximo", "La saturación lumínica ocurre exclusivamente quando falta CO2 en el ambiente, sin relación con la capacidad de procesamiento"], "correct": 0, "exp": "La explicación debe conectar el concepto de capacidad máxima de procesamiento del sistema fotosintético con el fenómeno observado de saturación: superada esa capacidad, más luz ya no se traduce en mayor tasa fotosintética."}, {"skill": "COM", "q": "Un estudiante debe explicar el papel del agua en la fase lumínica de la fotosíntesis. ¿Explicación más precisa?", "options": ["El agua es dividida (fotólisis) durante la fase lumínica, liberando electrones que reemplazan a los perdidos por la clorofila, protones (H+) que contribuyen al gradiente usado para producir ATP, y oxígeno como producto de desecho liberado a la atmósfera", "El agua aporta directamente el carbono utilizado para sintetizar glucosa durante la fase oscura", "El agua no cumple ninguna función relevante durante la fase lumínica de la fotosíntesis", "El oxígeno liberado durante la fotosíntesis proviene del CO2, no del agua", "El agua es producida como resultado final de la fase lumínica, en lugar de ser consumida"], "correct": 0, "exp": "La explicación debe describir con precisión la fotólisis del agua: su división libera electrones (que reemplazan los cedidos por la clorofila), protones (que contribuyen a la producción de ATP) y oxígeno (liberado como subproducto), un proceso central de la fase lumínica."}, {"skill": "COM", "q": "Al explicar por qué el CO2 se considera un factor limitante de la fotosíntesis en ciertas condiciones, ¿cuál es la explicación más precisa?", "options": ["El CO2 es la fuente de carbono necesaria para las reacciones del Ciclo de Calvin en la fase oscura; si su concentración es baja, la tasa a la que puede fijarse limita la velocidad general de producción de glucosa, hasta que otro factor (como la luz) se vuelve más restrictivo", "El CO2 no cumple ninguna función relacionada con la fase oscura de la fotosíntesis", "El CO2 es utilizado exclusivamente durante la fase lumínica, sin relación con el Ciclo de Calvin", "Aumentar la concentración de CO2 siempre incrementa la tasa fotosintética sin ningún límite", "El CO2 es un producto final de la fotosíntesis, en lugar de ser una materia prima necesaria"], "correct": 0, "exp": "La explicación debe conectar el rol del CO2 como materia prima del Ciclo de Calvin con su capacidad de limitar la tasa fotosintética cuando su disponibilidad es baja, hasta que otro factor pase a restringir el proceso de forma más determinante."}, {"skill": "COM", "q": "Un estudiante debe explicar por qué medir el número de burbujas de O2 liberadas por una planta acuática es un método válido para estimar indirectamente su tasa de fotosíntesis. ¿Explicación más precisa?", "options": ["El O2 es un producto directo de la fase lumínica de la fotosíntesis (liberado durante la fotólisis del agua); por lo tanto, la cantidad de O2 liberado en un tiempo determinado se relaciona proporcionalmente con la actividad fotosintética de la planta en ese momento", "El O2 liberado no tiene ninguna relación con el proceso de fotosíntesis de la planta", "El número de burbujas liberadas depende exclusivamente de la temperatura del agua, sin relación con la fotosíntesis", "El O2 es consumido, y no liberado, durante la fase lumínica de la fotosíntesis", "Medir burbujas de O2 es un método completamente inválido para estimar cualquier actividad fotosintética"], "correct": 0, "exp": "La explicación debe conectar el origen del O2 liberado (subproducto de la fotólisis del agua en la fase lumínica) con la validez de usar su tasa de liberación como una medida indirecta y proporcional de la actividad fotosintética general de la planta."}];
+
+let currentQuiz = [];
+let currentIndex = 0;
+let answered = false;
+let userAnswers = [];
+let scoreBySkill = {};
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function buildQuiz(){
+  let selected = [];
+  SKILL_ORDER.forEach(skillKey=>{
+    const pool = QUESTION_BANK.filter(q=>q.skill===skillKey);
+    const picked = shuffle(pool).slice(0,PICK_PER_SKILL);
+    selected = selected.concat(picked);
+  });
+  selected = shuffle(selected);
+  return selected.map(orig=>{
+    const idxArr = [0,1,2,3,4];
+    const shuffledIdx = shuffle(idxArr);
+    const newOptions = shuffledIdx.map(i=>orig.options[i]);
+    const newCorrect = shuffledIdx.indexOf(orig.correct);
+    return { skill: orig.skill, question: orig.q, options: newOptions, correct: newCorrect, exp: orig.exp };
+  });
+}
+
+function startQuiz(){
+  currentQuiz = buildQuiz();
+  currentIndex = 0;
+  answered = false;
+  userAnswers = [];
+  scoreBySkill = {};
+  SKILL_ORDER.forEach(s=>scoreBySkill[s]={correct:0,total:0});
+  document.getElementById('start-screen').classList.add('hidden');
+  document.getElementById('dashboard-screen').classList.add('hidden');
+  document.getElementById('review-screen').classList.add('hidden');
+  document.getElementById('quiz-screen').classList.remove('hidden');
+  renderQuestion();
+}
+
+function renderQuestion(){
+  answered = false;
+  const q = currentQuiz[currentIndex];
+  const total = currentQuiz.length;
+  document.getElementById('progress-fill').style.width = ((currentIndex)/total*100)+'%';
+  document.getElementById('progress-label').textContent = (currentIndex+1)+' / '+total;
+  document.getElementById('skill-tag').textContent = SKILL_NAMES[q.skill];
+  document.getElementById('qnum').textContent = 'Pregunta '+(currentIndex+1);
+  document.getElementById('question-text').textContent = q.question;
+
+  const optsDiv = document.getElementById('options');
+  optsDiv.innerHTML = '';
+  q.options.forEach((opt, i)=>{
+    const btn = document.createElement('button');
+    btn.className = 'option';
+    btn.innerHTML = '<span class="letter">'+LETTERS[i]+')</span><span>'+opt+'</span>';
+    btn.onclick = ()=>selectOption(i);
+    optsDiv.appendChild(btn);
+  });
+
+  document.getElementById('feedback').classList.add('hidden');
+  document.getElementById('next-btn').classList.add('hidden');
+}
+
+function selectOption(i){
+  if(answered) return;
+  answered = true;
+  const q = currentQuiz[currentIndex];
+  const correct = q.correct;
+  const options = document.querySelectorAll('#options .option');
+  options.forEach((opt, idx)=>{
+    opt.classList.add('locked');
+    if(idx===correct) opt.classList.add('correct');
+    else if(idx===i) opt.classList.add('incorrect');
+    else opt.classList.add('dim');
+  });
+
+  const isCorrect = (i===correct);
+  scoreBySkill[q.skill].total++;
+  if(isCorrect) scoreBySkill[q.skill].correct++;
+
+  userAnswers.push({ skill:q.skill, question:q.question, options:q.options, correctIdx:correct, chosenIdx:i, exp:q.exp, isCorrect });
+
+  const fb = document.getElementById('feedback');
+  fb.classList.remove('hidden');
+  fb.classList.toggle('wrong', !isCorrect);
+  fb.innerHTML = '<span class="pista-label">'+(isCorrect ? '✓ Correcto — Pista' : '✕ Incorrecto — Pista')+'</span>'+
+    '<strong>Respuesta correcta: '+LETTERS[correct]+') '+q.options[correct]+'</strong><br><br>'+q.exp;
+
+  document.getElementById('next-btn').classList.remove('hidden');
+}
+
+function nextQuestion(){
+  currentIndex++;
+  if(currentIndex >= currentQuiz.length){
+    showDashboard();
+  } else {
+    renderQuestion();
+  }
+}
+
+function showDashboard(){
+  document.getElementById('quiz-screen').classList.add('hidden');
+  document.getElementById('dashboard-screen').classList.remove('hidden');
+
+  const totalCorrect = userAnswers.filter(a=>a.isCorrect).length;
+  const totalQ = userAnswers.length;
+  document.getElementById('score-total').innerHTML = totalCorrect+'<span>/'+totalQ+'</span>';
+  const pct = Math.round((totalCorrect/totalQ)*100);
+  document.getElementById('score-caption').textContent = pct+'% de logro general';
+
+  const barsDiv = document.getElementById('skill-bars');
+  barsDiv.innerHTML = '';
+  const weakSkills = [];
+  const strongSkills = [];
+
+  SKILL_ORDER.forEach(skillKey=>{
+    const s = scoreBySkill[skillKey];
+    const skillPct = s.total>0 ? Math.round((s.correct/s.total)*100) : 0;
+    let color = 'var(--accent-coral)';
+    if(skillPct>=75) color='var(--accent-sage)';
+    else if(skillPct>=50) color='var(--accent-amber)';
+
+    const row = document.createElement('div');
+    row.className='skill-bar-row';
+    row.innerHTML = '<div class="skill-bar-head"><span class="name">'+SKILL_NAMES[skillKey]+'</span><span class="frac">'+s.correct+'/'+s.total+'</span></div>'+
+      '<div class="skill-bar-track"><div class="skill-bar-fill" style="width:'+skillPct+'%;background:'+color+';"></div></div>';
+    barsDiv.appendChild(row);
+
+    if(skillPct<75) weakSkills.push({name:SKILL_NAMES[skillKey], pct:skillPct});
+    else strongSkills.push(SKILL_NAMES[skillKey]);
+  });
+
+  const improveBox = document.getElementById('improve-box');
+  const improveList = document.getElementById('improve-list');
+  improveList.innerHTML='';
+  if(weakSkills.length>0){
+    improveBox.classList.remove('hidden');
+    weakSkills.sort((a,b)=>a.pct-b.pct).forEach(w=>{
+      const li = document.createElement('li');
+      li.innerHTML = '<strong>'+w.name+'</strong> ('+w.pct+'%) — refuerza con más ejercicios de este tipo de habilidad, revisando las pistas de las preguntas falladas.';
+      improveList.appendChild(li);
+    });
+  } else {
+    improveBox.classList.add('hidden');
+  }
+
+  const strongBox = document.getElementById('strong-box');
+  const strongText = document.getElementById('strong-text');
+  if(strongSkills.length>0){
+    strongBox.classList.remove('hidden');
+    strongText.textContent = strongSkills.join(', ') + '. Buen dominio, mantén la práctica con nuevos intentos.';
+  } else {
+    strongBox.classList.add('hidden');
+  }
+}
+
+function restartQuiz(){ startQuiz(); }
+
+function reviewAnswers(){
+  document.getElementById('dashboard-screen').classList.add('hidden');
+  const rev = document.getElementById('review-screen');
+  rev.classList.remove('hidden');
+  let html = '<p class="eyebrow">Revisión de respuestas</p>';
+  userAnswers.forEach((a, i)=>{
+    html += '<div style="margin-bottom:22px;padding-bottom:18px;border-bottom:1px solid var(--line);">'+
+      '<span class="skill-tag">'+SKILL_NAMES[a.skill]+'</span>'+
+      '<p class="question-text" style="font-size:16px;">'+(i+1)+'. '+a.question+'</p>'+
+      '<p style="font-size:14px;color:'+(a.isCorrect?'var(--accent-sage)':'var(--accent-coral)')+';margin:0 0 6px;">'+
+        (a.isCorrect ? '✓ Respondiste correctamente' : '✕ Tu respuesta: '+LETTERS[a.chosenIdx]+') '+a.options[a.chosenIdx])+
+      '</p>'+
+      '<p style="font-size:14px;color:var(--text-muted);margin:0 0 8px;">Correcta: '+LETTERS[a.correctIdx]+') '+a.options[a.correctIdx]+'</p>'+
+      '<div class="feedback" style="margin-top:6px;"><span class="pista-label">Pista</span>'+a.exp+'</div>'+
+    '</div>';
+  });
+  html += '<div class="actions"><button class="btn" onclick="restartQuiz(); document.getElementById(\'review-screen\').classList.add(\'hidden\');">Repetir con nuevas preguntas</button></div>';
+  rev.innerHTML = html;
+}
+</script>
+</body>
+</html>

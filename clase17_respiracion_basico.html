@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PAES Biología · Clase 17 · Respiración Celular (Nivel Básico)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Source+Sans+3:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-deep:#0f2027;
+    --bg-panel:#15303a;
+    --bg-panel-2:#1b3a45;
+    --accent-amber:#e8a33d;
+    --accent-sage:#6fa88a;
+    --accent-coral:#e4572e;
+    --text-light:#f3ede1;
+    --text-muted:#a9c0c2;
+    --line:#2a4750;
+    --radius:14px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:radial-gradient(circle at 15% -10%, #1c4552 0%, var(--bg-deep) 55%) fixed;
+    color:var(--text-light);
+    font-family:'Source Sans 3', system-ui, sans-serif;
+    min-height:100vh;
+    padding:32px 16px 64px;
+  }
+  .wrap{max-width:820px;margin:0 auto;}
+  .eyebrow{font-family:'JetBrains Mono', monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent-amber);margin:0 0 8px;}
+  h1{font-family:'Fraunces', serif;font-weight:600;font-size:clamp(26px,4vw,38px);line-height:1.1;margin:0 0 6px;color:var(--text-light);}
+  .sub{color:var(--text-muted);font-size:15px;margin:0 0 28px;max-width:60ch;}
+  .card{background:linear-gradient(180deg, var(--bg-panel) 0%, var(--bg-panel-2) 100%);border:1px solid var(--line);border-radius:var(--radius);padding:28px;box-shadow:0 20px 40px -20px rgba(0,0,0,.5);}
+  #start-screen ul{color:var(--text-muted);font-size:14.5px;line-height:1.7;padding-left:20px;margin:18px 0 26px;}
+  #start-screen li{margin-bottom:4px;}
+  .btn{font-family:'Source Sans 3', sans-serif;font-weight:700;font-size:15px;border:none;border-radius:999px;padding:14px 30px;cursor:pointer;background:var(--accent-amber);color:#20140a;transition:transform .15s ease, box-shadow .15s ease;box-shadow:0 8px 20px -8px rgba(0,0,0,.35);}
+  .btn:hover{transform:translateY(-1px);}
+  .btn:active{transform:translateY(0);}
+  .btn.ghost{background:transparent;color:var(--text-muted);border:1.5px solid var(--line);box-shadow:none;}
+  .progress-row{display:flex;align-items:center;gap:14px;margin-bottom:18px;}
+  .progress-track{flex:1;height:6px;border-radius:99px;background:var(--line);overflow:hidden;}
+  .progress-fill{height:100%;background:linear-gradient(90deg,var(--accent-sage),var(--accent-amber));border-radius:99px;transition:width .3s ease;}
+  .progress-label{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--text-muted);white-space:nowrap;}
+  .skill-tag{display:inline-block;font-family:'JetBrains Mono', monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--bg-deep);background:var(--accent-sage);padding:5px 11px;border-radius:999px;margin-bottom:14px;}
+  .qnum{color:var(--text-muted);font-size:13px;font-family:'JetBrains Mono',monospace;margin-bottom:6px;}
+  .question-text{font-family:'Fraunces', serif;font-weight:500;font-size:19px;line-height:1.45;margin:0 0 22px;}
+  .options{display:flex;flex-direction:column;gap:10px;}
+  .option{display:flex;align-items:flex-start;gap:12px;text-align:left;background:rgba(255,255,255,.03);border:1.5px solid var(--line);border-radius:10px;padding:13px 15px;cursor:pointer;color:var(--text-light);font-size:14.5px;line-height:1.4;transition:border-color .15s, background .15s;}
+  .option:hover:not(.locked){border-color:var(--accent-amber);}
+  .option .letter{font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--accent-amber);flex-shrink:0;}
+  .option.correct{border-color:var(--accent-sage);background:rgba(111,168,138,.14);}
+  .option.incorrect{border-color:var(--accent-coral);background:rgba(228,87,46,.14);}
+  .option.locked{cursor:default;}
+  .option.dim{opacity:.45;}
+  .feedback{margin-top:18px;padding:16px 18px;border-radius:10px;background:rgba(255,255,255,.04);border-left:4px solid var(--accent-sage);font-size:14px;line-height:1.6;color:var(--text-muted);}
+  .feedback.wrong{border-left-color:var(--accent-coral);}
+  .feedback strong{color:var(--text-light);}
+  .feedback .pista-label{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent-amber);display:block;margin-bottom:6px;}
+  .nav-row{display:flex;justify-content:flex-end;margin-top:22px;}
+  .score-hero{text-align:center;padding:10px 0 26px;}
+  .score-big{font-family:'Fraunces',serif;font-weight:700;font-size:56px;color:var(--accent-amber);line-height:1;}
+  .score-big span{font-size:24px;color:var(--text-muted);font-weight:500;}
+  .score-caption{color:var(--text-muted);font-size:14px;margin-top:6px;}
+  .skill-bars{display:flex;flex-direction:column;gap:16px;margin:22px 0 8px;}
+  .skill-bar-head{display:flex;justify-content:space-between;font-size:13.5px;margin-bottom:6px;}
+  .skill-bar-head .name{font-weight:600;}
+  .skill-bar-head .frac{font-family:'JetBrains Mono',monospace;color:var(--text-muted);}
+  .skill-bar-track{height:10px;border-radius:99px;background:var(--line);overflow:hidden;}
+  .skill-bar-fill{height:100%;border-radius:99px;}
+  .improve-box{margin-top:26px;background:rgba(228,87,46,.08);border:1px solid rgba(228,87,46,.35);border-radius:10px;padding:18px 20px;}
+  .improve-box h3{font-family:'Fraunces',serif;font-size:16px;margin:0 0 10px;color:var(--accent-coral);}
+  .improve-box ul{margin:0;padding-left:20px;color:var(--text-light);font-size:14px;line-height:1.75;}
+  .strong-box{margin-top:14px;background:rgba(111,168,138,.08);border:1px solid rgba(111,168,138,.35);border-radius:10px;padding:18px 20px;}
+  .strong-box h3{font-family:'Fraunces',serif;font-size:16px;margin:0 0 10px;color:var(--accent-sage);}
+  .strong-box p{margin:0;color:var(--text-light);font-size:14px;line-height:1.6;}
+  .actions{display:flex;gap:12px;margin-top:28px;flex-wrap:wrap;}
+  .hidden{display:none !important;}
+  footer{text-align:center;color:var(--text-muted);font-size:12px;margin-top:26px;opacity:.6;}
+</style>
+</head>
+<body> <div style="float: left; margin-right: 25px; margin-bottom: 25px;"><img src="Logo_AMC.png" alt="Logo" style="max-width: 150px;"></div>
+<div class="wrap">
+  <p class="eyebrow">PAES · Ciencias — Módulo Biología Común · Nivel Básico</p>
+  <h1>Respiración Celular y Fermentación</h1>
+  <p class="sub">Eje 3: Procesos Químicos de la Vida e Integración — Sub-eje: Transformación de Energía en Sistemas Biológicos — Clase 17: Respiración Celular</p>
+
+  <div class="card" id="start-screen">
+    <p class="eyebrow" style="margin-bottom:14px;">Antes de comenzar</p>
+    <p style="color:var(--text-muted);font-size:14.5px;line-height:1.6;">Este quiz evalúa nivel <strong style='color:var(--text-light);'>básico</strong>, con 20 preguntas (4 por cada habilidad PAES), extraídas al azar de un banco de 40. Cada intento genera una versión distinta.</p>
+    <ul>
+      <li>Observar y plantear preguntas</li>
+      <li>Planificar y conducir una investigación</li>
+      <li>Procesar y analizar la evidencia</li>
+      <li>Evaluar</li>
+      <li>Comunicar</li>
+    </ul>
+    <button class="btn" onclick="startQuiz()">Comenzar quiz</button>
+  </div>
+
+  <div class="card hidden" id="quiz-screen">
+    <div class="progress-row">
+      <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+      <div class="progress-label" id="progress-label">1 / 20</div>
+    </div>
+    <span class="skill-tag" id="skill-tag"></span>
+    <p class="qnum" id="qnum"></p>
+    <p class="question-text" id="question-text"></p>
+    <div class="options" id="options"></div>
+    <div class="feedback hidden" id="feedback"></div>
+    <div class="nav-row">
+      <button class="btn hidden" id="next-btn" onclick="nextQuestion()">Siguiente →</button>
+    </div>
+  </div>
+
+  <div class="card hidden" id="dashboard-screen">
+    <p class="eyebrow">Resultados</p>
+    <div class="score-hero">
+      <div class="score-big" id="score-total">0<span>/20</span></div>
+      <p class="score-caption" id="score-caption">Puntaje global</p>
+    </div>
+    <div class="skill-bars" id="skill-bars"></div>
+    <div class="improve-box hidden" id="improve-box">
+      <h3>Puntos a mejorar</h3>
+      <ul id="improve-list"></ul>
+    </div>
+    <div class="strong-box hidden" id="strong-box">
+      <h3>Habilidades consolidadas</h3>
+      <p id="strong-text"></p>
+    </div>
+    <div class="actions">
+      <button class="btn" onclick="restartQuiz()">Repetir con nuevas preguntas</button>
+      <button class="btn ghost" onclick="reviewAnswers()">Revisar mis respuestas</button>
+    </div>
+  </div>
+
+  <div class="card hidden" id="review-screen"></div>
+
+  <footer>Banco de 40 preguntas · nivel básico · Clase 17 de 30 · basado en el temario DEMRE PAES Ciencias — Biología Común</footer>
+</div>
+
+<script>
+const SKILL_NAMES = {"OBS": "Observar y plantear preguntas", "PLAN": "Planificar y conducir una investigación", "PROC": "Procesar y analizar la evidencia", "EVAL": "Evaluar", "COM": "Comunicar"};
+const SKILL_ORDER = ["OBS", "PLAN", "PROC", "EVAL", "COM"];
+const LETTERS = ["A","B","C","D","E"];
+const PICK_PER_SKILL = 4;
+
+const QUESTION_BANK = [{"skill": "OBS", "q": "Un estudiante mide el consumo de O2 de una levadura en un medio con glucosa: el consumo es alto cuando hay O2 disponible, pero la levadura sigue produciendo CO2 (aunque en menor cantidad) incluso cuando el O2 se agota por completo. ¿Pregunta más pertinente?", "options": ["¿La producción de CO2 en ausencia de O2 corresponde a un proceso alternativo (fermentación) que no depende del oxígeno, a diferencia de la respiración celular aeróbica?", "¿La producción de CO2 depende exclusivamente de la disponibilidad de oxígeno, sin ninguna alternativa posible?", "¿El consumo de O2 no tiene ninguna relación con la producción de CO2 en esta levadura?", "¿La levadura detiene por completo cualquier proceso metabólico al agotarse el oxígeno?", "¿La ausencia de oxígeno aumenta la producción de CO2 respecto a cuando hay oxígeno disponible?"], "correct": 0, "exp": "La persistencia de producción de CO2 sin oxígeno es evidencia de un proceso alternativo (fermentación) que permite obtener energía de la glucosa sin depender del oxígeno como aceptor final de electrones, a diferencia de la respiración celular aeróbica."}, {"skill": "OBS", "q": "Se mide la cantidad de ATP producido por gramo de glucosa en condiciones aeróbicas (con oxígeno) y en condiciones anaeróbicas (sin oxígeno, mediante fermentación): la cantidad en condiciones aeróbicas es considerablemente mayor. ¿Pregunta más precisa?", "options": ["¿La respiración celular aeróbica es más eficiente energéticamente que la fermentación para producir ATP a partir de la misma cantidad de glucosa?", "¿La fermentación produce siempre más ATP por gramo de glucosa que la respiración aeróbica?", "¿La cantidad de ATP producido no tiene ninguna relación con la disponibilidad de oxígeno?", "¿Ambos procesos producen exactamente la misma cantidad de ATP por gramo de glucosa?", "¿El oxígeno reduce la eficiencia energética de la obtención de ATP a partir de glucosa?"], "correct": 0, "exp": "La marcada diferencia en la producción de ATP confirma que la respiración celular aeróbica es considerablemente más eficiente que la fermentación, ya que permite extraer una proporción mucho mayor de la energía química contenida en la molécula de glucosa."}, {"skill": "OBS", "q": "Un estudiante observa que, tras un ejercicio físico intenso, sus músculos acumulan una sustancia (ácido láctico) que causa fatiga, especialmente cuando el esfuerzo supera la capacidad del cuerpo de suministrar suficiente oxígeno al músculo. ¿Pregunta más pertinente?", "options": ["¿La acumulación de ácido láctico se relaciona con que el músculo recurre a la fermentación láctica para obtener energía cuando la demanda de ATP supera la disponibilidad de oxígeno?", "¿El ácido láctico se produce exclusivamente cuando hay abundante oxígeno disponible en el músculo?", "¿La fermentación láctica no tiene ninguna relación con la actividad muscular durante el ejercicio?", "¿El ejercicio físico intenso detiene por completo cualquier proceso de obtención de energía en el músculo?", "¿La disponibilidad de oxígeno no influye en ningún grado sobre el tipo de proceso metabólico utilizado por el músculo?"], "correct": 0, "exp": "Cuando la demanda energética del músculo supera la capacidad de suministro de oxígeno, las células musculares recurren a la fermentación láctica como vía alternativa para regenerar ATP rápidamente, generando ácido láctico como producto."}, {"skill": "OBS", "q": "Se observa que la glucólisis (primera etapa de la degradación de la glucosa) ocurre en el citoplasma de la célula, tanto en condiciones de presencia como de ausencia de oxígeno, mientras que el Ciclo de Krebs y la cadena transportadora de electrones ocurren específicamente dentro de la mitocondria. ¿Pregunta más precisa?", "options": ["¿La ubicación celular distinta de estas etapas se relaciona con que solo algunas de ellas requieren directamente de la mitocondria y, por extensión, de la disponibilidad de oxígeno?", "¿Todas las etapas de la degradación de la glucosa ocurren exclusivamente dentro de la mitocondria?", "¿La glucólisis requiere directamente de oxígeno para poder ocurrir en el citoplasma?", "¿La ubicación celular de estas etapas no tiene ninguna relación con su dependencia de oxígeno?", "¿El Ciclo de Krebs ocurre en el citoplasma, de la misma manera que la glucólisis?"], "correct": 0, "exp": "La compartimentalización celular refleja la dependencia de oxígeno de cada etapa: la glucólisis, al ocurrir en el citoplasma sin requerir oxígeno directamente, puede continuar en su ausencia, mientras las etapas mitocondriales dependen de la cadena transportadora de electrones y, por tanto, del oxígeno como aceptor final."}, {"skill": "OBS", "q": "Un investigador nota que las células musculares con mayor cantidad de mitocondrias (como las de deportistas de resistencia entrenados) toleran mejor el ejercicio prolongado sin fatigarse tan rápido, en comparación con células musculares con menos mitocondrias. ¿Pregunta más precisa?", "options": ["¿Una mayor cantidad de mitocondrias permite a la célula muscular sostener una mayor tasa de respiración celular aeróbica, retrasando la necesidad de recurrir a la fermentación láctica durante el ejercicio prolongado?", "¿La cantidad de mitocondrias no tiene ninguna relación con la capacidad de una célula muscular de realizar respiración celular?", "¿Una mayor cantidad de mitocondrias reduce la capacidad de un músculo de producir ATP mediante respiración aeróbica?", "¿Todas las células musculares poseen exactamente la misma cantidad de mitocondrias, sin ninguna variación?", "¿La fermentación láctica ocurre exclusivamente en músculos con abundantes mitocondrias?"], "correct": 0, "exp": "Una mayor cantidad de mitocondrias incrementa la capacidad de la célula de sostener la respiración celular aeróbica (más eficiente energéticamente), retrasando el punto en que la demanda de ATP supera esa capacidad y obliga a recurrir a la fermentación láctica."}, {"skill": "OBS", "q": "Se observa que, al producir pan o cerveza, las levaduras (Saccharomyces cerevisiae) fermentan azúcares en ausencia de oxígeno, generando etanol y CO2 como productos, siendo el CO2 el responsable de que la masa de pan suba. ¿Pregunta más precisa?", "options": ["¿Este proceso de fermentación alcohólica en levaduras representa una vía alternativa de obtención de energía en ausencia de oxígeno, distinta a la fermentación láctica de las células musculares?", "¿Las levaduras solo pueden fermentar en presencia de oxígeno abundante?", "¿El CO2 producido durante este proceso proviene exclusivamente de la respiración celular aeróbica de la levadura?", "¿La fermentación alcohólica y la fermentación láctica son exactamente el mismo proceso, sin ninguna diferencia?", "¿La levadura no produce ningún tipo de energía durante el proceso de fermentación alcohólica?"], "correct": 0, "exp": "La fermentación alcohólica de las levaduras es otra vía anaeróbica de obtención de energía a partir de la glucosa, distinta en sus productos finales (etanol y CO2) de la fermentación láctica, pero compartiendo el principio de regenerar NAD+ sin depender del oxígeno."}, {"skill": "OBS", "q": "Un estudiante mide la temperatura liberada por distintos tejidos de un organismo, encontrando que tejidos con mayor actividad metabólica (como el músculo cardíaco) liberan más calor que tejidos con menor actividad metabólica (como el tejido adiposo en reposo). ¿Pregunta más precisa?", "options": ["¿La cantidad de calor liberado por un tejido se relaciona con su tasa de respiración celular, un proceso que libera energía tanto en forma de ATP como de calor?", "¿La liberación de calor no tiene ninguna relación con la actividad metabólica de un tejido?", "¿Los tejidos con menor actividad metabólica liberan siempre más calor que los de mayor actividad?", "¿La respiración celular no libera ningún tipo de energía en forma de calor?", "¿Todos los tejidos del organismo liberan exactamente la misma cantidad de calor, sin importar su actividad?"], "correct": 0, "exp": "La respiración celular, al degradar la glucosa para producir ATP, libera también una fracción de esa energía en forma de calor; tejidos con mayor actividad metabólica (y por tanto mayor tasa de respiración celular) generan proporcionalmente más calor como subproducto."}, {"skill": "OBS", "q": "Se observa que una célula muscular privada completamente de oxígeno durante un tiempo prolongado eventualmente deja de poder producir suficiente ATP para mantener sus funciones vitales, a pesar de seguir realizando fermentación láctica. ¿Pregunta más precisa?", "options": ["¿La incapacidad de la fermentación láctica de sostener indefinidamente las necesidades energéticas de la célula se relaciona con su menor rendimiento de ATP por molécula de glucosa, en comparación con la respiración aeróbica?", "¿La fermentación láctica produce siempre más ATP que la respiración celular aeróbica?", "¿La ausencia de oxígeno no tiene ninguna relación con la capacidad de una célula de producir suficiente ATP?", "¿La fermentación láctica puede sostener indefinidamente cualquier necesidad energética de una célula, sin ningún límite?", "¿La célula muscular detiene por completo la fermentación láctica al no tener oxígeno disponible?"], "correct": 0, "exp": "Dado el bajo rendimiento energético de la fermentación (2 ATP netos por glucosa, frente a los aproximadamente 30-32 de la respiración aeróbica), esta vía no puede sostener indefinidamente las demandas energéticas celulares, resultando en fallo funcional prolongado sin oxígeno."}, {"skill": "PLAN", "q": "Para comprobar que la producción de CO2 de una levadura continúa incluso en ausencia de oxígeno, ¿cuál es el diseño experimental más adecuado?", "options": ["Medir la producción de CO2 de la levadura en un medio con oxígeno disponible y compararla con la producción en un medio sin oxígeno, manteniendo igual la disponibilidad de glucosa en ambos casos", "Medir la producción de CO2 solo en presencia de oxígeno, sin ningún grupo de comparación sin oxígeno", "No es necesario ningún grupo de comparación para esta pregunta", "Medir solo la disponibilidad de glucosa, sin evaluar directamente la producción de CO2", "Usar distintas especies de levadura para cada condición de oxígeno evaluada"], "correct": 0, "exp": "Comparar la producción de CO2 con y sin oxígeno, manteniendo igual la glucosa disponible, permite establecer de forma experimental si la producción de este gas continúa por una vía alternativa (fermentación) en ausencia de oxígeno."}, {"skill": "PLAN", "q": "Un investigador desea comparar la cantidad de ATP producido por gramo de glucosa en condiciones aeróbicas y anaeróbicas. ¿Diseño experimental adecuado?", "options": ["Medir la cantidad de ATP producido por una misma cantidad de glucosa metabolizada en presencia de oxígeno y en ausencia de oxígeno, bajo las mismas condiciones de temperatura y tipo celular", "Medir la cantidad de ATP solo en condiciones aeróbicas, sin ningún grupo de comparación anaeróbico", "No es necesario ningún grupo de comparación anaeróbico para esta pregunta", "Usar distintas cantidades de glucosa en cada condición evaluada, sin ningún control sobre esta variable", "Medir solo la producción de CO2, sin evaluar directamente la cantidad de ATP producido"], "correct": 0, "exp": "Comparar el ATP producido por la misma cantidad de glucosa en ambas condiciones, controlando otras variables, permite establecer de forma experimental la diferencia real en el rendimiento energético entre la respiración aeróbica y la fermentación."}, {"skill": "PLAN", "q": "Para determinar si la acumulación de ácido láctico en el músculo se relaciona con la intensidad del ejercicio físico, ¿cuál es el diseño experimental más adecuado?", "options": ["Medir la concentración de ácido láctico en el músculo bajo distintas intensidades controladas de ejercicio, manteniendo igual la duración del esfuerzo en cada condición", "Medir la concentración de ácido láctico solo bajo una intensidad fija de ejercicio, sin ninguna variación", "No es necesario variar la intensidad del ejercicio para responder esta pregunta", "Variar simultáneamente la intensidad y la duración del ejercicio sin ningún control entre ambas variables", "Medir solo la frecuencia cardíaca, sin evaluar directamente la concentración de ácido láctico"], "correct": 0, "exp": "Variar sistemáticamente la intensidad del ejercicio, manteniendo constante la duración, permite establecer de forma controlada si existe una relación entre la intensidad del esfuerzo y la acumulación de ácido láctico en el músculo."}, {"skill": "PLAN", "q": "Se desea comprobar que una mayor cantidad de mitocondrias en una célula muscular permite sostener una mayor tasa de respiración celular aeróbica. ¿Diseño experimental más adecuado?", "options": ["Comparar la tasa de consumo de oxígeno (indicador de respiración aeróbica) entre células musculares con distinta cantidad de mitocondrias, bajo el mismo nivel de demanda energética inducida", "Comparar solo células con una cantidad fija de mitocondrias, sin ninguna variación entre los grupos evaluados", "No es necesario comparar distintas cantidades de mitocondrias para esta pregunta", "Medir solo el tamaño de la célula muscular, sin evaluar directamente su tasa de consumo de oxígeno", "Usar tipos celulares completamente distintos para cada grupo evaluado, sin ningún control sobre esta variable"], "correct": 0, "exp": "Comparar la tasa de consumo de oxígeno entre células con distinta cantidad de mitocondrias, bajo la misma demanda energética, permite establecer de forma experimental si esta característica estructural determina la capacidad de sostener la respiración aeróbica."}, {"skill": "PLAN", "q": "Para comprobar que las levaduras producen etanol específicamente durante la fermentación alcohólica en ausencia de oxígeno, ¿cuál es el diseño experimental más adecuado?", "options": ["Medir la concentración de etanol producido por la levadura en un medio con oxígeno disponible y en un medio sin oxígeno, manteniendo igual la disponibilidad de azúcar en ambos casos", "Medir la concentración de etanol solo en un medio sin oxígeno, sin ningún grupo de comparación con oxígeno", "No es necesario ningún grupo de comparación con oxígeno disponible para esta pregunta", "Usar distintas especies de levadura para cada condición de oxígeno evaluada", "Medir solo la producción de CO2, sin evaluar directamente la concentración de etanol"], "correct": 0, "exp": "Comparar la producción de etanol con y sin oxígeno disponible, manteniendo igual el azúcar disponible, permite establecer experimentalmente si este producto se genera específicamente durante la fermentación alcohólica en ausencia de oxígeno."}, {"skill": "PLAN", "q": "Un investigador desea determinar si la cantidad de calor liberado por un tejido se relaciona con su tasa de respiración celular. ¿Diseño experimental más adecuado?", "options": ["Medir simultáneamente la tasa de consumo de oxígeno (indicador de respiración celular) y la cantidad de calor liberado por distintos tejidos con diferente actividad metabólica", "Medir solo la cantidad de calor liberado, sin evaluar simultáneamente la tasa de consumo de oxígeno", "No es necesario medir el consumo de oxígeno para responder esta pregunta", "Comparar tejidos de organismos completamente distintos, sin ningún control sobre otras diferencias entre ellos", "Medir el calor liberado en un único tejido, sin ninguna comparación entre distintos tipos de tejido"], "correct": 0, "exp": "Medir simultáneamente el consumo de oxígeno y el calor liberado en distintos tejidos con diferente actividad metabólica permite establecer de forma experimental si existe una relación entre la tasa de respiración celular y la liberación de calor como subproducto."}, {"skill": "PLAN", "q": "Se desea comprobar que una célula muscular privada de oxígeno por tiempo prolongado eventualmente falla en producir suficiente ATP, a pesar de mantener la fermentación láctica activa. ¿Diseño experimental más adecuado?", "options": ["Medir la concentración de ATP en la célula muscular a lo largo de un período prolongado de privación de oxígeno, mientras se confirma simultáneamente que la fermentación láctica permanece activa", "Medir la concentración de ATP solo en un momento fijo tras la privación de oxígeno, sin ningún seguimiento a lo largo del tiempo", "No es necesario ningún seguimiento temporal para esta pregunta", "Medir solo la concentración de ácido láctico, sin evaluar directamente los niveles de ATP", "Asumir el fallo energético sin realizar ninguna medición directa de ATP a lo largo del tiempo"], "correct": 0, "exp": "Un seguimiento temporal de la concentración de ATP durante la privación prolongada de oxígeno, confirmando simultáneamente la actividad de la fermentación láctica, permite establecer experimentalmente el punto en que esta vía resulta insuficiente para sostener las necesidades energéticas celulares."}, {"skill": "PROC", "q": "Se midió la producción de CO2 de una levadura en presencia de oxígeno (producción alta) y en ausencia de oxígeno (producción menor, pero persistente) con la misma glucosa disponible. ¿Qué conclusión es más adecuada?", "options": ["La levadura puede producir CO2 mediante una vía alternativa (fermentación) que no depende de la presencia de oxígeno, aunque con menor magnitud que en condiciones aeróbicas", "La producción de CO2 depende exclusivamente de la disponibilidad de oxígeno, sin ninguna alternativa posible", "La ausencia de oxígeno detiene por completo la producción de CO2 en la levadura", "Ambas condiciones muestran exactamente la misma producción de CO2, sin ninguna diferencia", "La presencia de oxígeno reduce la producción de CO2 en comparación con su ausencia"], "correct": 0, "exp": "La persistencia de producción de CO2, aunque en menor magnitud, en ausencia de oxígeno confirma experimentalmente que la levadura recurre a una vía alternativa (fermentación) que no depende del oxígeno para continuar obteniendo energía de la glucosa."}, {"skill": "PROC", "q": "Se comparó el ATP producido por gramo de glucosa en condiciones aeróbicas (cantidad considerablemente mayor) y anaeróbicas (cantidad considerablemente menor), bajo las mismas condiciones de temperatura y tipo celular. ¿Qué conclusión es más adecuada?", "options": ["La respiración celular aeróbica es considerablemente más eficiente que la fermentación para producir ATP a partir de la misma cantidad de glucosa", "La fermentación es más eficiente que la respiración aeróbica para producir ATP a partir de glucosa", "Ambas condiciones producen exactamente la misma cantidad de ATP por gramo de glucosa", "La disponibilidad de oxígeno no tiene ninguna relación con la cantidad de ATP producido", "La respiración aeróbica reduce la cantidad de ATP producido en comparación con la fermentación"], "correct": 0, "exp": "La marcada diferencia en la producción de ATP, con la misma cantidad de glucosa metabolizada, confirma experimentalmente la mayor eficiencia energética de la respiración celular aeróbica en comparación con la fermentación."}, {"skill": "PROC", "q": "Se midió la concentración de ácido láctico en el músculo bajo distintas intensidades de ejercicio: aumento considerable a intensidades altas, y aumento mínimo a intensidades bajas o moderadas. ¿Qué conclusión es más adecuada?", "options": ["La intensidad del ejercicio se relaciona con la acumulación de ácido láctico, siendo mayor en esfuerzos intensos que probablemente superan la capacidad de suministro de oxígeno al músculo", "La intensidad del ejercicio no tiene ninguna relación con la acumulación de ácido láctico en el músculo", "La acumulación de ácido láctico es mayor en ejercicios de baja intensidad que en ejercicios intensos", "Todas las intensidades de ejercicio producen exactamente la misma acumulación de ácido láctico", "El ejercicio físico siempre reduce la concentración de ácido láctico en el músculo"], "correct": 0, "exp": "El aumento marcado de ácido láctico específicamente bajo alta intensidad de ejercicio es consistente con el recurso a la fermentación láctica cuando la demanda energética muscular supera la capacidad de suministro de oxígeno disponible."}, {"skill": "PROC", "q": "Se comparó la tasa de consumo de oxígeno entre células musculares con mayor cantidad de mitocondrias (consumo considerablemente mayor) y células con menor cantidad de mitocondrias (consumo considerablemente menor), bajo la misma demanda energética. ¿Qué conclusión es más adecuada?", "options": ["Una mayor cantidad de mitocondrias permite a la célula sostener una mayor tasa de respiración celular aeróbica ante una demanda energética equivalente", "Una mayor cantidad de mitocondrias reduce la capacidad de la célula de consumir oxígeno", "La cantidad de mitocondrias no tiene ninguna relación con la tasa de consumo de oxígeno de una célula", "Ambos grupos celulares muestran exactamente la misma tasa de consumo de oxígeno", "Las células con menos mitocondrias consumen más oxígeno que las células con más mitocondrias"], "correct": 0, "exp": "La mayor tasa de consumo de oxígeno en células con más mitocondrias, ante la misma demanda energética, confirma experimentalmente que esta característica estructural determina la capacidad de sostener la respiración celular aeróbica."}, {"skill": "PROC", "q": "Se midió la concentración de etanol producido por una levadura en un medio con oxígeno disponible (concentración prácticamente nula) y en un medio sin oxígeno (concentración considerablemente mayor), con la misma cantidad de azúcar disponible. ¿Qué conclusión es más adecuada?", "options": ["La producción de etanol por la levadura ocurre específicamente durante la fermentación alcohólica, un proceso que se favorece en ausencia de oxígeno", "La producción de etanol ocurre exclusivamente en presencia de abundante oxígeno disponible", "La disponibilidad de oxígeno no tiene ninguna relación con la producción de etanol por la levadura", "Ambas condiciones muestran exactamente la misma concentración de etanol producido", "La presencia de oxígeno aumenta la producción de etanol en comparación con su ausencia"], "correct": 0, "exp": "La marcada diferencia en la producción de etanol, favorecida específicamente en ausencia de oxígeno, confirma experimentalmente que este producto se genera durante la fermentación alcohólica, una vía metabólica anaeróbica característica de las levaduras."}, {"skill": "PROC", "q": "Se midió simultáneamente el consumo de oxígeno y el calor liberado por distintos tejidos: tejidos con mayor consumo de oxígeno liberaron proporcionalmente más calor que tejidos con menor consumo. ¿Qué conclusión es más adecuada?", "options": ["La cantidad de calor liberado por un tejido se relaciona proporcionalmente con su tasa de respiración celular, medida a través de su consumo de oxígeno", "El consumo de oxígeno no tiene ninguna relación con la cantidad de calor liberado por un tejido", "Los tejidos con mayor consumo de oxígeno liberan menos calor que los tejidos con menor consumo", "Todos los tejidos evaluados liberan exactamente la misma cantidad de calor, sin importar su consumo de oxígeno", "La respiración celular no libera ningún tipo de energía en forma de calor"], "correct": 0, "exp": "La relación proporcional observada entre consumo de oxígeno (indicador de tasa de respiración celular) y calor liberado confirma experimentalmente que este proceso metabólico libera una fracción de su energía en forma de calor, proporcional a su intensidad."}, {"skill": "PROC", "q": "Se midió la concentración de ATP en una célula muscular a lo largo de un período prolongado de privación de oxígeno: disminución progresiva y sostenida, a pesar de mantenerse activa la fermentación láctica durante todo el período. ¿Qué conclusión es más adecuada?", "options": ["La fermentación láctica, con su menor rendimiento energético, resulta insuficiente para sostener indefinidamente las necesidades de ATP de la célula muscular privada de oxígeno", "La fermentación láctica produce suficiente ATP para sostener indefinidamente cualquier necesidad energética celular", "La privación de oxígeno no tiene ninguna relación con los niveles de ATP de la célula muscular", "La concentración de ATP aumenta progresivamente durante la privación prolongada de oxígeno", "La actividad de la fermentación láctica detiene por completo la disminución de ATP en la célula"], "correct": 0, "exp": "La disminución progresiva de ATP, a pesar de mantenerse activa la fermentación láctica, confirma experimentalmente que esta vía, con su bajo rendimiento energético por molécula de glucosa, resulta insuficiente para sostener indefinidamente las demandas de ATP de la célula sin oxígeno."}, {"skill": "EVAL", "q": "Un estudiante concluyó que 'la fermentación es un proceso completamente inútil para la célula, ya que produce mucho menos ATP que la respiración aeróbica', sin considerar su función en ausencia de oxígeno. ¿Qué crítica es más pertinente?", "options": ["La conclusión es correcta porque la fermentación nunca aporta ningún beneficio a la célula, dado su bajo rendimiento energético", "Aunque la fermentación produce menos ATP que la respiración aeróbica, permite a la célula obtener algo de energía y regenerar NAD+ (necesario para que continúe la glucólisis) cuando el oxígeno no está disponible; calificarla como 'completamente inútil' ignora su función crítica en esas condiciones", "La fermentación siempre produce más ATP que la respiración celular aeróbica", "La respiración celular aeróbica no depende en ningún caso de la disponibilidad de oxígeno", "No es necesario considerar la disponibilidad de oxígeno para evaluar la utilidad de la fermentación"], "correct": 1, "exp": "Calificar la fermentación como 'completamente inútil' ignora su función esencial en ausencia de oxígeno: permite regenerar NAD+ para que la glucólisis continúe, obteniendo algo de ATP cuando la vía aeróbica, más eficiente, no está disponible."}, {"skill": "EVAL", "q": "Una investigación afirmó que 'todos los organismos, sin excepción, mueren instantáneamente ante cualquier ausencia total de oxígeno', basándose en el estudio de organismos estrictamente aeróbicos. ¿Qué crítica es más pertinente?", "options": ["La conclusión es correcta porque cualquier organismo, sin excepción, muere instantáneamente ante la ausencia de oxígeno", "Existen organismos (como las levaduras, ciertas bacterias, o células musculares humanas por períodos limitados) capaces de sobrevivir, al menos temporalmente, mediante fermentación en ausencia de oxígeno; generalizar la muerte instantánea 'sin excepción' a partir del estudio de organismos estrictamente aeróbicos ignora esta capacidad documentada en otros organismos", "Ningún organismo depende del oxígeno para ningún proceso metabólico", "Todos los organismos realizan fermentación de la misma manera, sin ninguna diferencia entre ellos", "La fermentación no permite a ningún organismo sobrevivir, ni siquiera temporalmente, sin oxígeno"], "correct": 1, "exp": "La capacidad de fermentación, presente en muchos organismos y tejidos (levaduras, bacterias, músculo humano), permite sobrevivir al menos temporalmente sin oxígeno; generalizar una muerte instantánea universal ignora esta capacidad metabólica alternativa bien documentada."}, {"skill": "EVAL", "q": "Un estudio concluyó que 'el ácido láctico acumulado en el músculo durante el ejercicio intenso es exclusivamente un producto de desecho sin ninguna función', ignorando su papel en la regeneración de NAD+. ¿Qué crítica es más pertinente?", "options": ["La conclusión es correcta porque el ácido láctico es únicamente un producto de desecho, sin ninguna función relacionada con el metabolismo energético", "La producción de ácido láctico, al regenerar NAD+ a partir de NADH, permite que la glucólisis continúe funcionando y siga produciendo ATP incluso sin oxígeno disponible; calificarlo como 'exclusivamente un producto de desecho sin ninguna función' ignora este rol metabólico central", "El ácido láctico no tiene ninguna relación con la regeneración de NAD+ durante la fermentación", "La glucólisis puede continuar indefinidamente sin necesidad de regenerar NAD+ en ningún momento", "El NADH no cumple ninguna función relevante durante el proceso de fermentación láctica"], "correct": 1, "exp": "Aunque el ácido láctico se acumula como producto final, su formación cumple una función metabólica esencial: regenerar NAD+ a partir del NADH generado en la glucólisis, permitiendo que esta vía continúe operando y produciendo ATP sin depender del oxígeno."}, {"skill": "EVAL", "q": "Una publicación afirmó que 'la cantidad de mitocondrias de una célula no tiene ninguna relación con su capacidad de realizar ejercicio prolongado', basándose en que todas las células poseen al menos algunas mitocondrias. ¿Qué crítica es más pertinente?", "options": ["La afirmación es correcta porque la sola presencia de mitocondrias, sin importar su cantidad, garantiza la misma capacidad de ejercicio prolongado en cualquier célula", "La evidencia comparativa muestra que células con mayor cantidad de mitocondrias sostienen una mayor tasa de respiración aeróbica, retrasando la necesidad de recurrir a la fermentación durante el ejercicio prolongado; afirmar que la cantidad de mitocondrias 'no tiene ninguna relación' con esta capacidad contradice esta evidencia comparativa directa", "Todas las células poseen exactamente la misma cantidad de mitocondrias, sin ninguna variación entre ellas", "La respiración celular aeróbica no depende en ningún caso de la cantidad de mitocondrias presentes", "La capacidad de realizar ejercicio prolongado no tiene ninguna relación con la tasa de respiración celular"], "correct": 1, "exp": "La evidencia comparativa (mayor consumo de oxígeno y mejor tolerancia al ejercicio prolongado en células con más mitocondrias) contradice directamente la afirmación de que la cantidad de mitocondrias 'no tiene ninguna relación' con la capacidad de sostener actividad física prolongada."}, {"skill": "EVAL", "q": "Un estudio sobre fermentación alcohólica concluyó que 'las levaduras solo pueden obtener energía mediante fermentación, siendo completamente incapaces de realizar respiración celular aeróbica bajo ninguna circunstancia'. ¿Qué crítica es más pertinente?", "options": ["La conclusión es correcta porque las levaduras son organismos exclusivamente fermentadores, sin ninguna capacidad de respiración aeróbica", "Muchas especies de levadura, incluida Saccharomyces cerevisiae, son organismos facultativos capaces de realizar respiración celular aeróbica cuando hay oxígeno disponible, y solo recurren a la fermentación en su ausencia; afirmar que son 'completamente incapaces... bajo ninguna circunstancia' de respirar aeróbicamente contradice esta capacidad metabólica dual bien documentada", "Las levaduras nunca producen ningún tipo de energía mediante ningún proceso metabólico", "La disponibilidad de oxígeno no tiene ninguna relación con el tipo de metabolismo energético utilizado por una levadura", "Todas las especies de levadura son idénticas en su capacidad metabólica, sin ninguna variación entre ellas"], "correct": 1, "exp": "Muchas levaduras son organismos facultativos: capaces de realizar respiración celular aeróbica (más eficiente) cuando hay oxígeno disponible, y recurriendo a la fermentación solo en su ausencia; la afirmación de incapacidad absoluta contradice esta flexibilidad metabólica bien documentada."}, {"skill": "EVAL", "q": "Una investigación afirmó que 'el calor liberado durante la respiración celular representa energía completamente desperdiciada, sin ninguna función biológica'. ¿Qué crítica es más pertinente?", "options": ["La afirmación es correcta porque el calor liberado durante la respiración celular nunca cumple ninguna función biológica relevante en ningún organismo", "En organismos endotermos (de sangre caliente), el calor liberado durante la respiración celular contribuye directamente al mantenimiento de la temperatura corporal, una función biológica central para su fisiología; calificarlo como 'completamente desperdiciado, sin ninguna función' ignora este rol conocido en la termorregulación de estos organismos", "El calor liberado durante la respiración celular no tiene ninguna relación con la temperatura corporal de ningún organismo", "Todos los organismos son endotermos, por lo que el calor liberado siempre cumple una función de termorregulación", "La respiración celular no libera ningún tipo de energía en forma de calor bajo ninguna circunstancia"], "correct": 1, "exp": "En organismos endotermos, el calor liberado durante la respiración celular contribuye directamente al mantenimiento de la temperatura corporal, una función biológica relevante; calificarlo como completamente desperdiciado ignora este rol fisiológico documentado en estos organismos."}, {"skill": "COM", "q": "Un estudiante debe explicar por qué la fermentación permite a una célula seguir produciendo algo de ATP en ausencia de oxígeno, a pesar de no completar la degradación total de la glucosa. ¿Explicación más precisa?", "options": ["La fermentación regenera el NAD+ consumido durante la glucólisis (a partir del NADH generado), permitiendo que esta primera etapa de degradación de la glucosa continúe funcionando y siga produciendo una cantidad limitada de ATP, incluso sin oxígeno disponible para las etapas posteriores", "La fermentación no tiene ninguna relación con la regeneración de NAD+ necesaria para la glucólisis", "La glucólisis puede continuar indefinidamente sin necesidad de regenerar NAD+ en ningún momento", "La fermentación produce la misma cantidad de ATP que la respiración celular aeróbica completa", "El NADH generado durante la glucólisis no tiene ninguna función relacionada con la fermentación"], "correct": 0, "exp": "La explicación debe conectar la función central de la fermentación (regenerar NAD+ a partir del NADH) con la posibilidad de que la glucólisis continúe operando en ausencia de oxígeno, produciendo así una cantidad limitada pero real de ATP."}, {"skill": "COM", "q": "Al explicar por qué la respiración celular aeróbica produce considerablemente más ATP que la fermentación a partir de la misma cantidad de glucosa, ¿cuál es la explicación más precisa?", "options": ["La respiración aeróbica completa la degradación de la glucosa a través de etapas adicionales (Ciclo de Krebs y cadena transportadora de electrones), que extraen mucha más energía química de la molécula, mientras la fermentación se detiene tras la glucólisis, dejando la mayor parte de esa energía sin extraer", "La fermentación completa todas las mismas etapas que la respiración celular aeróbica, sin ninguna diferencia entre ambos procesos", "La respiración aeróbica y la fermentación extraen exactamente la misma cantidad de energía de la molécula de glucosa", "El Ciclo de Krebs y la cadena transportadora de electrones no tienen ninguna relación con la producción de ATP", "La fermentación extrae más energía de la glucosa que la respiración celular aeróbica"], "correct": 0, "exp": "La explicación debe describir que la respiración aeróbica continúa la degradación de la glucosa más allá de la glucólisis, a través de etapas adicionales que extraen la mayor parte de la energía química disponible, mientras la fermentación se detiene tempranamente, dejando gran parte de esa energía sin aprovechar."}, {"skill": "COM", "q": "Un estudiante debe explicar por qué el ejercicio físico intenso lleva a un músculo a recurrir a la fermentación láctica, a pesar de ser un proceso menos eficiente que la respiración aeróbica. ¿Explicación más precisa?", "options": ["Cuando la demanda de ATP del músculo aumenta rápidamente durante el ejercicio intenso, puede superar la capacidad del sistema circulatorio de suministrar suficiente oxígeno en ese momento; ante esta escasez temporal de oxígeno, la fermentación láctica permite seguir regenerando ATP rápidamente, aunque de forma menos eficiente que la respiración aeróbica", "El músculo recurre a la fermentación láctica únicamente cuando hay abundante oxígeno disponible", "La fermentación láctica es siempre más eficiente energéticamente que la respiración celular aeróbica", "La demanda de ATP del músculo no tiene ninguna relación con el tipo de proceso metabólico utilizado", "El sistema circulatorio siempre puede suministrar suficiente oxígeno, sin importar la intensidad del ejercicio"], "correct": 0, "exp": "La explicación debe conectar el desajuste temporal entre demanda de ATP (que aumenta rápidamente con el ejercicio intenso) y la capacidad de suministro de oxígeno (limitada por el sistema circulatorio), justificando el recurso transitorio a la fermentación como vía de emergencia menos eficiente pero más rápida de activar."}, {"skill": "COM", "q": "Al explicar la diferencia entre los productos finales de la fermentación láctica (en músculo) y la fermentación alcohólica (en levaduras), ¿cuál es la explicación más precisa?", "options": ["Ambos procesos comparten el objetivo de regenerar NAD+ a partir del NADH generado en la glucólisis, pero difieren en el producto final: la fermentación láctica reduce el piruvato directamente a ácido láctico, mientras la fermentación alcohólica lo transforma primero en acetaldehído y luego en etanol, liberando además CO2", "Ambos procesos producen exactamente los mismos productos finales, sin ninguna diferencia entre ellos", "La fermentación alcohólica no tiene ninguna relación con la regeneración de NAD+ a partir de NADH", "La fermentación láctica libera CO2 como producto principal, de la misma manera que la fermentación alcohólica", "El piruvato no participa en ninguno de los dos tipos de fermentación mencionados"], "correct": 0, "exp": "La explicación debe destacar el objetivo común (regenerar NAD+) logrado mediante rutas bioquímicas distintas que determinan productos finales diferentes: ácido láctico en el caso muscular, y etanol junto con CO2 en el caso de las levaduras."}, {"skill": "COM", "q": "Un estudiante debe explicar por qué medir el consumo de oxígeno de un tejido es un método válido para estimar indirectamente su tasa de respiración celular. ¿Explicación más precisa?", "options": ["El oxígeno es el aceptor final de electrones en la cadena transportadora de electrones, un componente esencial de la respiración celular aeróbica; por lo tanto, la cantidad de oxígeno consumido en un tiempo determinado se relaciona proporcionalmente con la actividad de este proceso metabólico en el tejido", "El consumo de oxígeno no tiene ninguna relación con la actividad de la respiración celular de un tejido", "El oxígeno es liberado, y no consumido, durante la respiración celular aeróbica", "La tasa de respiración celular puede estimarse igualmente bien mediante la fermentación, sin necesidad de medir oxígeno", "Todos los tejidos consumen exactamente la misma cantidad de oxígeno, sin importar su actividad metabólica"], "correct": 0, "exp": "La explicación debe conectar el rol del oxígeno como aceptor final de electrones en la cadena transportadora (componente central de la respiración aeróbica) con la validez de usar su consumo como una medida indirecta y proporcional de la actividad respiratoria general del tejido."}, {"skill": "COM", "q": "Al explicar por qué una célula privada de oxígeno por tiempo prolongado eventualmente falla energéticamente a pesar de mantener la fermentación activa, ¿cuál es la explicación más precisa?", "options": ["La fermentación produce una cantidad limitada de ATP por molécula de glucosa (considerablemente menor que la respiración aeróbica); si la demanda energética de la célula persiste o aumenta, esta vía menos eficiente eventualmente no logra igualar el ritmo de consumo de ATP, provocando un déficit energético progresivo", "La fermentación produce la misma cantidad de ATP que la respiración celular aeróbica, por lo que no debería producirse ningún déficit energético", "La demanda energética de una célula disminuye automáticamente al faltar oxígeno disponible", "La fermentación puede sostener indefinidamente cualquier nivel de demanda energética celular, sin ningún límite", "La ausencia de oxígeno no tiene ninguna relación con la capacidad de una célula de mantener sus funciones vitales"], "correct": 0, "exp": "La explicación debe conectar el bajo rendimiento energético de la fermentación por molécula de glucosa con la incapacidad de esta vía de igualar, a largo plazo, el ritmo de consumo energético celular, explicando el fallo funcional progresivo bajo privación prolongada de oxígeno."}, {"skill": "PLAN", "q": "Un investigador desea determinar si el tipo de sustrato (glucosa versus otro azucar) afecta la velocidad de fermentacion de una levadura. Cual es el diseno experimental mas adecuado?", "options": ["Medir la velocidad de produccion de CO2 de la levadura al proporcionar distintos tipos de azucar como sustrato, manteniendo constante la cantidad total de sustrato y la ausencia de oxigeno en cada condicion", "Medir la velocidad de fermentacion solo con un tipo de azucar, sin ninguna comparacion con otros sustratos", "No es necesario variar el tipo de sustrato para responder esta pregunta", "Variar simultaneamente el tipo de sustrato y la disponibilidad de oxigeno sin ningun control entre variables", "Medir solo el pH del medio, sin evaluar directamente la velocidad de produccion de CO2"], "correct": 0, "exp": "Variar unicamente el tipo de sustrato, manteniendo constantes la cantidad total y la ausencia de oxigeno, permite establecer de forma controlada si distintos azucares son fermentados con distinta velocidad por la levadura."}, {"skill": "PROC", "q": "Se midio la velocidad de produccion de CO2 de una levadura con glucosa como sustrato (velocidad alta) y con un azucar que la levadura metaboliza con menor eficiencia (velocidad considerablemente menor), en ausencia de oxigeno en ambos casos. Que conclusion es mas adecuada?", "options": ["La velocidad de fermentacion de la levadura depende del tipo especifico de sustrato disponible, siendo mas eficiente con ciertos azucares que con otros", "La velocidad de fermentacion es identica sin importar el tipo de sustrato proporcionado a la levadura", "El tipo de sustrato no tiene ninguna relacion con la velocidad de produccion de CO2 de la levadura", "La levadura fermenta con mayor velocidad el azucar menos eficiente que la glucosa", "La ausencia de oxigeno es la unica variable que determina la velocidad de fermentacion, sin relacion con el sustrato"], "correct": 0, "exp": "La diferencia observada en la velocidad de produccion de CO2 segun el tipo de sustrato, manteniendo igual la ausencia de oxigeno, confirma que la eficiencia de fermentacion de la levadura varia segun el tipo especifico de azucar disponible."}, {"skill": "EVAL", "q": "Un estudiante concluyo que 'toda la energia liberada durante la respiracion celular se transforma exclusivamente en ATP, sin ninguna perdida en otra forma de energia'. Que critica es mas pertinente?", "options": ["La conclusion es correcta porque toda la energia liberada durante la respiracion celular se convierte integramente en ATP, sin ninguna excepcion", "Una parte significativa de la energia liberada durante la respiracion celular se libera en forma de calor, no exclusivamente como ATP; afirmar que toda la energia se transforma en ATP, sin ninguna perdida, ignora esta liberacion de calor bien documentada como subproducto del metabolismo", "La respiracion celular no libera ningun tipo de energia en forma de ATP", "El calor liberado durante la respiracion celular no tiene ninguna relacion con la energia proveniente de la glucosa", "La produccion de ATP y la liberacion de calor son procesos completamente independientes entre si, sin ninguna relacion"], "correct": 1, "exp": "La respiracion celular no es un proceso perfectamente eficiente: una parte considerable de la energia liberada se disipa como calor, y no toda se conserva en forma de ATP; ignorar esta perdida energetica es un error conceptual comun."}, {"skill": "EVAL", "q": "Una investigacion afirmo que 'la glucolisis requiere oxigeno de la misma manera que el Ciclo de Krebs y la cadena transportadora de electrones', basandose en que todas forman parte de la respiracion celular. Que critica es mas pertinente?", "options": ["La afirmacion es correcta porque todas las etapas de la respiracion celular requieren oxigeno exactamente de la misma manera", "La glucolisis ocurre en el citoplasma y no requiere oxigeno de forma directa, pudiendo continuar en su ausencia (seguida de fermentacion); solo el Ciclo de Krebs y, especialmente, la cadena transportadora de electrones dependen directamente de la disponibilidad de oxigeno como aceptor final; agrupar a todas las etapas como igualmente dependientes de oxigeno ignora esta diferencia clave", "Ninguna etapa de la respiracion celular depende en ningun caso de la disponibilidad de oxigeno", "El Ciclo de Krebs ocurre en el citoplasma, de la misma manera que la glucolisis", "La cadena transportadora de electrones no tiene ninguna relacion con la disponibilidad de oxigeno"], "correct": 1, "exp": "Solo la cadena transportadora de electrones (y, en la practica, el Ciclo de Krebs que depende del NAD+ regenerado alli) requiere directamente oxigeno como aceptor final; la glucolisis, al ocurrir en el citoplasma, puede continuar en su ausencia, seguida de fermentacion. Agrupar todas las etapas por igual ignora esta distincion central."}, {"skill": "COM", "q": "Un estudiante debe explicar por que las celulas musculares humanas pueden realizar fermentacion lactica de forma transitoria, a diferencia de otras celulas del cuerpo mas dependientes de la respiracion aerobica. Cual es la explicacion mas precisa?", "options": ["El musculo esqueletico posee la enzima necesaria (lactato deshidrogenasa) para convertir piruvato en acido lactico, regenerando NAD+ y permitiendo que la glucolisis continue produciendo ATP rapidamente durante picos breves de alta demanda energetica que superan el suministro de oxigeno disponible", "Las celulas musculares no pueden realizar ningun tipo de fermentacion bajo ninguna circunstancia", "La fermentacion lactica ocurre exclusivamente en ausencia total de glucosa disponible para el musculo", "Todas las celulas del cuerpo humano poseen exactamente la misma capacidad de realizar fermentacion lactica", "La demanda energetica del musculo nunca supera la capacidad de suministro de oxigeno disponible"], "correct": 0, "exp": "La explicacion debe conectar la disponibilidad de la enzima especifica (lactato deshidrogenasa) en el musculo con su capacidad de recurrir a la fermentacion lactica como mecanismo de emergencia ante picos de demanda energetica que superan transitoriamente el suministro de oxigeno."}, {"skill": "COM", "q": "Al explicar por que la produccion industrial de pan aprovecha especificamente la fermentacion alcohólica de la levadura y no su respiracion aerobica, cual es la explicacion mas precisa?", "options": ["Durante la fermentacion en la masa (con oxigeno limitado dentro de ella), la levadura produce CO2 como subproducto, cuyo gas queda atrapado en la red de gluten de la masa haciendola subir; este efecto de esponjamiento depende especificamente de la produccion de CO2 durante la fermentacion, mas alla del etanol que tambien se genera", "La levadura solo puede realizar fermentacion alcohólica, sin ninguna capacidad de respiracion celular aerobica", "El CO2 liberado durante la respiracion celular aerobica de la levadura es el unico responsable de que la masa de pan suba", "La fermentacion alcohólica no produce ningun tipo de gas como subproducto de la degradacion de azucares", "El proceso de horneado del pan no tiene ninguna relacion con el gas producido durante la fermentacion de la levadura"], "correct": 0, "exp": "La explicacion debe conectar la produccion de CO2 durante la fermentacion (favorecida en el ambiente con oxigeno limitado dentro de la masa) con el efecto fisico de esponjamiento que este gas atrapado genera en la red de gluten, un principio central de la panificacion."}];
+
+let currentQuiz = [];
+let currentIndex = 0;
+let answered = false;
+let userAnswers = [];
+let scoreBySkill = {};
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function buildQuiz(){
+  let selected = [];
+  SKILL_ORDER.forEach(skillKey=>{
+    const pool = QUESTION_BANK.filter(q=>q.skill===skillKey);
+    const picked = shuffle(pool).slice(0,PICK_PER_SKILL);
+    selected = selected.concat(picked);
+  });
+  selected = shuffle(selected);
+  return selected.map(orig=>{
+    const idxArr = [0,1,2,3,4];
+    const shuffledIdx = shuffle(idxArr);
+    const newOptions = shuffledIdx.map(i=>orig.options[i]);
+    const newCorrect = shuffledIdx.indexOf(orig.correct);
+    return { skill: orig.skill, question: orig.q, options: newOptions, correct: newCorrect, exp: orig.exp };
+  });
+}
+
+function startQuiz(){
+  currentQuiz = buildQuiz();
+  currentIndex = 0;
+  answered = false;
+  userAnswers = [];
+  scoreBySkill = {};
+  SKILL_ORDER.forEach(s=>scoreBySkill[s]={correct:0,total:0});
+  document.getElementById('start-screen').classList.add('hidden');
+  document.getElementById('dashboard-screen').classList.add('hidden');
+  document.getElementById('review-screen').classList.add('hidden');
+  document.getElementById('quiz-screen').classList.remove('hidden');
+  renderQuestion();
+}
+
+function renderQuestion(){
+  answered = false;
+  const q = currentQuiz[currentIndex];
+  const total = currentQuiz.length;
+  document.getElementById('progress-fill').style.width = ((currentIndex)/total*100)+'%';
+  document.getElementById('progress-label').textContent = (currentIndex+1)+' / '+total;
+  document.getElementById('skill-tag').textContent = SKILL_NAMES[q.skill];
+  document.getElementById('qnum').textContent = 'Pregunta '+(currentIndex+1);
+  document.getElementById('question-text').textContent = q.question;
+
+  const optsDiv = document.getElementById('options');
+  optsDiv.innerHTML = '';
+  q.options.forEach((opt, i)=>{
+    const btn = document.createElement('button');
+    btn.className = 'option';
+    btn.innerHTML = '<span class="letter">'+LETTERS[i]+')</span><span>'+opt+'</span>';
+    btn.onclick = ()=>selectOption(i);
+    optsDiv.appendChild(btn);
+  });
+
+  document.getElementById('feedback').classList.add('hidden');
+  document.getElementById('next-btn').classList.add('hidden');
+}
+
+function selectOption(i){
+  if(answered) return;
+  answered = true;
+  const q = currentQuiz[currentIndex];
+  const correct = q.correct;
+  const options = document.querySelectorAll('#options .option');
+  options.forEach((opt, idx)=>{
+    opt.classList.add('locked');
+    if(idx===correct) opt.classList.add('correct');
+    else if(idx===i) opt.classList.add('incorrect');
+    else opt.classList.add('dim');
+  });
+
+  const isCorrect = (i===correct);
+  scoreBySkill[q.skill].total++;
+  if(isCorrect) scoreBySkill[q.skill].correct++;
+
+  userAnswers.push({ skill:q.skill, question:q.question, options:q.options, correctIdx:correct, chosenIdx:i, exp:q.exp, isCorrect });
+
+  const fb = document.getElementById('feedback');
+  fb.classList.remove('hidden');
+  fb.classList.toggle('wrong', !isCorrect);
+  fb.innerHTML = '<span class="pista-label">'+(isCorrect ? '✓ Correcto — Pista' : '✕ Incorrecto — Pista')+'</span>'+
+    '<strong>Respuesta correcta: '+LETTERS[correct]+') '+q.options[correct]+'</strong><br><br>'+q.exp;
+
+  document.getElementById('next-btn').classList.remove('hidden');
+}
+
+function nextQuestion(){
+  currentIndex++;
+  if(currentIndex >= currentQuiz.length){
+    showDashboard();
+  } else {
+    renderQuestion();
+  }
+}
+
+function showDashboard(){
+  document.getElementById('quiz-screen').classList.add('hidden');
+  document.getElementById('dashboard-screen').classList.remove('hidden');
+
+  const totalCorrect = userAnswers.filter(a=>a.isCorrect).length;
+  const totalQ = userAnswers.length;
+  document.getElementById('score-total').innerHTML = totalCorrect+'<span>/'+totalQ+'</span>';
+  const pct = Math.round((totalCorrect/totalQ)*100);
+  document.getElementById('score-caption').textContent = pct+'% de logro general';
+
+  const barsDiv = document.getElementById('skill-bars');
+  barsDiv.innerHTML = '';
+  const weakSkills = [];
+  const strongSkills = [];
+
+  SKILL_ORDER.forEach(skillKey=>{
+    const s = scoreBySkill[skillKey];
+    const skillPct = s.total>0 ? Math.round((s.correct/s.total)*100) : 0;
+    let color = 'var(--accent-coral)';
+    if(skillPct>=75) color='var(--accent-sage)';
+    else if(skillPct>=50) color='var(--accent-amber)';
+
+    const row = document.createElement('div');
+    row.className='skill-bar-row';
+    row.innerHTML = '<div class="skill-bar-head"><span class="name">'+SKILL_NAMES[skillKey]+'</span><span class="frac">'+s.correct+'/'+s.total+'</span></div>'+
+      '<div class="skill-bar-track"><div class="skill-bar-fill" style="width:'+skillPct+'%;background:'+color+';"></div></div>';
+    barsDiv.appendChild(row);
+
+    if(skillPct<75) weakSkills.push({name:SKILL_NAMES[skillKey], pct:skillPct});
+    else strongSkills.push(SKILL_NAMES[skillKey]);
+  });
+
+  const improveBox = document.getElementById('improve-box');
+  const improveList = document.getElementById('improve-list');
+  improveList.innerHTML='';
+  if(weakSkills.length>0){
+    improveBox.classList.remove('hidden');
+    weakSkills.sort((a,b)=>a.pct-b.pct).forEach(w=>{
+      const li = document.createElement('li');
+      li.innerHTML = '<strong>'+w.name+'</strong> ('+w.pct+'%) — refuerza con más ejercicios de este tipo de habilidad, revisando las pistas de las preguntas falladas.';
+      improveList.appendChild(li);
+    });
+  } else {
+    improveBox.classList.add('hidden');
+  }
+
+  const strongBox = document.getElementById('strong-box');
+  const strongText = document.getElementById('strong-text');
+  if(strongSkills.length>0){
+    strongBox.classList.remove('hidden');
+    strongText.textContent = strongSkills.join(', ') + '. Buen dominio, mantén la práctica con nuevos intentos.';
+  } else {
+    strongBox.classList.add('hidden');
+  }
+}
+
+function restartQuiz(){ startQuiz(); }
+
+function reviewAnswers(){
+  document.getElementById('dashboard-screen').classList.add('hidden');
+  const rev = document.getElementById('review-screen');
+  rev.classList.remove('hidden');
+  let html = '<p class="eyebrow">Revisión de respuestas</p>';
+  userAnswers.forEach((a, i)=>{
+    html += '<div style="margin-bottom:22px;padding-bottom:18px;border-bottom:1px solid var(--line);">'+
+      '<span class="skill-tag">'+SKILL_NAMES[a.skill]+'</span>'+
+      '<p class="question-text" style="font-size:16px;">'+(i+1)+'. '+a.question+'</p>'+
+      '<p style="font-size:14px;color:'+(a.isCorrect?'var(--accent-sage)':'var(--accent-coral)')+';margin:0 0 6px;">'+
+        (a.isCorrect ? '✓ Respondiste correctamente' : '✕ Tu respuesta: '+LETTERS[a.chosenIdx]+') '+a.options[a.chosenIdx])+
+      '</p>'+
+      '<p style="font-size:14px;color:var(--text-muted);margin:0 0 8px;">Correcta: '+LETTERS[a.correctIdx]+') '+a.options[a.correctIdx]+'</p>'+
+      '<div class="feedback" style="margin-top:6px;"><span class="pista-label">Pista</span>'+a.exp+'</div>'+
+    '</div>';
+  });
+  html += '<div class="actions"><button class="btn" onclick="restartQuiz(); document.getElementById(\'review-screen\').classList.add(\'hidden\');">Repetir con nuevas preguntas</button></div>';
+  rev.innerHTML = html;
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PAES Biología · Clase 16 · Fotosíntesis (Nivel Intermedio)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Source+Sans+3:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-deep:#1a1030;
+    --bg-panel:#241a42;
+    --bg-panel-2:#2c2050;
+    --accent-amber:#f0a24b;
+    --accent-sage:#7fb88f;
+    --accent-coral:#e85c5c;
+    --text-light:#f3ede1;
+    --text-muted:#bdb0d6;
+    --line:#3c2f5c;
+    --radius:14px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:radial-gradient(circle at 15% -10%, #1c4552 0%, var(--bg-deep) 55%) fixed;
+    color:var(--text-light);
+    font-family:'Source Sans 3', system-ui, sans-serif;
+    min-height:100vh;
+    padding:32px 16px 64px;
+  }
+  .wrap{max-width:820px;margin:0 auto;}
+  .eyebrow{font-family:'JetBrains Mono', monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent-amber);margin:0 0 8px;}
+  h1{font-family:'Fraunces', serif;font-weight:600;font-size:clamp(26px,4vw,38px);line-height:1.1;margin:0 0 6px;color:var(--text-light);}
+  .sub{color:var(--text-muted);font-size:15px;margin:0 0 28px;max-width:60ch;}
+  .card{background:linear-gradient(180deg, var(--bg-panel) 0%, var(--bg-panel-2) 100%);border:1px solid var(--line);border-radius:var(--radius);padding:28px;box-shadow:0 20px 40px -20px rgba(0,0,0,.5);}
+  #start-screen ul{color:var(--text-muted);font-size:14.5px;line-height:1.7;padding-left:20px;margin:18px 0 26px;}
+  #start-screen li{margin-bottom:4px;}
+  .btn{font-family:'Source Sans 3', sans-serif;font-weight:700;font-size:15px;border:none;border-radius:999px;padding:14px 30px;cursor:pointer;background:var(--accent-amber);color:#20140a;transition:transform .15s ease, box-shadow .15s ease;box-shadow:0 8px 20px -8px rgba(0,0,0,.35);}
+  .btn:hover{transform:translateY(-1px);}
+  .btn:active{transform:translateY(0);}
+  .btn.ghost{background:transparent;color:var(--text-muted);border:1.5px solid var(--line);box-shadow:none;}
+  .progress-row{display:flex;align-items:center;gap:14px;margin-bottom:18px;}
+  .progress-track{flex:1;height:6px;border-radius:99px;background:var(--line);overflow:hidden;}
+  .progress-fill{height:100%;background:linear-gradient(90deg,var(--accent-sage),var(--accent-amber));border-radius:99px;transition:width .3s ease;}
+  .progress-label{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--text-muted);white-space:nowrap;}
+  .skill-tag{display:inline-block;font-family:'JetBrains Mono', monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--bg-deep);background:var(--accent-sage);padding:5px 11px;border-radius:999px;margin-bottom:14px;}
+  .qnum{color:var(--text-muted);font-size:13px;font-family:'JetBrains Mono',monospace;margin-bottom:6px;}
+  .question-text{font-family:'Fraunces', serif;font-weight:500;font-size:19px;line-height:1.45;margin:0 0 22px;}
+  .options{display:flex;flex-direction:column;gap:10px;}
+  .option{display:flex;align-items:flex-start;gap:12px;text-align:left;background:rgba(255,255,255,.03);border:1.5px solid var(--line);border-radius:10px;padding:13px 15px;cursor:pointer;color:var(--text-light);font-size:14.5px;line-height:1.4;transition:border-color .15s, background .15s;}
+  .option:hover:not(.locked){border-color:var(--accent-amber);}
+  .option .letter{font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--accent-amber);flex-shrink:0;}
+  .option.correct{border-color:var(--accent-sage);background:rgba(111,168,138,.14);}
+  .option.incorrect{border-color:var(--accent-coral);background:rgba(228,87,46,.14);}
+  .option.locked{cursor:default;}
+  .option.dim{opacity:.45;}
+  .feedback{margin-top:18px;padding:16px 18px;border-radius:10px;background:rgba(255,255,255,.04);border-left:4px solid var(--accent-sage);font-size:14px;line-height:1.6;color:var(--text-muted);}
+  .feedback.wrong{border-left-color:var(--accent-coral);}
+  .feedback strong{color:var(--text-light);}
+  .feedback .pista-label{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent-amber);display:block;margin-bottom:6px;}
+  .nav-row{display:flex;justify-content:flex-end;margin-top:22px;}
+  .score-hero{text-align:center;padding:10px 0 26px;}
+  .score-big{font-family:'Fraunces',serif;font-weight:700;font-size:56px;color:var(--accent-amber);line-height:1;}
+  .score-big span{font-size:24px;color:var(--text-muted);font-weight:500;}
+  .score-caption{color:var(--text-muted);font-size:14px;margin-top:6px;}
+  .skill-bars{display:flex;flex-direction:column;gap:16px;margin:22px 0 8px;}
+  .skill-bar-head{display:flex;justify-content:space-between;font-size:13.5px;margin-bottom:6px;}
+  .skill-bar-head .name{font-weight:600;}
+  .skill-bar-head .frac{font-family:'JetBrains Mono',monospace;color:var(--text-muted);}
+  .skill-bar-track{height:10px;border-radius:99px;background:var(--line);overflow:hidden;}
+  .skill-bar-fill{height:100%;border-radius:99px;}
+  .improve-box{margin-top:26px;background:rgba(228,87,46,.08);border:1px solid rgba(228,87,46,.35);border-radius:10px;padding:18px 20px;}
+  .improve-box h3{font-family:'Fraunces',serif;font-size:16px;margin:0 0 10px;color:var(--accent-coral);}
+  .improve-box ul{margin:0;padding-left:20px;color:var(--text-light);font-size:14px;line-height:1.75;}
+  .strong-box{margin-top:14px;background:rgba(111,168,138,.08);border:1px solid rgba(111,168,138,.35);border-radius:10px;padding:18px 20px;}
+  .strong-box h3{font-family:'Fraunces',serif;font-size:16px;margin:0 0 10px;color:var(--accent-sage);}
+  .strong-box p{margin:0;color:var(--text-light);font-size:14px;line-height:1.6;}
+  .actions{display:flex;gap:12px;margin-top:28px;flex-wrap:wrap;}
+  .hidden{display:none !important;}
+  footer{text-align:center;color:var(--text-muted);font-size:12px;margin-top:26px;opacity:.6;}
+</style>
+</head>
+<body> <div style="float: left; margin-right: 25px; margin-bottom: 25px;"><img src="Logo_AMC.png" alt="Logo" style="max-width: 150px;"></div>
+<div class="wrap">
+  <p class="eyebrow">PAES · Ciencias — Módulo Biología Común · Nivel Intermedio</p>
+  <h1>Fotosíntesis (Fase Lumínica y Fase Oscura)</h1>
+  <p class="sub">Eje 3: Procesos Químicos de la Vida e Integración — Sub-eje: Transformación de Energía en Sistemas Biológicos — Clase 16: Fotosíntesis</p>
+
+  <div class="card" id="start-screen">
+    <p class="eyebrow" style="margin-bottom:14px;">Antes de comenzar</p>
+    <p style="color:var(--text-muted);font-size:14.5px;line-height:1.6;">Este quiz evalúa nivel <strong style='color:var(--text-light);'>intermedio</strong>, con 20 preguntas (4 por cada habilidad PAES), extraídas al azar de un banco de 40. Cada intento genera una versión distinta.</p>
+    <ul>
+      <li>Observar y plantear preguntas</li>
+      <li>Planificar y conducir una investigación</li>
+      <li>Procesar y analizar la evidencia</li>
+      <li>Evaluar</li>
+      <li>Comunicar</li>
+    </ul>
+    <button class="btn" onclick="startQuiz()">Comenzar quiz</button>
+  </div>
+
+  <div class="card hidden" id="quiz-screen">
+    <div class="progress-row">
+      <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+      <div class="progress-label" id="progress-label">1 / 20</div>
+    </div>
+    <span class="skill-tag" id="skill-tag"></span>
+    <p class="qnum" id="qnum"></p>
+    <p class="question-text" id="question-text"></p>
+    <div class="options" id="options"></div>
+    <div class="feedback hidden" id="feedback"></div>
+    <div class="nav-row">
+      <button class="btn hidden" id="next-btn" onclick="nextQuestion()">Siguiente →</button>
+    </div>
+  </div>
+
+  <div class="card hidden" id="dashboard-screen">
+    <p class="eyebrow">Resultados</p>
+    <div class="score-hero">
+      <div class="score-big" id="score-total">0<span>/20</span></div>
+      <p class="score-caption" id="score-caption">Puntaje global</p>
+    </div>
+    <div class="skill-bars" id="skill-bars"></div>
+    <div class="improve-box hidden" id="improve-box">
+      <h3>Puntos a mejorar</h3>
+      <ul id="improve-list"></ul>
+    </div>
+    <div class="strong-box hidden" id="strong-box">
+      <h3>Habilidades consolidadas</h3>
+      <p id="strong-text"></p>
+    </div>
+    <div class="actions">
+      <button class="btn" onclick="restartQuiz()">Repetir con nuevas preguntas</button>
+      <button class="btn ghost" onclick="reviewAnswers()">Revisar mis respuestas</button>
+    </div>
+  </div>
+
+  <div class="card hidden" id="review-screen"></div>
+
+  <footer>Banco de 40 preguntas · nivel intermedio · Clase 16 de 30 · basado en el temario DEMRE PAES Ciencias — Biología Común</footer>
+</div>
+
+<script>
+const SKILL_NAMES = {"OBS": "Observar y plantear preguntas", "PLAN": "Planificar y conducir una investigación", "PROC": "Procesar y analizar la evidencia", "EVAL": "Evaluar", "COM": "Comunicar"};
+const SKILL_ORDER = ["OBS", "PLAN", "PROC", "EVAL", "COM"];
+const LETTERS = ["A","B","C","D","E"];
+const PICK_PER_SKILL = 4;
+
+const QUESTION_BANK = [{"skill": "OBS", "q": "Un investigador observa que, al usar un inhibidor específico del Fotosistema II, la planta deja de liberar O2, pero el Fotosistema I sigue recibiendo electrones desde una fuente artificial y continúa produciendo NADPH. ¿Pregunta más precisa?", "options": ["¿La liberación de O2 depende específicamente de la actividad del Fotosistema II (asociado a la fotólisis del agua), y no directamente de la actividad del Fotosistema I?", "¿El Fotosistema I es el responsable directo de la liberación de O2 durante la fase lumínica?", "¿La producción de NADPH depende exclusivamente del Fotosistema II, sin relación con el Fotosistema I?", "¿Ambos fotosistemas cumplen exactamente la misma función durante la fase lumínica?", "¿La inhibición del Fotosistema II no tiene ninguna relación con la liberación de O2?"], "correct": 0, "exp": "La fotólisis del agua, que libera O2, ocurre específicamente asociada al Fotosistema II, que repone los electrones perdidos por la clorofila; el Fotosistema I, en cambio, es el responsable directo de reducir el NADP+ a NADPH usando electrones ya energizados."}, {"skill": "OBS", "q": "Se mide el pH del espacio interior de los tilacoides (lumen) durante la fase lumínica activa, observando que se vuelve considerablemente más ácido que el estroma circundante, generando un marcado gradiente de protones. ¿Pregunta más pertinente?", "options": ["¿Este gradiente de protones generado a través de la membrana tilacoidal es utilizado por la ATP sintasa para impulsar la producción de ATP mediante quimiósmosis?", "¿El gradiente de protones no tiene ninguna relación con la producción de ATP durante la fotosíntesis?", "¿El lumen del tilacoide se vuelve más básico, y no más ácido, durante la fase lumínica activa?", "¿El estroma y el lumen del tilacoide mantienen siempre el mismo pH, sin ningún gradiente?", "¿La producción de ATP ocurre de forma completamente independiente de cualquier gradiente de protones?"], "correct": 0, "exp": "El bombeo de protones hacia el lumen (por la fotólisis del agua y la cadena transportadora de electrones) genera un gradiente electroquímico que la ATP sintasa aprovecha para sintetizar ATP mediante quimiósmosis, un mecanismo análogo al de la respiración celular."}, {"skill": "OBS", "q": "Un investigador nota que la enzima RuBisCO, encargada de fijar el CO2 en el Ciclo de Calvin, también puede unirse al O2 en ciertas condiciones (temperaturas altas, baja concentración de CO2), en un proceso llamado fotorrespiración que reduce la eficiencia fotosintética. ¿Pregunta más precisa?", "options": ["¿La afinidad relativa de RuBisCO por el CO2 frente al O2 varía según las condiciones ambientales, afectando la eficiencia neta del proceso fotosintético?", "¿RuBisCO solo puede unirse al CO2, sin ninguna posibilidad de unirse al O2 bajo ninguna condición?", "¿La fotorrespiración aumenta siempre la eficiencia fotosintética de la planta?", "¿La temperatura no tiene ninguna relación con la actividad de la enzima RuBisCO?", "¿El O2 nunca compite con el CO2 por el sitio activo de ninguna enzima fotosintética?"], "correct": 0, "exp": "La doble afinidad de RuBisCO (por CO2 y O2), que se ve influida por condiciones como la temperatura y la concentración relativa de gases, plantea la pregunta central sobre cómo este comportamiento enzimático afecta la eficiencia neta de la fijación de carbono en distintos ambientes."}, {"skill": "OBS", "q": "Se observa que las plantas C4 (como el maíz), a diferencia de las plantas C3, fijan inicialmente el CO2 mediante una enzima distinta (PEP carboxilasa) en células del mesófilo, antes de transferir el carbono a células de la vaina del haz donde ocurre el Ciclo de Calvin. ¿Pregunta más precisa?", "options": ["¿Esta separación espacial en la fijación inicial de CO2 podría representar una adaptación que reduce la fotorrespiración al concentrar CO2 cerca de la RuBisCO?", "¿Las plantas C4 no realizan en ningún caso el Ciclo de Calvin, a diferencia de las plantas C3?", "¿La PEP carboxilasa y la RuBisCO cumplen exactamente la misma función en cualquier tipo de planta?", "¿La separación espacial de la fijación de CO2 no tiene ninguna relación con la eficiencia fotosintética?", "¿Todas las plantas fijan el CO2 exactamente de la misma manera, sin ninguna variación entre especies?"], "correct": 0, "exp": "El mecanismo de concentración de CO2 en plantas C4, mediante la separación espacial de la fijación inicial (mesófilo) y el Ciclo de Calvin (vaina del haz), plantea la pregunta sobre su posible función adaptativa para minimizar la fotorrespiración en condiciones de altas temperaturas."}, {"skill": "OBS", "q": "Un estudio mide la tasa de fotosíntesis neta de una planta en función de la intensidad de luz, encontrando un punto específico (punto de compensación lumínico) en el que la fotosíntesis bruta iguala exactamente a la tasa de respiración celular de la planta. ¿Pregunta más precisa?", "options": ["¿Por debajo del punto de compensación lumínico, la planta presenta un balance neto negativo de carbono, consumiendo más de lo que produce mediante fotosíntesis?", "¿El punto de compensación lumínico indica el momento en que la planta detiene por completo su respiración celular?", "¿La fotosíntesis bruta es siempre menor que la tasa de respiración celular, sin importar la intensidad de luz?", "¿El punto de compensación lumínico no tiene ninguna relación con el balance de carbono de la planta?", "¿La respiración celular de la planta ocurre exclusivamente en ausencia de luz?"], "correct": 0, "exp": "Por debajo del punto de compensación, la fotosíntesis bruta no alcanza a cubrir el consumo de la respiración celular (que ocurre continuamente), resultando en un balance neto negativo de carbono para la planta en esas condiciones de baja luz."}, {"skill": "OBS", "q": "Se observa que un herbicida específico bloquea el transporte de electrones entre el Fotosistema II y el Fotosistema I (a nivel de la plastoquinona), provocando la acumulación de electrones excitados en el Fotosistema II y un notable estrés oxidativo en la hoja. ¿Pregunta más precisa?", "options": ["¿El bloqueo del flujo de electrones en un punto intermedio de la cadena transportadora puede generar especies reactivas dañinas al impedir la disipación normal de la energía absorbida?", "¿El bloqueo de la plastoquinona no tiene ninguna relación con el flujo de electrones entre los fotosistemas?", "¿La acumulación de electrones excitados reduce el estrés oxidativo de la hoja?", "¿El Fotosistema I y el Fotosistema II funcionan de forma completamente independiente uno del otro?", "¿El herbicida aumenta la eficiencia del transporte de electrones entre ambos fotosistemas?"], "correct": 0, "exp": "Al bloquear un punto intermedio del transporte de electrones, la energía absorbida no puede disiparse de forma controlada hacia la producción de ATP y NADPH, lo que favorece la formación de especies reactivas de oxígeno y daño oxidativo a los componentes celulares."}, {"skill": "OBS", "q": "Un investigador mide la concentración de RuBP (ribulosa bifosfato) y de G3P (gliceraldehído-3-fosfato) en el estroma de un cloroplasto al pasar bruscamente de luz a oscuridad, observando que la concentración de RuBP cae rápidamente mientras la de G3P se mantiene momentáneamente. ¿Pregunta más precisa?", "options": ["¿La caída de RuBP se relaciona con que su regeneración en el Ciclo de Calvin depende del ATP producido en la fase lumínica, que se agota rápidamente en oscuridad?", "¿La concentración de RuBP aumenta siempre que la planta pasa de luz a oscuridad?", "¿El G3P y el RuBP no tienen ninguna relación con las reacciones del Ciclo de Calvin?", "¿La regeneración de RuBP ocurre de forma completamente independiente del ATP disponible?", "¿La oscuridad aumenta la disponibilidad de ATP necesaria para regenerar RuBP?"], "correct": 0, "exp": "La regeneración de RuBP a partir de G3P requiere ATP; al faltar luz, se agota rápidamente el suministro de ATP de la fase lumínica, deteniendo la regeneración de RuBP y provocando su caída, mientras el G3P ya formado se mantiene momentáneamente."}, {"skill": "OBS", "q": "Se observa que plantas cultivadas en ambientes con alta humedad relativa mantienen sus estomas más abiertos y presentan mayores tasas de fotosíntesis que plantas genéticamente idénticas cultivadas en ambientes secos, donde los estomas permanecen mayormente cerrados. ¿Pregunta más precisa?", "options": ["¿El cierre estomático en ambientes secos, como mecanismo para reducir la pérdida de agua, podría limitar simultáneamente la entrada de CO2 y con ello la tasa fotosintética?", "¿Los estomas no cumplen ninguna función relacionada con el intercambio de gases de la planta?", "¿La apertura estomática no tiene ninguna relación con la disponibilidad de CO2 para la fotosíntesis?", "¿Los ambientes secos siempre aumentan la tasa fotosintética de una planta?", "¿La humedad ambiental no influye en ningún grado sobre la apertura de los estomas?"], "correct": 0, "exp": "El cierre estomático, un mecanismo adaptativo para reducir la pérdida de agua por transpiración en ambientes secos, tiene como consecuencia colateral limitar la difusión de CO2 hacia el interior de la hoja, lo que puede reducir la tasa fotosintética disponible."}, {"skill": "PLAN", "q": "Para determinar si el Fotosistema II es específicamente responsable de la fotólisis del agua (y no el Fotosistema I), ¿cuál es el diseño experimental más riguroso?", "options": ["Comparar la liberación de O2 en plantas con el Fotosistema II inhibido específicamente frente a plantas con función normal de ambos fotosistemas, manteniendo iguales las demás condiciones", "Inhibir simultáneamente ambos fotosistemas, sin poder aislar el efecto específico de cada uno", "No es necesario ningún grupo de comparación con función normal de los fotosistemas", "Medir solo la producción de NADPH, sin evaluar directamente la liberación de O2", "Comparar plantas de especies distintas, sin ningún control sobre otras diferencias entre ellas"], "correct": 0, "exp": "Inhibir específicamente el Fotosistema II, manteniendo el Fotosistema I funcional, y comparar la liberación de O2 con un grupo control sin inhibición, permite aislar experimentalmente la contribución específica de cada fotosistema a la fotólisis del agua."}, {"skill": "PLAN", "q": "Se desea determinar si el gradiente de protones generado a través de la membrana tilacoidal es efectivamente necesario para la producción de ATP durante la fotosíntesis. ¿Diseño experimental más riguroso?", "options": ["Utilizar un desacoplante químico que disipe el gradiente de protones sin bloquear el transporte de electrones, y comparar la producción de ATP resultante con un grupo control sin ese desacoplante", "Bloquear directamente el transporte de electrones, sin poder aislar el efecto específico del gradiente de protones", "No es necesario ningún grupo control sin desacoplante para esta pregunta", "Medir solo el transporte de electrones, sin evaluar directamente la producción de ATP", "Usar un desacoplante que también bloquee el transporte de electrones, sin poder distinguir ambos efectos"], "correct": 0, "exp": "Usar un desacoplante que disipe específicamente el gradiente de protones, sin afectar el transporte de electrones, permite aislar experimentalmente si ese gradiente es efectivamente necesario para la producción de ATP mediante quimiósmosis."}, {"skill": "PLAN", "q": "Un investigador desea determinar si la fotorrespiración (unión de RuBisCO al O2) aumenta en condiciones de alta temperatura y baja concentración de CO2. ¿Diseño experimental más adecuado?", "options": ["Medir la tasa de fotorrespiración de una planta bajo distintas combinaciones controladas de temperatura y concentración de CO2, comparando los resultados obtenidos en cada condición", "Medir la fotorrespiración solo bajo una combinación fija de temperatura y CO2, sin ninguna variación", "No es necesario variar la temperatura ni el CO2 para responder esta pregunta", "Variar simultáneamente la luz y la humedad, sin considerar la temperatura ni el CO2", "Medir solo la tasa de fotosíntesis bruta, sin evaluar específicamente la fotorrespiración"], "correct": 0, "exp": "Variar sistemáticamente la temperatura y la concentración de CO2, y medir la tasa de fotorrespiración resultante en cada combinación, permite establecer de forma experimental cómo estas condiciones afectan la afinidad relativa de RuBisCO por el O2 frente al CO2."}, {"skill": "PLAN", "q": "Para comprobar que las plantas C4 concentran CO2 cerca de la RuBisCO como estrategia para reducir la fotorrespiración, ¿cuál es el diseño experimental más adecuado?", "options": ["Comparar la tasa de fotorrespiración de plantas C4 y plantas C3 bajo las mismas condiciones de alta temperatura y baja concentración de CO2 ambiental", "Comparar solo plantas C4, sin ningún grupo de plantas C3 para contrastar", "No es necesario ningún grupo de comparación con plantas C3 para esta pregunta", "Medir solo la tasa de fotosíntesis bruta, sin evaluar específicamente la fotorrespiración", "Usar condiciones ambientales distintas para cada tipo de planta evaluada"], "correct": 0, "exp": "Comparar la fotorrespiración entre plantas C4 y C3 bajo las mismas condiciones desfavorables (alta temperatura, bajo CO2) permite establecer experimentalmente si el mecanismo de concentración de carbono de las plantas C4 efectivamente reduce este proceso en comparación con las C3."}, {"skill": "PLAN", "q": "Se desea determinar el punto de compensación lumínico de una planta específica. ¿Cuál es el procedimiento experimental más adecuado?", "options": ["Medir el intercambio neto de CO2 (o de O2) de la planta bajo intensidades de luz crecientes desde la oscuridad, identificando la intensidad en la que el intercambio neto pasa de negativo a positivo", "Medir el intercambio de gases solo en oscuridad total, sin ninguna variación de intensidad de luz", "No es necesario medir el intercambio de gases bajo distintas intensidades para esta pregunta", "Medir solo la tasa de respiración celular, sin evaluar el intercambio neto bajo distintas intensidades de luz", "Variar la temperatura en lugar de la intensidad de luz para esta determinación"], "correct": 0, "exp": "Medir el intercambio neto de gases desde la oscuridad hasta intensidades crecientes de luz permite identificar con precisión el punto de compensación lumínico, donde la fotosíntesis bruta iguala exactamente a la respiración celular."}, {"skill": "PLAN", "q": "Un investigador desea determinar si el bloqueo del transporte de electrones entre los fotosistemas genera estrés oxidativo en la hoja. ¿Diseño experimental más riguroso?", "options": ["Comparar los niveles de especies reactivas de oxígeno en hojas tratadas con un herbicida bloqueador del transporte de electrones frente a hojas control sin ese tratamiento, bajo las mismas condiciones de luz", "Comparar solo hojas tratadas con el herbicida, sin ningún grupo control sin tratamiento", "No es necesario ningún grupo control para esta pregunta", "Medir solo el transporte de electrones, sin evaluar los niveles de especies reactivas de oxígeno", "Tratar todas las hojas evaluadas con el mismo herbicida, sin ninguna variación experimental"], "correct": 0, "exp": "Comparar los niveles de estrés oxidativo entre hojas con el transporte de electrones bloqueado y hojas control sin bloqueo, bajo las mismas condiciones, permite establecer experimentalmente la relación causal entre la interrupción del flujo de electrones y el daño oxidativo generado."}, {"skill": "PLAN", "q": "Para investigar si el cierre estomático en ambientes secos limita la tasa fotosintética al reducir la entrada de CO2, ¿cuál es el diseño experimental más adecuado?", "options": ["Comparar la tasa fotosintética de plantas en ambiente seco (estomas mayormente cerrados) frente a plantas en ambiente húmedo (estomas más abiertos), midiendo simultáneamente la concentración de CO2 intercelular en ambos grupos", "Comparar solo plantas en ambiente seco, sin ningún grupo en ambiente húmedo para contrastar", "No es necesario medir la concentración de CO2 intercelular para esta pregunta", "Medir solo la apertura estomática, sin evaluar directamente la tasa fotosintética resultante", "Usar especies de plantas completamente distintas para cada ambiente evaluado"], "correct": 0, "exp": "Comparar la tasa fotosintética junto con la concentración de CO2 intercelular entre ambientes seco y húmedo permite establecer si la limitación en la fotosíntesis observada en ambiente seco se relaciona específicamente con la reducción en la disponibilidad de CO2 por el cierre estomático."}, {"skill": "PROC", "q": "Se comparó la liberación de O2 en plantas con el Fotosistema II inhibido específicamente (liberación prácticamente nula) frente a plantas con ambos fotosistemas funcionales (liberación normal). ¿Qué conclusión es más adecuada?", "options": ["El Fotosistema II es específicamente responsable de la fotólisis del agua y, por lo tanto, de la liberación de O2 durante la fase lumínica", "El Fotosistema I es el responsable directo de la liberación de O2, no el Fotosistema II", "Ambos grupos muestran exactamente la misma liberación de O2, sin ninguna diferencia", "La inhibición del Fotosistema II no tiene ninguna relación con la liberación de O2", "La liberación de O2 aumenta al inhibir específicamente el Fotosistema II"], "correct": 0, "exp": "La liberación prácticamente nula de O2 al inhibir específicamente el Fotosistema II, en contraste con la liberación normal en plantas con ambos fotosistemas funcionales, confirma experimentalmente que este fotosistema es el responsable directo de la fotólisis del agua."}, {"skill": "PROC", "q": "Se midió la producción de ATP en presencia de un desacoplante que disipa el gradiente de protones sin bloquear el transporte de electrones (producción de ATP considerablemente reducida) frente a un control sin desacoplante (producción normal). ¿Qué conclusión es más adecuada?", "options": ["El gradiente de protones a través de la membrana tilacoidal es efectivamente necesario para la producción normal de ATP mediante quimiósmosis", "El gradiente de protones no tiene ninguna relación con la producción de ATP durante la fotosíntesis", "El desacoplante aumenta la producción de ATP en comparación con el grupo control", "Ambos grupos experimentales muestran exactamente la misma producción de ATP", "El transporte de electrones es el único factor necesario para la producción de ATP, sin relación con ningún gradiente"], "correct": 0, "exp": "La reducción significativa en la producción de ATP al disipar específicamente el gradiente de protones, sin afectar el transporte de electrones, confirma experimentalmente que este gradiente es necesario para impulsar la síntesis de ATP mediante la ATP sintasa."}, {"skill": "PROC", "q": "Se comparó la tasa de fotorrespiración de una planta bajo alta temperatura y baja concentración de CO2 (fotorrespiración elevada) frente a temperatura moderada y CO2 normal (fotorrespiración considerablemente menor). ¿Qué conclusión es más adecuada?", "options": ["La combinación de alta temperatura y baja concentración de CO2 favorece la unión de RuBisCO al O2 en lugar del CO2, aumentando la tasa de fotorrespiración", "La alta temperatura y baja concentración de CO2 reducen siempre la tasa de fotorrespiración de una planta", "La fotorrespiración no tiene ninguna relación con la temperatura ni con la concentración de CO2", "Ambas condiciones muestran exactamente la misma tasa de fotorrespiración", "La fotorrespiración solo ocurre en ausencia total de CO2 en el ambiente"], "correct": 0, "exp": "El aumento significativo de la fotorrespiración bajo alta temperatura y bajo CO2 es consistente con el comportamiento conocido de RuBisCO, cuya afinidad relativa por el O2 aumenta respecto al CO2 en esas condiciones, favoreciendo esta vía menos eficiente."}, {"skill": "PROC", "q": "Se comparó la tasa de fotorrespiración entre plantas C4 y plantas C3 bajo las mismas condiciones de alta temperatura y bajo CO2 ambiental: las plantas C4 mostraron una tasa considerablemente menor que las C3. ¿Qué conclusión es más adecuada?", "options": ["El mecanismo de concentración de CO2 característico de las plantas C4 reduce efectivamente la fotorrespiración en comparación con las plantas C3, bajo las mismas condiciones desfavorables", "Las plantas C4 presentan mayor fotorrespiración que las plantas C3 bajo las mismas condiciones", "El mecanismo de concentración de CO2 de las plantas C4 no tiene ninguna relación con la tasa de fotorrespiración", "Ambos tipos de plantas muestran exactamente la misma tasa de fotorrespiración bajo estas condiciones", "Las plantas C3 no realizan en ningún caso el proceso de fotorrespiración"], "correct": 0, "exp": "La menor tasa de fotorrespiración observada en plantas C4 respecto a las C3, bajo las mismas condiciones desfavorables, confirma experimentalmente la eficacia de su mecanismo de concentración de CO2 para minimizar la unión no deseada de RuBisCO al O2."}, {"skill": "PROC", "q": "Se midió el intercambio neto de CO2 de una planta desde la oscuridad hasta intensidades crecientes de luz: en oscuridad, liberación neta de CO2 (respiración); a cierta intensidad, el intercambio neto se vuelve cero; con más luz, absorción neta de CO2. ¿Qué conclusión es más adecuada?", "options": ["La intensidad de luz en la que el intercambio neto de CO2 es cero corresponde al punto de compensación lumínico, donde la fotosíntesis bruta iguala exactamente a la respiración celular", "La planta detiene por completo su respiración celular en presencia de cualquier intensidad de luz", "El punto de compensación lumínico corresponde a la intensidad de luz máxima que puede tolerar la planta", "La respiración celular de la planta ocurre exclusivamente en presencia de luz intensa", "El intercambio neto de CO2 no tiene ninguna relación con la intensidad de luz recibida por la planta"], "correct": 0, "exp": "El punto en que el intercambio neto de CO2 pasa de negativo (predominio de respiración) a cero y luego a positivo (predominio de fotosíntesis) corresponde, por definición, al punto de compensación lumínico de la planta."}, {"skill": "PROC", "q": "Se comparó la tasa fotosintética de plantas en ambiente seco (con menor concentración de CO2 intercelular, debido al cierre estomático) frente a plantas en ambiente húmedo (con mayor concentración de CO2 intercelular). ¿Qué conclusión es más adecuada?", "options": ["La menor tasa fotosintética observada en ambiente seco se relaciona con la reducción en la disponibilidad de CO2 intercelular, consecuencia del cierre estomático adaptativo ante la escasez de agua", "El ambiente seco aumenta la concentración de CO2 intercelular disponible para la fotosíntesis", "La disponibilidad de CO2 intercelular no tiene ninguna relación con la tasa fotosintética observada", "Ambos ambientes muestran exactamente la misma tasa fotosintética, sin ninguna diferencia", "El cierre estomático no tiene ninguna relación con la concentración de CO2 dentro de la hoja"], "correct": 0, "exp": "La coincidencia entre menor concentración de CO2 intercelular y menor tasa fotosintética en ambiente seco confirma que el cierre estomático adaptativo, aunque reduce la pérdida de agua, limita simultáneamente la disponibilidad de CO2 para la fotosíntesis."}, {"skill": "PROC", "q": "Se midió la concentración de RuBP en el estroma al pasar de luz a oscuridad: caída rápida y sostenida, mientras el G3P se mantuvo momentáneamente antes de disminuir también. ¿Qué conclusión es más adecuada?", "options": ["La regeneración de RuBP depende del ATP producido en la fase lumínica, cuyo agotamiento en oscuridad detiene rápidamente esta etapa del Ciclo de Calvin", "La concentración de RuBP aumenta siempre que la planta se encuentra en oscuridad", "El G3P y el RuBP no tienen ninguna relación con las reacciones del Ciclo de Calvin", "La regeneración de RuBP ocurre de forma completamente independiente del ATP disponible en el estroma", "La oscuridad favorece la producción de ATP necesaria para la regeneración de RuBP"], "correct": 0, "exp": "La rápida caída de RuBP al faltar luz, en contraste con la disponibilidad momentánea de G3P ya formado, es consistente con la dependencia de la etapa de regeneración de RuBP respecto del ATP generado en la fase lumínica, que se agota primero en oscuridad."}, {"skill": "EVAL", "q": "Un estudio concluyó que 'la fotorrespiración es un proceso completamente inútil, sin ninguna función biológica relevante, que la evolución debería haber eliminado por completo'. ¿Qué crítica es más pertinente?", "options": ["La conclusión es correcta porque la fotorrespiración es un proceso completamente inútil que no cumple ninguna función biológica en ningún contexto", "Aunque la fotorrespiración reduce la eficiencia neta de fijación de carbono, es una consecuencia inevitable de la estructura del sitio activo de RuBisCO (que evolucionó en una atmósfera con menos O2); afirmar que es 'completamente inútil, sin ninguna función' simplifica en exceso las restricciones evolutivas y bioquímicas que explican su persistencia", "La fotorrespiración aumenta siempre la eficiencia fotosintética de cualquier planta", "RuBisCO nunca se une al O2 bajo ninguna condición ambiental", "La evolución ha eliminado por completo la fotorrespiración en todas las especies de plantas actuales"], "correct": 1, "exp": "Calificar la fotorrespiración como 'completamente inútil' ignora que es consecuencia de restricciones estructurales de RuBisCO (que evolucionó en condiciones atmosféricas distintas) difíciles de eliminar sin comprometer su función principal; algunas plantas (C4, CAM) han desarrollado mecanismos para minimizarla, pero no eliminarla."}, {"skill": "EVAL", "q": "Una investigación afirmó que 'las plantas C4 son siempre más eficientes fotosintéticamente que las plantas C3, bajo cualquier condición ambiental', basándose en su ventaja específica bajo alta temperatura y baja disponibilidad de CO2. ¿Qué crítica es más pertinente?", "options": ["La conclusión es correcta porque las plantas C4 son, sin excepción, más eficientes que las C3 bajo cualquier condición ambiental posible", "La ventaja de las plantas C4 es específica de condiciones de alta temperatura y luz intensa; en condiciones más frescas o de luz limitada, el costo energético adicional de su mecanismo de concentración de CO2 puede hacerlas menos eficientes que las plantas C3, por lo que generalizar su ventaja a 'cualquier condición ambiental' no está respaldado", "Las plantas C3 son siempre más eficientes que las plantas C4, sin importar la condición ambiental", "El mecanismo de concentración de CO2 de las plantas C4 no tiene ningún costo energético adicional", "No es necesario considerar distintas condiciones ambientales para evaluar la eficiencia relativa de ambos tipos de plantas"], "correct": 1, "exp": "La ventaja de las plantas C4 es condicional: su mecanismo adicional de concentración de CO2 tiene un costo energético que solo se compensa en condiciones específicas (alta temperatura, alta luz); en climas templados o con luz limitada, las plantas C3 pueden ser igual o más eficientes."}, {"skill": "EVAL", "q": "Un estudio concluyó que 'el punto de compensación lumínico es fijo e idéntico para todas las especies de plantas, sin ninguna variación', basándose en la medición de una sola especie. ¿Qué crítica es más pertinente?", "options": ["La conclusión es correcta porque el punto de compensación lumínico es una constante biológica universal, idéntica en cualquier especie de planta", "El punto de compensación lumínico depende de la tasa de respiración celular y de la eficiencia fotosintética particular de cada especie (y hasta de cada hoja, según su adaptación a sombra o sol); generalizar el valor obtenido en una sola especie a 'todas las especies, sin ninguna variación' ignora esta variabilidad biológica conocida", "El punto de compensación lumínico no tiene ninguna relación con la tasa de respiración celular de la planta", "Todas las plantas presentan exactamente la misma tasa de respiración celular, sin ninguna diferencia", "No es necesario medir más de una especie para establecer un valor universal de este parámetro"], "correct": 1, "exp": "El punto de compensación lumínico varía entre especies (y entre hojas de sol y de sombra dentro de una misma planta) según su tasa de respiración y su eficiencia fotosintética particular; generalizar un valor único a partir de una sola especie ignora esta variabilidad bien documentada."}, {"skill": "EVAL", "q": "Una publicación afirmó que 'el cierre estomático en ambientes secos no tiene ningún costo para la planta, siendo una respuesta sin ninguna desventaja asociada', basándose únicamente en su beneficio de reducir la pérdida de agua. ¿Qué crítica es más pertinente?", "options": ["La afirmación es correcta porque el cierre estomático es una respuesta completamente beneficiosa, sin ningún costo asociado para la planta", "Aunque el cierre estomático reduce la pérdida de agua por transpiración, tiene como costo simultáneo la reducción de la entrada de CO2, lo que puede limitar la tasa fotosintética; afirmar que 'no tiene ningún costo' ignora este compromiso fisiológico bien documentado entre conservación de agua y captación de CO2", "El cierre estomático aumenta siempre la tasa fotosintética de la planta, sin ninguna excepción", "Los estomas no cumplen ninguna función relacionada con el intercambio de CO2", "La pérdida de agua por transpiración no tiene ninguna relación con la apertura de los estomas"], "correct": 1, "exp": "El cierre estomático ejemplifica un compromiso fisiológico (trade-off) bien conocido: reduce la pérdida de agua, pero a costa de limitar la entrada de CO2 necesaria para la fotosíntesis; presentarlo como una respuesta 'sin ningún costo' ignora esta relación de compromiso."}, {"skill": "EVAL", "q": "Un estudio sobre el transporte de electrones concluyó que 'bloquear cualquier punto de la cadena transportadora entre los fotosistemas siempre produce exactamente el mismo grado de estrés oxidativo', basándose en el estudio de un único punto de bloqueo. ¿Qué crítica es más pertinente?", "options": ["La conclusión es correcta porque cualquier punto de bloqueo en la cadena transportadora produce, sin excepción, exactamente el mismo efecto sobre el estrés oxidativo", "El grado de estrés oxidativo probablemente depende de la cantidad de energía acumulada antes del punto específico de bloqueo y de la capacidad de disipación en ese punto; generalizar que 'cualquier punto... siempre produce exactamente el mismo grado' a partir del estudio de un único punto de bloqueo no está respaldado sin comparar distintos puntos de la cadena", "El bloqueo del transporte de electrones nunca genera ningún tipo de estrés oxidativo en la hoja", "La cadena transportadora de electrones no tiene ningún punto intermedio susceptible de ser bloqueado", "No es necesario comparar distintos puntos de bloqueo para hacer esta generalización"], "correct": 1, "exp": "Generalizar el efecto de un bloqueo específico a 'cualquier punto de la cadena, siempre con exactamente el mismo grado' de estrés oxidativo, sin haber comparado distintos puntos de bloqueo, excede lo que ese experimento particular puede respaldar."}, {"skill": "COM", "q": "Un estudiante debe explicar por qué la fotorrespiración reduce la eficiencia neta de la fotosíntesis en plantas C3 bajo condiciones de alta temperatura. ¿Explicación más precisa?", "options": ["A altas temperaturas y con baja disponibilidad relativa de CO2 (por el cierre estomático parcial), la enzima RuBisCO tiende a unirse más frecuentemente al O2 en lugar del CO2, iniciando una vía (fotorrespiración) que consume energía y libera CO2, sin producir azúcares, reduciendo así la ganancia neta de carbono de la planta", "La fotorrespiración aumenta la eficiencia fotosintética al proporcionar una fuente adicional de energía a la planta", "RuBisCO se une exclusivamente al CO2 a altas temperaturas, sin ninguna posibilidad de unirse al O2", "La fotorrespiración ocurre únicamente en plantas C4, sin relación con las plantas C3", "La temperatura no tiene ninguna relación con la afinidad de RuBisCO por el CO2 o el O2"], "correct": 0, "exp": "La explicación debe conectar el efecto de la temperatura sobre la afinidad relativa de RuBisCO (favoreciendo al O2 en condiciones cálidas y de bajo CO2 relativo) con la consecuencia energética y de eficiencia (pérdida neta de carbono) que representa la vía de fotorrespiración."}, {"skill": "COM", "q": "Al explicar por qué las plantas C4 logran reducir la fotorrespiración en comparación con las plantas C3, ¿cuál es la explicación más precisa?", "options": ["Las plantas C4 fijan inicialmente el CO2 mediante una enzima distinta (PEP carboxilasa, con alta afinidad y sin actividad hacia el O2) en células del mesófilo, y transportan el carbono concentrado hacia las células de la vaina del haz, donde ocurre el Ciclo de Calvin; esta alta concentración local de CO2 favorece que RuBisCO se una preferentemente al CO2 en lugar del O2", "Las plantas C4 carecen por completo de la enzima RuBisCO, evitando así cualquier posibilidad de fotorrespiración", "Las plantas C4 realizan la fotosíntesis exclusivamente durante la noche, evitando así el problema de la fotorrespiración", "La PEP carboxilasa y la RuBisCO cumplen exactamente la misma función bioquímica en las plantas C4", "Las plantas C4 no requieren en ningún caso de CO2 atmosférico para realizar la fotosíntesis"], "correct": 0, "exp": "La explicación debe describir el mecanismo de concentración de CO2 mediante la separación espacial de la fijación inicial (PEP carboxilasa, mesófilo) y el Ciclo de Calvin (vaina del haz), que crea un microambiente con alta concentración de CO2 favorable a la actividad de RuBisCO sobre el O2."}, {"skill": "COM", "q": "Un estudiante debe explicar el mecanismo de quimiósmosis mediante el cual se produce ATP durante la fase lumínica de la fotosíntesis. ¿Explicación más precisa?", "options": ["El transporte de electrones a través de la cadena transportadora bombea protones (H+) desde el estroma hacia el lumen del tilacoide, generando un gradiente electroquímico; estos protones fluyen de vuelta al estroma a través de la enzima ATP sintasa, y esa energía del flujo se utiliza para sintetizar ATP a partir de ADP y fosfato", "El ATP se produce directamente por la fotólisis del agua, sin ninguna relación con el transporte de protones", "El gradiente de protones se genera desde el lumen hacia el estroma, en dirección opuesta a la descrita en la quimiósmosis real", "La ATP sintasa no cumple ninguna función relacionada con la producción de ATP durante la fotosíntesis", "El transporte de electrones no genera ningún gradiente de protones a través de la membrana tilacoidal"], "correct": 0, "exp": "La explicación completa debe describir la secuencia: transporte de electrones → bombeo de protones hacia el lumen → gradiente electroquímico → flujo de protones a través de la ATP sintasa → síntesis de ATP, ilustrando el principio de quimiósmosis compartido con la respiración celular."}, {"skill": "COM", "q": "Al explicar la relación entre el punto de compensación lumínico y la adaptación de plantas a ambientes de sombra o de sol pleno, ¿cuál es la explicación más precisa?", "options": ["Las plantas adaptadas a ambientes de sombra suelen tener un punto de compensación lumínico más bajo (menor tasa de respiración basal), lo que les permite mantener un balance de carbono positivo incluso con niveles de luz reducidos, a diferencia de plantas adaptadas a sol pleno que requieren mayor intensidad lumínica para alcanzar ese balance", "Todas las plantas, sin importar su ambiente de adaptación, presentan exactamente el mismo punto de compensación lumínico", "Las plantas de sombra requieren siempre mayor intensidad de luz que las plantas de sol pleno para alcanzar su punto de compensación", "El punto de compensación lumínico no tiene ninguna relación con la adaptación de una planta a distintos niveles de luz ambiental", "Las plantas de sol pleno presentan una tasa de respiración basal menor que las plantas de sombra"], "correct": 0, "exp": "La explicación conecta el concepto de punto de compensación lumínico con una adaptación ecológica conocida: plantas de sombra, con menor tasa de respiración basal, alcanzan el equilibrio fotosintético con menos luz, una ventaja adaptativa en ambientes de baja disponibilidad lumínica."}, {"skill": "COM", "q": "Un estudiante debe explicar por qué el cierre estomático en condiciones de sequía representa un compromiso fisiológico (trade-off) para la planta. ¿Explicación más precisa?", "options": ["Cerrar los estomas reduce la pérdida de agua por transpiración, un beneficio importante en condiciones de sequía, pero simultáneamente limita la difusión de CO2 hacia el interior de la hoja, lo que puede reducir la tasa fotosintética; la planta debe balancear estos dos efectos opuestos según la severidad de la escasez de agua", "El cierre estomático beneficia simultáneamente tanto la conservación de agua como la captación de CO2, sin ningún compromiso entre ambos procesos", "Los estomas regulan exclusivamente la temperatura de la hoja, sin relación con el intercambio de agua ni de CO2", "El cierre estomático no tiene ningún efecto sobre la disponibilidad de CO2 para la fotosíntesis", "La apertura estomática siempre beneficia a la planta, sin importar la disponibilidad de agua en el ambiente"], "correct": 0, "exp": "La explicación debe ilustrar el concepto de compromiso fisiológico (trade-off): los estomas regulan simultáneamente la pérdida de agua y la entrada de CO2, por lo que cualquier ajuste en su apertura beneficia un proceso a costa del otro, obligando a la planta a balancear ambas necesidades."}, {"skill": "COM", "q": "Al explicar por qué la producción de ATP mediante quimiósmosis en la fase lumínica es sensible a sustancias desacoplantes, ¿cuál es la explicación más precisa?", "options": ["Los desacoplantes permiten que los protones atraviesen la membrana tilacoidal sin pasar por la ATP sintasa, disipando el gradiente electroquímico sin que su energía se utilice para sintetizar ATP, de modo que el transporte de electrones puede continuar pero sin producir ATP de forma eficiente", "Los desacoplantes bloquean directamente el transporte de electrones entre los fotosistemas, sin ninguna relación con el gradiente de protones", "Los desacoplantes aumentan la eficiencia de la ATP sintasa, produciendo más ATP del habitual", "El gradiente de protones no tiene ninguna relación con la producción de ATP, por lo que los desacoplantes no afectan este proceso", "Los desacoplantes actúan exclusivamente sobre la fase oscura de la fotosíntesis, sin relación con la fase lumínica"], "correct": 0, "exp": "La explicación debe distinguir entre el transporte de electrones (que puede continuar) y la producción de ATP (que depende específicamente del flujo de protones a través de la ATP sintasa); los desacoplantes disipan el gradiente por una vía alternativa, desligando ambos procesos."}, {"skill": "PLAN", "q": "Para determinar si la disipacion de energia como calor (NPQ) es reversible al retirar el exceso de luz, cual es el diseno experimental mas adecuado?", "options": ["Medir la magnitud de NPQ inmediatamente despues de retirar una fuente de luz intensa y compararla con mediciones tomadas en intervalos crecientes de tiempo tras la remocion del exceso luminico", "Medir la magnitud de NPQ solo mientras la luz intensa esta presente, sin ningun seguimiento posterior", "No es necesario realizar ningun seguimiento temporal tras retirar la luz intensa", "Medir solo la concentracion de pigmentos, sin evaluar directamente la magnitud de NPQ", "Asumir que la disipacion de energia es siempre irreversible sin realizar ningun seguimiento temporal"], "correct": 0, "exp": "Un seguimiento temporal de la magnitud de NPQ tras retirar el exceso de luz permite establecer experimentalmente si este mecanismo de disipacion es reversible, y con que rapidez la planta retorna a un estado de mayor eficiencia fotoquimica."}, {"skill": "PROC", "q": "Se midio la magnitud de disipacion de energia como calor (NPQ) inmediatamente tras retirar una luz intensa (valor alto) y en intervalos crecientes posteriores (disminucion progresiva hasta un valor basal). Que conclusion es mas adecuada?", "options": ["La disipacion fotoprotectora de energia como calor es un proceso reversible, que disminuye progresivamente una vez que cesa el exceso de luz que la origino", "La disipacion de energia como calor es un proceso irreversible que se mantiene indefinidamente tras retirar el exceso de luz", "La magnitud de NPQ no tiene ninguna relacion con la presencia o ausencia de exceso de luz", "El valor de NPQ aumenta progresivamente tras retirar la fuente de luz intensa", "Ambos momentos evaluados muestran exactamente el mismo valor de NPQ, sin ningun cambio"], "correct": 0, "exp": "La disminucion progresiva de NPQ tras retirar el exceso de luz confirma que este mecanismo fotoprotector es reversible, ajustandose dinamicamente segun las condiciones lumínicas presentes en cada momento."}, {"skill": "COM", "q": "Un estudiante debe explicar por que la disipacion de energia como calor (NPQ) es un proceso regulado y reversible, en lugar de un dano permanente al aparato fotosintetico. Cual es la explicacion mas precisa?", "options": ["El NPQ involucra cambios reversibles en pigmentos como la zeaxantina y en el estado de proteinas asociadas a los fotosistemas, que se activan bajo exceso de luz y se revierten cuando la intensidad luminica disminuye, permitiendo a la planta ajustar dinamicamente su nivel de proteccion segun las condiciones ambientales", "El NPQ representa un dano permanente e irreversible al aparato fotosintetico de la planta", "La zeaxantina no tiene ninguna relacion con el proceso de disipacion de energia como calor", "El NPQ ocurre de forma identica sin importar la intensidad de luz recibida por la planta", "La reversibilidad del NPQ no aporta ninguna ventaja a la planta frente a condiciones de luz variables"], "correct": 0, "exp": "La explicacion debe destacar la naturaleza regulada y reversible del NPQ, que permite a la planta ajustar dinamicamente su estrategia entre eficiencia fotoquimica y proteccion segun la intensidad de luz cambiante a lo largo del dia."}, {"skill": "COM", "q": "Al explicar por que la medicion del intercambio neto de CO2 permite estimar tanto la fotosintesis como la respiracion celular de una planta en una sola medicion, cual es la explicacion mas precisa?", "options": ["El intercambio neto de CO2 medido refleja la diferencia entre el CO2 consumido por la fotosintesis y el CO2 liberado por la respiracion celular, que ocurren simultaneamente en la planta; separando mediciones en luz y en oscuridad total (donde solo hay respiracion) es posible estimar ambos procesos por separado", "La respiracion celular de una planta ocurre exclusivamente en presencia de luz intensa", "El intercambio neto de CO2 refleja unicamente la actividad fotosintetica, sin ninguna influencia de la respiracion celular", "La fotosintesis y la respiracion celular nunca ocurren de forma simultanea en una planta", "Medir el intercambio de CO2 no permite obtener ninguna informacion sobre la actividad metabolica de una planta"], "correct": 0, "exp": "La explicacion debe describir como el intercambio neto de gases combina dos procesos simultaneos (fotosintesis que consume CO2, respiracion que lo libera), y como comparar mediciones en luz y en oscuridad total permite estimar la magnitud de cada proceso por separado."}, {"skill": "EVAL", "q": "Un estudio concluyo que la disipacion de energia como calor (NPQ) es siempre perjudicial para la planta, ya que reduce la cantidad de energia disponible para la fotosintesis, sin considerar ningun beneficio asociado. Que critica es mas pertinente?", "options": ["La conclusion es correcta porque el NPQ unicamente reduce la eficiencia fotosintetica, sin aportar ningun beneficio a la planta", "Aunque el NPQ reduce momentaneamente la eficiencia fotoquimica, previene un dano mayor por especies reactivas de oxigeno que danarian el aparato fotosintetico bajo exceso de luz; calificarlo como siempre perjudicial, sin considerar este beneficio protector, ignora el balance real de costos y beneficios de este mecanismo", "El NPQ nunca reduce la eficiencia fotosintetica de una planta bajo ninguna condicion", "El exceso de luz nunca representa ningun riesgo real para el aparato fotosintetico de una planta", "No es necesario considerar ningun beneficio protector al evaluar el efecto del NPQ sobre la planta"], "correct": 1, "exp": "El NPQ representa un compromiso: reduce momentaneamente la eficiencia fotoquimica, pero previene un dano fotooxidativo mayor bajo exceso de luz; calificarlo como siempre perjudicial ignora este beneficio protector documentado."}, {"skill": "EVAL", "q": "Una investigacion afirmo que medir el intercambio neto de CO2 de una planta en un unico momento del dia es suficiente para caracterizar completamente su balance de carbono diario, sin necesidad de mediciones adicionales. Que critica es mas pertinente?", "options": ["La afirmacion es correcta porque una unica medicion en cualquier momento del dia siempre representa fielmente el balance de carbono diario completo de la planta", "El intercambio neto de CO2 varia a lo largo del dia segun la intensidad de luz, la temperatura y otros factores ambientales cambiantes; una sola medicion puntual no captura esta variacion temporal, por lo que caracterizar el balance diario completo requeriria mediciones repetidas a lo largo del ciclo de 24 horas", "El intercambio neto de CO2 de una planta es identico en cualquier momento del dia, sin ninguna variacion", "No es necesario considerar la variacion temporal del intercambio de CO2 para caracterizar el balance de carbono de una planta", "La intensidad de luz y la temperatura no tienen ninguna relacion con el intercambio neto de CO2 de una planta"], "correct": 1, "exp": "El intercambio neto de CO2 fluctua a lo largo del dia segun condiciones ambientales cambiantes; una unica medicion puntual no permite generalizar el balance de carbono diario completo, que requiere de un seguimiento a lo largo del ciclo completo de 24 horas."}, {"skill": "EVAL", "q": "Un estudio sobre plantas C4 concluyo que estas plantas nunca realizan fotorrespiracion bajo ninguna condicion, basandose en su tasa considerablemente reducida en comparacion con las plantas C3. Que critica es mas pertinente?", "options": ["La conclusion es correcta porque las plantas C4 estan completamente libres de cualquier posibilidad de fotorrespiracion, sin ninguna excepcion", "El mecanismo de concentracion de CO2 de las plantas C4 reduce considerablemente, pero no elimina por completo, la fotorrespiracion, ya que aun puede ocurrir cierta actividad residual de RuBisCO hacia el O2 en las celulas de la vaina del haz; afirmar que nunca ocurre bajo ninguna condicion excede lo que respalda la evidencia de una tasa reducida (no nula)", "Las plantas C4 presentan mayor tasa de fotorrespiracion que las plantas C3 bajo cualquier condicion", "La fotorrespiracion no tiene ninguna relacion con la actividad de la enzima RuBisCO en ningun tipo de planta", "No es necesario distinguir entre una tasa reducida y una ausencia total de fotorrespiracion para esta conclusion"], "correct": 1, "exp": "Una tasa considerablemente reducida de fotorrespiracion no equivale a su ausencia total; el mecanismo C4 minimiza, pero no elimina por completo, la actividad residual de RuBisCO hacia el O2, por lo que la generalizacion absoluta ('nunca... bajo ninguna condicion') no esta respaldada por la evidencia de una simple reduccion."}];
+
+let currentQuiz = [];
+let currentIndex = 0;
+let answered = false;
+let userAnswers = [];
+let scoreBySkill = {};
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function buildQuiz(){
+  let selected = [];
+  SKILL_ORDER.forEach(skillKey=>{
+    const pool = QUESTION_BANK.filter(q=>q.skill===skillKey);
+    const picked = shuffle(pool).slice(0,PICK_PER_SKILL);
+    selected = selected.concat(picked);
+  });
+  selected = shuffle(selected);
+  return selected.map(orig=>{
+    const idxArr = [0,1,2,3,4];
+    const shuffledIdx = shuffle(idxArr);
+    const newOptions = shuffledIdx.map(i=>orig.options[i]);
+    const newCorrect = shuffledIdx.indexOf(orig.correct);
+    return { skill: orig.skill, question: orig.q, options: newOptions, correct: newCorrect, exp: orig.exp };
+  });
+}
+
+function startQuiz(){
+  currentQuiz = buildQuiz();
+  currentIndex = 0;
+  answered = false;
+  userAnswers = [];
+  scoreBySkill = {};
+  SKILL_ORDER.forEach(s=>scoreBySkill[s]={correct:0,total:0});
+  document.getElementById('start-screen').classList.add('hidden');
+  document.getElementById('dashboard-screen').classList.add('hidden');
+  document.getElementById('review-screen').classList.add('hidden');
+  document.getElementById('quiz-screen').classList.remove('hidden');
+  renderQuestion();
+}
+
+function renderQuestion(){
+  answered = false;
+  const q = currentQuiz[currentIndex];
+  const total = currentQuiz.length;
+  document.getElementById('progress-fill').style.width = ((currentIndex)/total*100)+'%';
+  document.getElementById('progress-label').textContent = (currentIndex+1)+' / '+total;
+  document.getElementById('skill-tag').textContent = SKILL_NAMES[q.skill];
+  document.getElementById('qnum').textContent = 'Pregunta '+(currentIndex+1);
+  document.getElementById('question-text').textContent = q.question;
+
+  const optsDiv = document.getElementById('options');
+  optsDiv.innerHTML = '';
+  q.options.forEach((opt, i)=>{
+    const btn = document.createElement('button');
+    btn.className = 'option';
+    btn.innerHTML = '<span class="letter">'+LETTERS[i]+')</span><span>'+opt+'</span>';
+    btn.onclick = ()=>selectOption(i);
+    optsDiv.appendChild(btn);
+  });
+
+  document.getElementById('feedback').classList.add('hidden');
+  document.getElementById('next-btn').classList.add('hidden');
+}
+
+function selectOption(i){
+  if(answered) return;
+  answered = true;
+  const q = currentQuiz[currentIndex];
+  const correct = q.correct;
+  const options = document.querySelectorAll('#options .option');
+  options.forEach((opt, idx)=>{
+    opt.classList.add('locked');
+    if(idx===correct) opt.classList.add('correct');
+    else if(idx===i) opt.classList.add('incorrect');
+    else opt.classList.add('dim');
+  });
+
+  const isCorrect = (i===correct);
+  scoreBySkill[q.skill].total++;
+  if(isCorrect) scoreBySkill[q.skill].correct++;
+
+  userAnswers.push({ skill:q.skill, question:q.question, options:q.options, correctIdx:correct, chosenIdx:i, exp:q.exp, isCorrect });
+
+  const fb = document.getElementById('feedback');
+  fb.classList.remove('hidden');
+  fb.classList.toggle('wrong', !isCorrect);
+  fb.innerHTML = '<span class="pista-label">'+(isCorrect ? '✓ Correcto — Pista' : '✕ Incorrecto — Pista')+'</span>'+
+    '<strong>Respuesta correcta: '+LETTERS[correct]+') '+q.options[correct]+'</strong><br><br>'+q.exp;
+
+  document.getElementById('next-btn').classList.remove('hidden');
+}
+
+function nextQuestion(){
+  currentIndex++;
+  if(currentIndex >= currentQuiz.length){
+    showDashboard();
+  } else {
+    renderQuestion();
+  }
+}
+
+function showDashboard(){
+  document.getElementById('quiz-screen').classList.add('hidden');
+  document.getElementById('dashboard-screen').classList.remove('hidden');
+
+  const totalCorrect = userAnswers.filter(a=>a.isCorrect).length;
+  const totalQ = userAnswers.length;
+  document.getElementById('score-total').innerHTML = totalCorrect+'<span>/'+totalQ+'</span>';
+  const pct = Math.round((totalCorrect/totalQ)*100);
+  document.getElementById('score-caption').textContent = pct+'% de logro general';
+
+  const barsDiv = document.getElementById('skill-bars');
+  barsDiv.innerHTML = '';
+  const weakSkills = [];
+  const strongSkills = [];
+
+  SKILL_ORDER.forEach(skillKey=>{
+    const s = scoreBySkill[skillKey];
+    const skillPct = s.total>0 ? Math.round((s.correct/s.total)*100) : 0;
+    let color = 'var(--accent-coral)';
+    if(skillPct>=75) color='var(--accent-sage)';
+    else if(skillPct>=50) color='var(--accent-amber)';
+
+    const row = document.createElement('div');
+    row.className='skill-bar-row';
+    row.innerHTML = '<div class="skill-bar-head"><span class="name">'+SKILL_NAMES[skillKey]+'</span><span class="frac">'+s.correct+'/'+s.total+'</span></div>'+
+      '<div class="skill-bar-track"><div class="skill-bar-fill" style="width:'+skillPct+'%;background:'+color+';"></div></div>';
+    barsDiv.appendChild(row);
+
+    if(skillPct<75) weakSkills.push({name:SKILL_NAMES[skillKey], pct:skillPct});
+    else strongSkills.push(SKILL_NAMES[skillKey]);
+  });
+
+  const improveBox = document.getElementById('improve-box');
+  const improveList = document.getElementById('improve-list');
+  improveList.innerHTML='';
+  if(weakSkills.length>0){
+    improveBox.classList.remove('hidden');
+    weakSkills.sort((a,b)=>a.pct-b.pct).forEach(w=>{
+      const li = document.createElement('li');
+      li.innerHTML = '<strong>'+w.name+'</strong> ('+w.pct+'%) — refuerza con más ejercicios de este tipo de habilidad, revisando las pistas de las preguntas falladas.';
+      improveList.appendChild(li);
+    });
+  } else {
+    improveBox.classList.add('hidden');
+  }
+
+  const strongBox = document.getElementById('strong-box');
+  const strongText = document.getElementById('strong-text');
+  if(strongSkills.length>0){
+    strongBox.classList.remove('hidden');
+    strongText.textContent = strongSkills.join(', ') + '. Buen dominio, mantén la práctica con nuevos intentos.';
+  } else {
+    strongBox.classList.add('hidden');
+  }
+}
+
+function restartQuiz(){ startQuiz(); }
+
+function reviewAnswers(){
+  document.getElementById('dashboard-screen').classList.add('hidden');
+  const rev = document.getElementById('review-screen');
+  rev.classList.remove('hidden');
+  let html = '<p class="eyebrow">Revisión de respuestas</p>';
+  userAnswers.forEach((a, i)=>{
+    html += '<div style="margin-bottom:22px;padding-bottom:18px;border-bottom:1px solid var(--line);">'+
+      '<span class="skill-tag">'+SKILL_NAMES[a.skill]+'</span>'+
+      '<p class="question-text" style="font-size:16px;">'+(i+1)+'. '+a.question+'</p>'+
+      '<p style="font-size:14px;color:'+(a.isCorrect?'var(--accent-sage)':'var(--accent-coral)')+';margin:0 0 6px;">'+
+        (a.isCorrect ? '✓ Respondiste correctamente' : '✕ Tu respuesta: '+LETTERS[a.chosenIdx]+') '+a.options[a.chosenIdx])+
+      '</p>'+
+      '<p style="font-size:14px;color:var(--text-muted);margin:0 0 8px;">Correcta: '+LETTERS[a.correctIdx]+') '+a.options[a.correctIdx]+'</p>'+
+      '<div class="feedback" style="margin-top:6px;"><span class="pista-label">Pista</span>'+a.exp+'</div>'+
+    '</div>';
+  });
+  html += '<div class="actions"><button class="btn" onclick="restartQuiz(); document.getElementById(\'review-screen\').classList.add(\'hidden\');">Repetir con nuevas preguntas</button></div>';
+  rev.innerHTML = html;
+}
+</script>
+</body>
+</html>
