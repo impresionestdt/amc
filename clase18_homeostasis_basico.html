@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PAES Biología · Clase 18 · Homeostasis (Nivel Básico)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Source+Sans+3:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-deep:#0f2027;
+    --bg-panel:#15303a;
+    --bg-panel-2:#1b3a45;
+    --accent-amber:#e8a33d;
+    --accent-sage:#6fa88a;
+    --accent-coral:#e4572e;
+    --text-light:#f3ede1;
+    --text-muted:#a9c0c2;
+    --line:#2a4750;
+    --radius:14px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:radial-gradient(circle at 15% -10%, #1c4552 0%, var(--bg-deep) 55%) fixed;
+    color:var(--text-light);
+    font-family:'Source Sans 3', system-ui, sans-serif;
+    min-height:100vh;
+    padding:32px 16px 64px;
+  }
+  .wrap{max-width:820px;margin:0 auto;}
+  .eyebrow{font-family:'JetBrains Mono', monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent-amber);margin:0 0 8px;}
+  h1{font-family:'Fraunces', serif;font-weight:600;font-size:clamp(26px,4vw,38px);line-height:1.1;margin:0 0 6px;color:var(--text-light);}
+  .sub{color:var(--text-muted);font-size:15px;margin:0 0 28px;max-width:60ch;}
+  .card{background:linear-gradient(180deg, var(--bg-panel) 0%, var(--bg-panel-2) 100%);border:1px solid var(--line);border-radius:var(--radius);padding:28px;box-shadow:0 20px 40px -20px rgba(0,0,0,.5);}
+  #start-screen ul{color:var(--text-muted);font-size:14.5px;line-height:1.7;padding-left:20px;margin:18px 0 26px;}
+  #start-screen li{margin-bottom:4px;}
+  .btn{font-family:'Source Sans 3', sans-serif;font-weight:700;font-size:15px;border:none;border-radius:999px;padding:14px 30px;cursor:pointer;background:var(--accent-amber);color:#20140a;transition:transform .15s ease, box-shadow .15s ease;box-shadow:0 8px 20px -8px rgba(0,0,0,.35);}
+  .btn:hover{transform:translateY(-1px);}
+  .btn:active{transform:translateY(0);}
+  .btn.ghost{background:transparent;color:var(--text-muted);border:1.5px solid var(--line);box-shadow:none;}
+  .progress-row{display:flex;align-items:center;gap:14px;margin-bottom:18px;}
+  .progress-track{flex:1;height:6px;border-radius:99px;background:var(--line);overflow:hidden;}
+  .progress-fill{height:100%;background:linear-gradient(90deg,var(--accent-sage),var(--accent-amber));border-radius:99px;transition:width .3s ease;}
+  .progress-label{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--text-muted);white-space:nowrap;}
+  .skill-tag{display:inline-block;font-family:'JetBrains Mono', monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--bg-deep);background:var(--accent-sage);padding:5px 11px;border-radius:999px;margin-bottom:14px;}
+  .qnum{color:var(--text-muted);font-size:13px;font-family:'JetBrains Mono',monospace;margin-bottom:6px;}
+  .question-text{font-family:'Fraunces', serif;font-weight:500;font-size:19px;line-height:1.45;margin:0 0 22px;}
+  .options{display:flex;flex-direction:column;gap:10px;}
+  .option{display:flex;align-items:flex-start;gap:12px;text-align:left;background:rgba(255,255,255,.03);border:1.5px solid var(--line);border-radius:10px;padding:13px 15px;cursor:pointer;color:var(--text-light);font-size:14.5px;line-height:1.4;transition:border-color .15s, background .15s;}
+  .option:hover:not(.locked){border-color:var(--accent-amber);}
+  .option .letter{font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--accent-amber);flex-shrink:0;}
+  .option.correct{border-color:var(--accent-sage);background:rgba(111,168,138,.14);}
+  .option.incorrect{border-color:var(--accent-coral);background:rgba(228,87,46,.14);}
+  .option.locked{cursor:default;}
+  .option.dim{opacity:.45;}
+  .feedback{margin-top:18px;padding:16px 18px;border-radius:10px;background:rgba(255,255,255,.04);border-left:4px solid var(--accent-sage);font-size:14px;line-height:1.6;color:var(--text-muted);}
+  .feedback.wrong{border-left-color:var(--accent-coral);}
+  .feedback strong{color:var(--text-light);}
+  .feedback .pista-label{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent-amber);display:block;margin-bottom:6px;}
+  .nav-row{display:flex;justify-content:flex-end;margin-top:22px;}
+  .score-hero{text-align:center;padding:10px 0 26px;}
+  .score-big{font-family:'Fraunces',serif;font-weight:700;font-size:56px;color:var(--accent-amber);line-height:1;}
+  .score-big span{font-size:24px;color:var(--text-muted);font-weight:500;}
+  .score-caption{color:var(--text-muted);font-size:14px;margin-top:6px;}
+  .skill-bars{display:flex;flex-direction:column;gap:16px;margin:22px 0 8px;}
+  .skill-bar-head{display:flex;justify-content:space-between;font-size:13.5px;margin-bottom:6px;}
+  .skill-bar-head .name{font-weight:600;}
+  .skill-bar-head .frac{font-family:'JetBrains Mono',monospace;color:var(--text-muted);}
+  .skill-bar-track{height:10px;border-radius:99px;background:var(--line);overflow:hidden;}
+  .skill-bar-fill{height:100%;border-radius:99px;}
+  .improve-box{margin-top:26px;background:rgba(228,87,46,.08);border:1px solid rgba(228,87,46,.35);border-radius:10px;padding:18px 20px;}
+  .improve-box h3{font-family:'Fraunces',serif;font-size:16px;margin:0 0 10px;color:var(--accent-coral);}
+  .improve-box ul{margin:0;padding-left:20px;color:var(--text-light);font-size:14px;line-height:1.75;}
+  .strong-box{margin-top:14px;background:rgba(111,168,138,.08);border:1px solid rgba(111,168,138,.35);border-radius:10px;padding:18px 20px;}
+  .strong-box h3{font-family:'Fraunces',serif;font-size:16px;margin:0 0 10px;color:var(--accent-sage);}
+  .strong-box p{margin:0;color:var(--text-light);font-size:14px;line-height:1.6;}
+  .actions{display:flex;gap:12px;margin-top:28px;flex-wrap:wrap;}
+  .hidden{display:none !important;}
+  footer{text-align:center;color:var(--text-muted);font-size:12px;margin-top:26px;opacity:.6;}
+</style>
+</head>
+<body> <div style="float: left; margin-right: 25px; margin-bottom: 25px;"><img src="Logo_AMC.png" alt="Logo" style="max-width: 150px;"></div>
+<div class="wrap">
+  <p class="eyebrow">PAES · Ciencias — Módulo Biología Común · Nivel Básico</p>
+  <h1>Homeostasis y Mecanismos de Retroalimentación</h1>
+  <p class="sub">Eje 3: Procesos Químicos de la Vida e Integración — Sub-eje: Regulación y Función Endocrina — Clase 18: Homeostasis</p>
+
+  <div class="card" id="start-screen">
+    <p class="eyebrow" style="margin-bottom:14px;">Antes de comenzar</p>
+    <p style="color:var(--text-muted);font-size:14.5px;line-height:1.6;">Este quiz evalúa nivel <strong style='color:var(--text-light);'>básico</strong>, con 20 preguntas (4 por cada habilidad PAES), extraídas al azar de un banco de 40. Cada intento genera una versión distinta.</p>
+    <ul>
+      <li>Observar y plantear preguntas</li>
+      <li>Planificar y conducir una investigación</li>
+      <li>Procesar y analizar la evidencia</li>
+      <li>Evaluar</li>
+      <li>Comunicar</li>
+    </ul>
+    <button class="btn" onclick="startQuiz()">Comenzar quiz</button>
+  </div>
+
+  <div class="card hidden" id="quiz-screen">
+    <div class="progress-row">
+      <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+      <div class="progress-label" id="progress-label">1 / 20</div>
+    </div>
+    <span class="skill-tag" id="skill-tag"></span>
+    <p class="qnum" id="qnum"></p>
+    <p class="question-text" id="question-text"></p>
+    <div class="options" id="options"></div>
+    <div class="feedback hidden" id="feedback"></div>
+    <div class="nav-row">
+      <button class="btn hidden" id="next-btn" onclick="nextQuestion()">Siguiente →</button>
+    </div>
+  </div>
+
+  <div class="card hidden" id="dashboard-screen">
+    <p class="eyebrow">Resultados</p>
+    <div class="score-hero">
+      <div class="score-big" id="score-total">0<span>/20</span></div>
+      <p class="score-caption" id="score-caption">Puntaje global</p>
+    </div>
+    <div class="skill-bars" id="skill-bars"></div>
+    <div class="improve-box hidden" id="improve-box">
+      <h3>Puntos a mejorar</h3>
+      <ul id="improve-list"></ul>
+    </div>
+    <div class="strong-box hidden" id="strong-box">
+      <h3>Habilidades consolidadas</h3>
+      <p id="strong-text"></p>
+    </div>
+    <div class="actions">
+      <button class="btn" onclick="restartQuiz()">Repetir con nuevas preguntas</button>
+      <button class="btn ghost" onclick="reviewAnswers()">Revisar mis respuestas</button>
+    </div>
+  </div>
+
+  <div class="card hidden" id="review-screen"></div>
+
+  <footer>Banco de 40 preguntas · nivel básico · Clase 18 de 30 · basado en el temario DEMRE PAES Ciencias — Biología Común</footer>
+</div>
+
+<script>
+const SKILL_NAMES = {"OBS": "Observar y plantear preguntas", "PLAN": "Planificar y conducir una investigación", "PROC": "Procesar y analizar la evidencia", "EVAL": "Evaluar", "COM": "Comunicar"};
+const SKILL_ORDER = ["OBS", "PLAN", "PROC", "EVAL", "COM"];
+const LETTERS = ["A","B","C","D","E"];
+const PICK_PER_SKILL = 4;
+
+const QUESTION_BANK = [{"skill": "OBS", "q": "Un estudiante mide la temperatura corporal de una persona a lo largo de un dia con clima variable (frio en la manana, calor al mediodia) y encuentra que se mantiene practicamente constante alrededor de 37°C, a pesar de los cambios de temperatura ambiental. ¿Pregunta más pertinente?", "options": ["¿El cuerpo posee mecanismos reguladores que mantienen la temperatura interna relativamente constante a pesar de las variaciones del ambiente externo?", "¿La temperatura corporal varia siempre de forma identica a la temperatura ambiental?", "¿El cuerpo humano no posee ningun mecanismo relacionado con la regulacion de su temperatura interna?", "¿La temperatura corporal aumenta indefinidamente sin importar la temperatura ambiental?", "¿Los cambios de temperatura ambiental no tienen ninguna relacion con la fisiologia del cuerpo humano?"], "correct": 0, "exp": "La constancia de la temperatura corporal a pesar de la variabilidad ambiental es evidencia central de la homeostasis: mecanismos reguladores internos que mantienen condiciones fisiologicas relativamente estables frente a cambios externos."}, {"skill": "OBS", "q": "Se observa que, al hacer ejercicio intenso, una persona comienza a sudar profusamente, y que el sudor cesa progresivamente cuando la persona deja de hacer ejercicio y su temperatura corporal disminuye. ¿Pregunta más precisa?", "options": ["¿La activacion y desactivacion de la sudoracion se relaciona con un mecanismo de retroalimentacion que ajusta la respuesta segun el nivel de temperatura corporal detectado en cada momento?", "¿La sudoracion ocurre de forma completamente aleatoria, sin ninguna relacion con la temperatura corporal?", "¿La sudoracion aumenta siempre que la temperatura corporal disminuye?", "¿El ejercicio fisico no tiene ninguna relacion con la temperatura corporal de una persona?", "¿La sudoracion continua indefinidamente incluso despues de que la temperatura corporal se normaliza?"], "correct": 0, "exp": "El ajuste dinamico de la sudoracion segun el nivel de temperatura corporal (aumentando con el calor, cesando al normalizarse) es caracteristico de un mecanismo de retroalimentacion negativa, que corrige una desviacion y se desactiva al alcanzar el valor de referencia."}, {"skill": "OBS", "q": "Un investigador nota que, cuando una persona tiene niveles bajos de glucosa en sangre (hipoglucemia), siente hambre y busca alimento; una vez que come y sus niveles de glucosa se normalizan, la sensacion de hambre disminuye. ¿Pregunta más precisa?", "options": ["¿La sensacion de hambre esta relacionada con un mecanismo regulador que responde a los niveles de glucosa en sangre, motivando una conducta (buscar alimento) que corrige la desviacion detectada?", "¿La sensacion de hambre no tiene ninguna relacion con los niveles de glucosa en sangre?", "¿Comer alimentos siempre aumenta la sensacion de hambre de una persona?", "¿Los niveles de glucosa en sangre no cambian nunca, independientemente de si la persona come o no?", "¿La hipoglucemia disminuye siempre la sensacion de hambre de una persona?"], "correct": 0, "exp": "La relacion entre nivel bajo de glucosa, aumento del hambre, conducta de alimentacion y posterior disminucion del hambre al normalizarse la glucosa ilustra un mecanismo homeostatico que utiliza tanto senales fisiologicas como conductuales para mantener el equilibrio interno."}, {"skill": "OBS", "q": "Se observa que, cuando la presion arterial de una persona aumenta por encima de lo normal, ciertos receptores en las arterias detectan este cambio y envian senales al cerebro, que responde ajustando la frecuencia cardiaca y el diametro de los vasos sanguineos para reducir la presion. ¿Pregunta más precisa?", "options": ["¿Este proceso de deteccion y respuesta ante cambios en la presion arterial constituye un ejemplo de sistema de control homeostatico compuesto por un receptor, un centro integrador y un efector?", "¿Los receptores arteriales detectan cambios en la temperatura corporal, en lugar de la presion arterial?", "¿El cerebro no tiene ninguna relacion con la regulacion de la presion arterial?", "¿La frecuencia cardiaca no puede ser ajustada en respuesta a cambios en la presion arterial?", "¿La presion arterial permanece siempre constante, sin ninguna variacion detectable?"], "correct": 0, "exp": "La secuencia descrita (deteccion por receptores, señal al centro integrador cerebral, respuesta efectora ajustando frecuencia cardiaca y vasos) ejemplifica la estructura tripartita clasica de un sistema de control homeostatico: receptor, centro integrador y efector."}, {"skill": "OBS", "q": "Un estudiante nota que, al exponerse al frio, su cuerpo comienza a temblar (escalofrios) y que este temblor cesa cuando la persona se abriga o entra en un ambiente calido. ¿Pregunta más precisa?", "options": ["¿El temblor muscular observado en respuesta al frio corresponde a un mecanismo que genera calor corporal adicional para contrarrestar la disminucion de temperatura?", "¿El temblor muscular no tiene ninguna relacion con la temperatura corporal de una persona?", "¿El temblor aumenta siempre que la persona se encuentra en un ambiente calido?", "¿La exposicion al frio nunca genera ningun tipo de respuesta fisiologica en el cuerpo?", "¿El temblor muscular disminuye la temperatura corporal, en lugar de aumentarla?"], "correct": 0, "exp": "El temblor muscular es un mecanismo efector de termogenesis: la contraccion muscular repetida genera calor como subproducto, contrarrestando la perdida de calor corporal ante el frio, y cesa cuando la temperatura se normaliza."}, {"skill": "OBS", "q": "Se observa que, tras una comida abundante en carbohidratos, los niveles de glucosa en sangre aumentan considerablemente, y poco despues comienzan a disminuir progresivamente hasta volver a un nivel basal estable. ¿Pregunta más precisa?", "options": ["¿Existe un mecanismo regulador que detecta el aumento de glucosa en sangre y activa una respuesta que la reduce progresivamente hacia un nivel basal estable?", "¿Los niveles de glucosa en sangre aumentan indefinidamente tras una comida, sin ningun mecanismo que los reduzca?", "¿La ingesta de carbohidratos no tiene ninguna relacion con los niveles de glucosa en sangre?", "¿Los niveles de glucosa en sangre permanecen siempre constantes, sin importar la alimentacion?", "¿La disminucion de glucosa tras una comida ocurre de forma completamente aleatoria, sin ningun mecanismo regulador?"], "correct": 0, "exp": "El patron de aumento tras la ingesta seguido de una disminucion progresiva hacia un nivel basal estable es caracteristico de un mecanismo de retroalimentacion negativa que regula la glucemia, manteniendola dentro de un rango relativamente constante."}, {"skill": "OBS", "q": "Un investigador nota que, durante el parto, las contracciones uterinas se intensifican progresivamente a medida que avanza el proceso, en lugar de disminuir o estabilizarse, hasta el nacimiento del bebe. ¿Pregunta más precisa?", "options": ["¿Este patron de intensificacion progresiva corresponde a un mecanismo de retroalimentacion positiva, en el cual la respuesta amplifica el estimulo original en lugar de contrarrestarlo?", "¿Las contracciones uterinas disminuyen progresivamente a medida que avanza el parto?", "¿El proceso del parto no involucra ningun tipo de mecanismo de retroalimentacion?", "¿Este patron es identico al de un mecanismo de retroalimentacion negativa, como la regulacion de la temperatura corporal?", "¿Las contracciones uterinas se mantienen siempre constantes durante todo el proceso del parto?"], "correct": 0, "exp": "A diferencia de la retroalimentacion negativa (que contrarresta un cambio), el patron de intensificacion progresiva de las contracciones durante el parto es un ejemplo clasico de retroalimentacion positiva, donde la respuesta amplifica el estimulo original hasta completar el proceso."}, {"skill": "OBS", "q": "Se observa que, cuando el cuerpo pierde una cantidad considerable de agua (por ejemplo, por sudoracion intensa), una persona comienza a sentir sed, y que esta sensacion disminuye una vez que bebe suficiente agua para restablecer su nivel de hidratacion. ¿Pregunta más precisa?", "options": ["¿La sensacion de sed esta regulada por un mecanismo que responde al nivel de hidratacion del cuerpo, motivando una conducta que corrige la deshidratacion detectada?", "¿La sensacion de sed no tiene ninguna relacion con el nivel de hidratacion del cuerpo?", "¿Beber agua siempre aumenta la sensacion de sed de una persona?", "¿La perdida de agua corporal nunca genera ningun tipo de respuesta fisiologica o conductual?", "¿La sed disminuye siempre que el cuerpo pierde mas agua, independientemente de la ingesta?"], "correct": 0, "exp": "La relacion entre perdida de agua, aumento de la sed, conducta de ingesta de agua y posterior disminucion de la sed ilustra otro mecanismo homeostatico (regulacion del balance hidrico) que utiliza señales fisiologicas para motivar una conducta correctiva."}, {"skill": "PLAN", "q": "Para comprobar que la sudoracion es un mecanismo de retroalimentacion negativa que responde a la temperatura corporal, ¿cuál es el diseño experimental más adecuado?", "options": ["Medir la tasa de sudoracion de una persona a distintas temperaturas corporales controladas (inducidas por ejercicio o ambiente), evaluando si la sudoracion aumenta con la temperatura y disminuye al normalizarse esta", "Medir la tasa de sudoracion solo a una temperatura corporal fija, sin ninguna variacion", "No es necesario variar la temperatura corporal para responder esta pregunta", "Medir solo la temperatura ambiental, sin evaluar directamente la temperatura corporal ni la sudoracion", "Usar personas completamente distintas para cada nivel de temperatura evaluado, sin ningun control sobre otras diferencias"], "correct": 0, "exp": "Variar sistematicamente la temperatura corporal y medir la tasa de sudoracion resultante en cada nivel permite establecer de forma experimental la relacion de retroalimentacion entre ambas variables."}, {"skill": "PLAN", "q": "Un investigador desea comprobar que los niveles de glucosa en sangre se regulan mediante un mecanismo que reduce su concentracion tras una comida rica en carbohidratos. ¿Diseño experimental adecuado?", "options": ["Medir la concentracion de glucosa en sangre en distintos momentos tras una comida rica en carbohidratos, siguiendo su evolucion desde el aumento inicial hasta su estabilizacion en un nivel basal", "Medir la concentracion de glucosa solo en un momento fijo tras la comida, sin ningun seguimiento temporal", "No es necesario ningun seguimiento temporal para responder esta pregunta", "Medir la glucosa en sangre antes de la comida unicamente, sin ninguna medicion posterior", "Usar personas con dietas completamente distintas para cada medicion, sin ningun control sobre esta variable"], "correct": 0, "exp": "Un seguimiento temporal de la glucosa en sangre desde el aumento inicial hasta su estabilizacion permite establecer de forma experimental el patron de regulacion caracteristico de un mecanismo de retroalimentacion negativa."}, {"skill": "PLAN", "q": "Para determinar si el temblor muscular ante el frio genera efectivamente un aumento medible de la temperatura corporal, ¿cuál es el diseño experimental más adecuado?", "options": ["Medir la temperatura corporal de una persona antes y despues de un periodo de exposicion al frio con temblor muscular activo, comparando los valores obtenidos", "Medir la temperatura corporal solo antes de la exposicion al frio, sin ninguna medicion posterior", "No es necesario medir la temperatura corporal despues de la exposicion al frio para esta pregunta", "Medir solo la temperatura ambiental, sin evaluar directamente la temperatura corporal de la persona", "Comparar personas completamente distintas para cada momento evaluado, sin ningun control sobre otras diferencias"], "correct": 0, "exp": "Medir la temperatura corporal antes y despues del periodo de temblor muscular, en la misma persona, permite establecer de forma experimental si este mecanismo efector genera un aumento medible de calor corporal."}, {"skill": "PLAN", "q": "Se desea comprobar que las contracciones uterinas durante el parto se intensifican progresivamente en lugar de mantenerse constantes o disminuir. ¿Diseño experimental más adecuado?", "options": ["Medir la intensidad y frecuencia de las contracciones uterinas en distintos momentos a lo largo del proceso de parto, comparando los valores obtenidos desde el inicio hasta el final del proceso", "Medir la intensidad de las contracciones solo en un momento fijo del parto, sin ningun seguimiento temporal", "No es necesario ningun seguimiento temporal para responder esta pregunta", "Medir solo la duracion total del parto, sin evaluar directamente la intensidad de las contracciones", "Comparar partos de personas completamente distintas, sin ningun control sobre otras diferencias entre ellas"], "correct": 0, "exp": "Un seguimiento temporal de la intensidad y frecuencia de las contracciones a lo largo del proceso de parto permite establecer de forma experimental el patron caracteristico de amplificacion progresiva propio de un mecanismo de retroalimentacion positiva."}, {"skill": "PLAN", "q": "Un investigador desea determinar si la sensacion de sed se relaciona especificamente con el nivel de hidratacion del cuerpo, y no con otro factor no relacionado. ¿Diseño experimental adecuado?", "options": ["Medir el nivel de hidratacion corporal y la intensidad de la sensacion de sed reportada por la persona en distintos momentos, tras periodos de perdida de agua y tras la ingesta de agua, comparando ambos parametros", "Medir solo la sensacion de sed reportada, sin evaluar simultaneamente el nivel de hidratacion corporal", "No es necesario medir el nivel de hidratacion corporal para esta pregunta", "Medir la sed solo en un momento fijo, sin ningun seguimiento tras la perdida o ingesta de agua", "Comparar personas completamente distintas para cada medicion, sin ningun control sobre otras diferencias"], "correct": 0, "exp": "Medir simultaneamente el nivel de hidratacion corporal y la sensacion de sed reportada, en distintos momentos relacionados con perdida e ingesta de agua, permite establecer de forma experimental la relacion especifica entre ambas variables."}, {"skill": "PLAN", "q": "Para comprobar que los receptores de presion arterial (barorreceptores) envian señales que ajustan la frecuencia cardiaca, ¿cuál es el diseño experimental más adecuado?", "options": ["Medir la frecuencia cardiaca de una persona bajo distintos niveles controlados de presion arterial (inducidos experimentalmente), evaluando si la frecuencia cardiaca se ajusta en respuesta a cada nivel", "Medir la frecuencia cardiaca solo bajo un nivel fijo de presion arterial, sin ninguna variacion", "No es necesario variar la presion arterial para responder esta pregunta", "Medir solo la presion arterial, sin evaluar directamente la frecuencia cardiaca resultante", "Usar personas completamente distintas para cada nivel de presion evaluado, sin ningun control sobre otras diferencias"], "correct": 0, "exp": "Variar sistematicamente la presion arterial y medir la frecuencia cardiaca resultante en cada nivel permite establecer de forma experimental la relacion de control entre la deteccion de presion por los barorreceptores y la respuesta cardiaca efectora."}, {"skill": "PROC", "q": "Se midio la temperatura corporal de una persona a lo largo de un dia con temperatura ambiental variable: la temperatura corporal se mantuvo practicamente constante alrededor de 37°C, a pesar de variaciones ambientales de varios grados. ¿Qué conclusión es más adecuada?", "options": ["El cuerpo posee mecanismos reguladores efectivos que mantienen la temperatura interna relativamente constante a pesar de las variaciones del ambiente externo", "La temperatura corporal varia siempre de forma proporcional a la temperatura ambiental", "El cuerpo humano no posee ningun mecanismo de regulacion de su temperatura interna", "La temperatura corporal aumenta indefinidamente sin importar la temperatura ambiental", "La temperatura ambiental no tiene ninguna relacion con la fisiologia del cuerpo humano"], "correct": 0, "exp": "La constancia de la temperatura corporal a pesar de la variabilidad ambiental confirma experimentalmente la efectividad de los mecanismos homeostaticos de termorregulacion del cuerpo humano."}, {"skill": "PROC", "q": "Se midio la concentracion de glucosa en sangre tras una comida rica en carbohidratos: aumento inicial considerable, seguido de una disminucion progresiva hasta estabilizarse en un nivel basal similar al previo a la comida. ¿Qué conclusión es más adecuada?", "options": ["Existe un mecanismo de retroalimentacion negativa que detecta el aumento de glucosa y activa una respuesta que la reduce progresivamente hacia un nivel basal estable", "Los niveles de glucosa en sangre aumentan indefinidamente tras una comida, sin ningun mecanismo regulador", "La ingesta de carbohidratos no tiene ninguna relacion con los niveles de glucosa en sangre observados", "Los niveles de glucosa permanecen siempre constantes, sin importar la comida ingerida", "La disminucion de glucosa observada no tiene ninguna relacion con ningun mecanismo regulador del cuerpo"], "correct": 0, "exp": "El patron de aumento inicial seguido de disminucion progresiva hacia un nivel basal estable confirma experimentalmente la accion de un mecanismo de retroalimentacion negativa que regula la glucemia."}, {"skill": "PROC", "q": "Se midio la temperatura corporal antes y despues de un periodo de exposicion al frio con temblor muscular activo: temperatura ligeramente mas alta de lo esperado sin ese mecanismo, consistente con generacion de calor adicional. ¿Qué conclusión es más adecuada?", "options": ["El temblor muscular genera calor corporal adicional que contribuye a contrarrestar la perdida de calor por la exposicion al frio", "El temblor muscular reduce la temperatura corporal en comparacion con no temblar", "La exposicion al frio no tiene ninguna relacion con la temperatura corporal medida", "El temblor muscular no genera ningun tipo de calor corporal adicional", "La temperatura corporal es identica sin importar si hay o no temblor muscular presente"], "correct": 0, "exp": "La temperatura corporal mas alta de lo esperado en presencia de temblor muscular activo, comparada con la ausencia de este mecanismo, confirma experimentalmente su funcion de generar calor adicional como respuesta efectora ante el frio."}, {"skill": "PROC", "q": "Se midio la intensidad y frecuencia de las contracciones uterinas a lo largo del proceso de parto: aumento progresivo y sostenido desde el inicio hasta el final del proceso, sin ninguna disminucion intermedia. ¿Qué conclusión es más adecuada?", "options": ["Las contracciones uterinas durante el parto siguen un patron de amplificacion progresiva, caracteristico de un mecanismo de retroalimentacion positiva", "Las contracciones uterinas disminuyen progresivamente a medida que avanza el parto", "El proceso del parto no involucra ningun tipo de patron de cambio en la intensidad de las contracciones", "Las contracciones uterinas se mantienen exactamente constantes durante todo el proceso del parto", "El patron observado es identico al de un mecanismo de retroalimentacion negativa"], "correct": 0, "exp": "El patron de aumento progresivo y sostenido, sin disminucion intermedia, confirma experimentalmente que las contracciones uterinas durante el parto siguen la logica de un mecanismo de retroalimentacion positiva, que amplifica el estimulo hasta completar el proceso."}, {"skill": "PROC", "q": "Se midio el nivel de hidratacion corporal y la intensidad de la sed reportada tras un periodo de perdida de agua (deshidratacion moderada, sed alta) y tras la ingesta de agua suficiente (hidratacion normalizada, sed baja). ¿Qué conclusión es más adecuada?", "options": ["La sensacion de sed se relaciona con el nivel de hidratacion corporal, aumentando ante la deshidratacion y disminuyendo al restablecerse un nivel de hidratacion adecuado", "La sensacion de sed no tiene ninguna relacion con el nivel de hidratacion del cuerpo", "La ingesta de agua siempre aumenta la sensacion de sed reportada", "Ambas condiciones muestran exactamente la misma intensidad de sed, sin ninguna diferencia", "La deshidratacion disminuye siempre la sensacion de sed de una persona"], "correct": 0, "exp": "La relacion inversa observada entre nivel de hidratacion y sensacion de sed confirma experimentalmente que este mecanismo homeostatico responde al estado real de hidratacion del cuerpo, motivando una conducta correctiva cuando es necesario."}, {"skill": "PROC", "q": "Se midio la frecuencia cardiaca bajo distintos niveles controlados de presion arterial: frecuencia cardiaca reducida ante presion arterial alta, y frecuencia cardiaca aumentada ante presion arterial baja. ¿Qué conclusión es más adecuada?", "options": ["Existe un mecanismo de control que ajusta la frecuencia cardiaca en respuesta a cambios detectados en la presion arterial, consistente con la accion de los barorreceptores", "La frecuencia cardiaca no tiene ninguna relacion con el nivel de presion arterial detectado", "La frecuencia cardiaca aumenta siempre que la presion arterial tambien aumenta", "Todos los niveles de presion arterial evaluados muestran exactamente la misma frecuencia cardiaca", "La presion arterial no puede ser detectada por ningun mecanismo fisiologico del cuerpo"], "correct": 0, "exp": "El ajuste inverso de la frecuencia cardiaca segun el nivel de presion arterial (reduccion ante presion alta, aumento ante presion baja) confirma experimentalmente la accion reguladora de los barorreceptores como parte de un sistema de control homeostatico de la presion arterial."}, {"skill": "EVAL", "q": "Un estudiante concluyó que 'el cuerpo humano nunca presenta ninguna variacion en su temperatura corporal, siendo un valor absolutamente fijo bajo cualquier circunstancia', basándose en la constancia observada en condiciones normales. ¿Qué crítica es más pertinente?", "options": ["La conclusión es correcta porque la temperatura corporal es un valor absolutamente fijo, sin ninguna variacion posible bajo ninguna circunstancia", "Aunque los mecanismos homeostaticos mantienen la temperatura relativamente constante en condiciones normales, existen variaciones fisiologicas normales (como durante la fiebre, el ejercicio intenso, o el ciclo circadiano) y situaciones donde estos mecanismos pueden verse superados; afirmar un valor 'absolutamente fijo bajo cualquier circunstancia' ignora estas variaciones documentadas", "La temperatura corporal varia de forma completamente aleatoria, sin ningun mecanismo regulador involucrado", "Los mecanismos homeostaticos nunca logran mantener ninguna estabilidad en la temperatura corporal", "No es necesario considerar ninguna variacion fisiologica normal al describir la regulacion de la temperatura corporal"], "correct": 1, "exp": "La homeostasis mantiene la temperatura dentro de un rango relativamente estable, no en un valor absolutamente fijo; existen variaciones fisiologicas normales (fiebre, ejercicio, ritmo circadiano) que demuestran que el sistema regula dentro de un rango, no mantiene un unico valor inmutable."}, {"skill": "EVAL", "q": "Una investigación afirmó que 'todos los mecanismos de retroalimentacion del cuerpo son de tipo negativo, sin ninguna excepcion', ignorando el ejemplo de las contracciones uterinas durante el parto. ¿Qué crítica es más pertinente?", "options": ["La afirmación es correcta porque todos los mecanismos de retroalimentacion del cuerpo humano son, sin excepcion, de tipo negativo", "El proceso del parto, entre otros ejemplos fisiologicos, ilustra un mecanismo de retroalimentacion positiva (donde la respuesta amplifica el estimulo original en lugar de contrarrestarlo); afirmar que 'todos... sin ninguna excepcion' son negativos contradice este ejemplo bien documentado de retroalimentacion positiva presente en la fisiologia humana", "La retroalimentacion positiva no existe en ningun proceso fisiologico del cuerpo humano", "Las contracciones uterinas durante el parto no tienen ninguna relacion con ningun mecanismo de retroalimentacion", "El cuerpo humano no posee ningun mecanismo de retroalimentacion de ningun tipo"], "correct": 1, "exp": "El ejemplo bien documentado de las contracciones uterinas durante el parto, un mecanismo de retroalimentacion positiva, contradice directamente la afirmación de que todos los mecanismos de retroalimentacion del cuerpo son de tipo negativo sin ninguna excepcion."}, {"skill": "EVAL", "q": "Un estudio concluyó que 'la sensacion de sed y de hambre son exactamente el mismo mecanismo fisiologico, sin ninguna diferencia entre ellos', basandose en que ambas motivan una conducta de busqueda de recursos. ¿Qué crítica es más pertinente?", "options": ["La conclusión es correcta porque la sed y el hambre son exactamente el mismo mecanismo fisiologico, sin ninguna diferencia relevante entre ellos", "Aunque ambas comparten la logica general de un mecanismo homeostatico que motiva una conducta correctiva, responden a variables fisiologicas distintas (nivel de hidratacion en el caso de la sed, nivel de glucosa u otros indicadores nutricionales en el caso del hambre), involucrando señales y circuitos reguladores especificos y diferenciados; tratarlos como 'exactamente el mismo mecanismo, sin ninguna diferencia' ignora esta especificidad fisiologica", "La sed y el hambre no tienen ninguna relacion con ningun mecanismo homeostatico del cuerpo", "El hambre y la sed nunca motivan ningun tipo de conducta relacionada con la busqueda de recursos", "Ambas sensaciones responden exactamente a la misma variable fisiologica, sin ninguna diferencia"], "correct": 1, "exp": "Aunque comparten la logica general de mecanismos homeostaticos que motivan conductas correctivas, la sed y el hambre responden a variables fisiologicas especificas y distintas (hidratacion versus balance energetico/nutricional), con circuitos reguladores diferenciados; equipararlos como identicos ignora esta especificidad."}, {"skill": "COM", "q": "Un estudiante debe explicar por qué la homeostasis es un concepto central para entender el funcionamiento del cuerpo humano, usando el ejemplo de la regulacion de la temperatura corporal. ¿Explicación más precisa?", "options": ["La homeostasis se refiere a la capacidad del cuerpo de mantener condiciones internas relativamente estables (como la temperatura) a pesar de las variaciones del ambiente externo, mediante mecanismos reguladores (como la sudoracion o el temblor) que detectan desviaciones y activan respuestas correctivas para restablecer el equilibrio", "La homeostasis se refiere a que la temperatura corporal siempre es identica a la temperatura del ambiente externo", "El cuerpo humano no posee ningun mecanismo relacionado con el concepto de homeostasis", "La homeostasis implica que las condiciones internas del cuerpo cambian constantemente sin ningun mecanismo regulador", "La temperatura corporal no tiene ninguna relacion con el concepto de homeostasis"], "correct": 0, "exp": "La explicación debe definir correctamente la homeostasis (mantenimiento de un equilibrio interno relativamente estable) y conectarla con el ejemplo especifico de la termorregulacion, ilustrando la logica general de deteccion de desviaciones y activacion de respuestas correctivas."}, {"skill": "COM", "q": "Al explicar la diferencia entre retroalimentacion negativa y retroalimentacion positiva usando los ejemplos de la regulacion de la glucosa en sangre y las contracciones uterinas durante el parto, ¿cuál es la explicación más precisa?", "options": ["La retroalimentacion negativa (como en la regulacion de la glucosa) contrarresta una desviacion, devolviendo la variable hacia un valor de referencia estable; la retroalimentacion positiva (como en las contracciones del parto) amplifica el estimulo original, alejando la variable de su estado inicial hasta completar un proceso especifico", "La retroalimentacion negativa y la retroalimentacion positiva son exactamente el mismo tipo de mecanismo, sin ninguna diferencia entre ellas", "La regulacion de la glucosa en sangre es un ejemplo de retroalimentacion positiva, mientras las contracciones uterinas son un ejemplo de retroalimentacion negativa", "La retroalimentacion positiva contrarresta siempre una desviacion, devolviendo la variable hacia un valor estable", "Ninguno de los dos ejemplos mencionados corresponde a algun tipo de mecanismo de retroalimentacion"], "correct": 0, "exp": "La explicación debe contrastar correctamente ambos tipos de mecanismos: retroalimentacion negativa (corrige desviaciones, mantiene estabilidad) versus retroalimentacion positiva (amplifica el cambio hasta completar un proceso), usando los ejemplos especificos proporcionados para ilustrar cada logica."}, {"skill": "COM", "q": "Un estudiante debe explicar los tres componentes basicos de un sistema de control homeostatico (receptor, centro integrador, efector), usando el ejemplo de la regulacion de la presion arterial. ¿Explicación más precisa?", "options": ["Los barorreceptores en las arterias detectan cambios en la presion arterial (receptor), envian esa informacion al cerebro que la procesa y determina la respuesta necesaria (centro integrador), y el corazon y los vasos sanguineos ejecutan el ajuste correspondiente en frecuencia cardiaca y diametro vascular (efector)", "El receptor, el centro integrador y el efector son exactamente el mismo componente del sistema de control homeostatico, sin ninguna diferencia entre ellos", "Los barorreceptores cumplen la funcion de efector, mientras el corazon cumple la funcion de receptor en este sistema", "El cerebro no cumple ninguna funcion relacionada con el sistema de control de la presion arterial", "La presion arterial no puede ser regulada mediante ningun sistema de control homeostatico"], "correct": 0, "exp": "La explicación debe identificar correctamente cada componente del sistema (receptor: barorreceptores; centro integrador: procesamiento cerebral; efector: corazon y vasos sanguineos) y su funcion especifica dentro de la secuencia completa de deteccion, procesamiento y respuesta."}, {"skill": "COM", "q": "Al explicar por qué la sed y el hambre pueden considerarse mecanismos homeostaticos a pesar de involucrar una respuesta conductual (buscar agua o comida) en lugar de una respuesta puramente fisiologica automatica, ¿cuál es la explicación más precisa?", "options": ["La homeostasis no se limita a respuestas fisiologicas automaticas (como sudar o temblar); tambien puede involucrar señales que motivan conductas especificas (como beber o comer) que, en ultima instancia, corrigen una desviacion detectada en una variable interna (hidratacion o balance energetico), cumpliendo la misma logica general de deteccion y correccion", "La homeostasis se limita exclusivamente a respuestas fisiologicas completamente automaticas, sin ninguna posibilidad de involucrar conductas", "La sed y el hambre no cumplen ninguna funcion relacionada con la correccion de desviaciones internas del cuerpo", "Las conductas de busqueda de agua o comida no tienen ninguna relacion con ningun mecanismo homeostatico", "Solo las respuestas fisiologicas automaticas, sin ninguna conducta involucrada, pueden considerarse parte de la homeostasis"], "correct": 0, "exp": "La explicación debe ampliar el concepto de homeostasis mas alla de respuestas puramente fisiologicas automaticas, reconociendo que las conductas motivadas por señales internas (sed, hambre) tambien cumplen la misma logica general de deteccion de desviaciones y activacion de una respuesta correctiva."}, {"skill": "PLAN", "q": "Un investigador desea comprobar que la sensacion de hambre se relaciona especificamente con el nivel de glucosa en sangre. Cual es el diseno experimental adecuado?", "options": ["Medir el nivel de glucosa en sangre y la intensidad de hambre reportada en distintos momentos, antes y despues de comer, comparando ambos parametros", "Medir solo la sensacion de hambre reportada, sin evaluar simultaneamente el nivel de glucosa en sangre", "No es necesario medir el nivel de glucosa en sangre para esta pregunta", "Medir el hambre solo en un momento fijo, sin ningun seguimiento antes y despues de comer", "Comparar personas completamente distintas para cada medicion, sin ningun control sobre otras diferencias"], "correct": 0, "exp": "Medir simultaneamente el nivel de glucosa en sangre y la sensacion de hambre reportada, antes y despues de comer, permite establecer de forma experimental la relacion especifica entre ambas variables."}, {"skill": "PLAN", "q": "Para determinar si el diametro de los vasos sanguineos cambia en respuesta a variaciones de presion arterial, cual es el diseno experimental mas adecuado?", "options": ["Medir el diametro de los vasos sanguineos bajo distintos niveles controlados de presion arterial, comparando los resultados obtenidos en cada nivel evaluado", "Medir el diametro de los vasos solo bajo un nivel fijo de presion arterial, sin ninguna variacion", "No es necesario variar la presion arterial para responder esta pregunta", "Medir solo la frecuencia cardiaca, sin evaluar directamente el diametro de los vasos sanguineos", "Usar personas completamente distintas para cada nivel de presion evaluado, sin ningun control"], "correct": 0, "exp": "Variar sistematicamente la presion arterial y medir el diametro de los vasos resultante en cada nivel permite establecer de forma experimental la relacion de ajuste vascular como parte de la respuesta homeostatica a la presion."}, {"skill": "PROC", "q": "Se midio el nivel de glucosa en sangre y la intensidad de hambre reportada antes de comer (glucosa baja, hambre alta) y despues de comer (glucosa normalizada, hambre baja). Que conclusion es mas adecuada?", "options": ["La sensacion de hambre se relaciona con el nivel de glucosa en sangre, siendo mayor cuando la glucosa es baja y menor cuando se normaliza", "La sensacion de hambre no tiene ninguna relacion con el nivel de glucosa en sangre", "Comer alimentos siempre aumenta la sensacion de hambre reportada", "Ambos momentos evaluados muestran exactamente la misma intensidad de hambre", "La glucosa baja disminuye siempre la sensacion de hambre de una persona"], "correct": 0, "exp": "La relacion inversa observada entre nivel de glucosa y sensacion de hambre confirma experimentalmente que este mecanismo homeostatico responde al estado real de glucosa en sangre."}, {"skill": "PROC", "q": "Se midio el diametro de los vasos sanguineos bajo presion arterial alta (vasos mas dilatados, como respuesta compensatoria) y bajo presion arterial baja (vasos mas contraidos). Que conclusion es mas adecuada?", "options": ["El diametro de los vasos sanguineos se ajusta en respuesta al nivel de presion arterial detectado, como parte de un mecanismo de regulacion homeostatica", "El diametro de los vasos sanguineos no tiene ninguna relacion con el nivel de presion arterial", "Los vasos sanguineos se contraen siempre que la presion arterial aumenta", "Ambos niveles de presion muestran exactamente el mismo diametro de los vasos sanguineos", "La presion arterial no puede ser compensada mediante ningun ajuste del diametro vascular"], "correct": 0, "exp": "El ajuste del diametro vascular segun el nivel de presion detectado confirma experimentalmente la participacion de este mecanismo efector en la regulacion homeostatica de la presion arterial."}, {"skill": "EVAL", "q": "Un estudio concluyo que 'la sudoracion es el unico mecanismo que el cuerpo humano posee para regular su temperatura, sin ningun otro mecanismo posible', ignorando el temblor muscular. Que critica es mas pertinente?", "options": ["La conclusion es correcta porque la sudoracion es el unico mecanismo posible de regulacion de la temperatura corporal", "El cuerpo humano posee multiples mecanismos de termorregulacion ademas de la sudoracion, como el temblor muscular (que genera calor ante el frio) o la vasodilatacion/vasoconstriccion de vasos sanguineos superficiales; afirmar que la sudoracion es 'el unico mecanismo... sin ningun otro posible' ignora esta diversidad de respuestas termorreguladoras documentadas", "El temblor muscular no tiene ninguna relacion con la regulacion de la temperatura corporal", "El cuerpo humano no posee ningun mecanismo de regulacion de la temperatura corporal", "La vasodilatacion y vasoconstriccion no tienen ninguna relacion con la termorregulacion del cuerpo"], "correct": 1, "exp": "El cuerpo humano cuenta con multiples mecanismos termorreguladores (sudoracion, temblor, ajustes vasculares, entre otros); reducir la termorregulacion a un unico mecanismo ignora esta diversidad de respuestas fisiologicas bien documentadas."}, {"skill": "EVAL", "q": "Una investigacion afirmo que 'la deshidratacion nunca puede ser peligrosa para la salud, ya que el cuerpo siempre la corrige automaticamente mediante la sed', sin considerar situaciones donde el acceso al agua es limitado. Que critica es mas pertinente?", "options": ["La afirmacion es correcta porque la sed siempre corrige automaticamente cualquier grado de deshidratacion, sin ningun riesgo posible para la salud", "El mecanismo de la sed depende de que la persona tenga acceso real al agua para poder corregir la deshidratacion detectada; en situaciones donde ese acceso esta limitado (por ejemplo, en el desierto, o en personas con movilidad reducida), la sola sensacion de sed no es suficiente para evitar una deshidratacion peligrosa, contradiciendo la afirmacion de que 'nunca puede ser peligrosa'", "La sed nunca tiene ninguna relacion con la correccion de la deshidratacion del cuerpo", "El acceso al agua no tiene ninguna relacion con la capacidad de una persona de corregir su deshidratacion", "La deshidratacion es siempre completamente inofensiva para la salud de cualquier persona"], "correct": 1, "exp": "El mecanismo de la sed depende de la disponibilidad real de agua para ser efectivo; en contextos donde el acceso esta limitado, la deteccion fisiologica de la sed no garantiza la correccion de la deshidratacion, por lo que esta puede seguir siendo peligrosa."}, {"skill": "EVAL", "q": "Un estudio sobre retroalimentacion positiva concluyo que 'este tipo de mecanismo es siempre perjudicial para el organismo, ya que amplifica los cambios en lugar de corregirlos', ignorando su funcion en procesos como el parto. Que critica es mas pertinente?", "options": ["La conclusion es correcta porque la retroalimentacion positiva es siempre perjudicial, sin ninguna excepcion, para cualquier organismo", "Aunque la retroalimentacion positiva puede ser perjudicial en algunos contextos patologicos, tambien cumple funciones fisiologicas normales y beneficiosas en procesos especificos con un punto final definido, como las contracciones uterinas durante el parto (que terminan con el nacimiento); calificarla como 'siempre perjudicial' ignora estos ejemplos fisiologicos normales y beneficiosos", "La retroalimentacion positiva nunca ocurre en ningun proceso fisiologico normal del cuerpo humano", "El parto no involucra ningun mecanismo de retroalimentacion positiva", "La retroalimentacion positiva y la retroalimentacion negativa tienen exactamente el mismo efecto sobre el organismo"], "correct": 1, "exp": "La retroalimentacion positiva, aunque puede ser perjudicial en contextos patologicos, tambien cumple funciones fisiologicas normales y beneficiosas en procesos con un punto final definido (como el parto); calificarla como siempre perjudicial ignora estos ejemplos fisiologicos normales bien documentados."}, {"skill": "EVAL", "q": "Una publicacion afirmo que 'los barorreceptores detectan directamente el nivel de glucosa en sangre, ademas de la presion arterial', confundiendo la funcion de distintos tipos de receptores fisiologicos. Que critica es mas pertinente?", "options": ["La afirmacion es correcta porque los barorreceptores detectan tanto la presion arterial como el nivel de glucosa en sangre, sin ninguna diferencia funcional", "Los barorreceptores son especificos para detectar cambios en la presion arterial (mediante la deteccion de estiramiento de las paredes arteriales); la deteccion de glucosa en sangre involucra otro tipo de celulas especializadas (como ciertas celulas pancreaticas); atribuir a los barorreceptores una funcion de deteccion de glucosa confunde la especificidad de distintos sistemas sensoriales fisiologicos", "Los barorreceptores no tienen ninguna relacion con la deteccion de la presion arterial", "El nivel de glucosa en sangre no puede ser detectado por ningun tipo de celula especializada del cuerpo", "La presion arterial y el nivel de glucosa en sangre son exactamente la misma variable fisiologica"], "correct": 1, "exp": "Los distintos sistemas de deteccion fisiologica son especificos para variables particulares: los barorreceptores detectan especificamente presion arterial, mientras la deteccion de glucosa involucra otro tipo de celulas especializadas; confundir estas funciones ignora la especificidad de cada sistema sensorial."}, {"skill": "EVAL", "q": "Un estudio concluyo que 'una vez que el nivel de glucosa en sangre se normaliza tras una comida, permanece exactamente en ese valor de forma indefinida, sin ninguna otra fluctuacion posterior'. Que critica es mas pertinente?", "options": ["La conclusion es correcta porque el nivel de glucosa en sangre, una vez normalizado, permanece en un valor exacto e inmutable de forma indefinida", "Los niveles de glucosa en sangre fluctuan naturalmente a lo largo del dia segun la actividad fisica, el ayuno prolongado, y otras comidas posteriores; afirmar que permanecen 'exactamente en ese valor de forma indefinida, sin ninguna otra fluctuacion' ignora esta variabilidad fisiologica normal y esperable a lo largo del tiempo", "Los niveles de glucosa en sangre nunca fluctuan bajo ninguna circunstancia, ni siquiera tras distintas comidas", "La actividad fisica no tiene ninguna relacion con los niveles de glucosa en sangre de una persona", "El ayuno prolongado no genera ningun cambio en los niveles de glucosa en sangre de una persona"], "correct": 1, "exp": "Los niveles de glucosa en sangre fluctuan naturalmente segun distintos factores (comidas, ayuno, actividad fisica); la homeostasis mantiene estos niveles dentro de un rango relativamente estable, no en un valor exacto e inmutable de forma indefinida."}, {"skill": "COM", "q": "Un estudiante debe explicar por que la homeostasis no implica una ausencia total de cambio en las variables internas del cuerpo, sino un mantenimiento dentro de un rango relativamente estable. Cual es la explicacion mas precisa?", "options": ["Variables como la temperatura corporal o la glucosa en sangre fluctuan naturalmente en respuesta a factores como la actividad fisica, la alimentacion o el ambiente; la homeostasis se refiere a que estos mecanismos reguladores mantienen esas fluctuaciones dentro de un rango relativamente estrecho y funcional, no a que eliminen por completo cualquier variacion", "La homeostasis implica que ninguna variable interna del cuerpo puede cambiar bajo ninguna circunstancia", "Las variables internas del cuerpo, como la temperatura o la glucosa, nunca fluctuan en respuesta a ningun factor externo o interno", "La homeostasis y la ausencia total de cambio son exactamente el mismo concepto, sin ninguna diferencia", "El rango de variacion de las variables internas del cuerpo no tiene ninguna relacion con el concepto de homeostasis"], "correct": 0, "exp": "La explicacion debe aclarar que la homeostasis no es sinonimo de valores fijos inmutables, sino de mantener las variables fisiologicas dentro de un rango funcional relativamente estable, a pesar de fluctuaciones naturales en respuesta a distintos factores."}, {"skill": "COM", "q": "Al explicar por que el mecanismo de la sed puede fallar en corregir la deshidratacion en ciertas circunstancias, a pesar de ser un mecanismo homeostatico normal, cual es la explicacion mas precisa?", "options": ["Aunque la sensacion de sed es una señal fisiologica que motiva la busqueda de agua, su efectividad depende de que la persona tenga acceso real a esa agua; si el acceso esta limitado por circunstancias externas (disponibilidad, movilidad), la señal fisiologica por si sola no puede corregir la deshidratacion, ilustrando que un mecanismo homeostatico conductual depende tanto de la señal interna como de factores externos", "La sed nunca puede fallar en corregir la deshidratacion, independientemente de las circunstancias externas", "El acceso al agua no tiene ninguna relacion con la efectividad del mecanismo de la sed", "La deshidratacion se corrige automaticamente sin necesidad de ninguna conducta de busqueda de agua", "Los mecanismos homeostaticos conductuales nunca dependen de ningun factor externo al cuerpo"], "correct": 0, "exp": "La explicacion debe distinguir entre la señal fisiologica interna (sed) y la posibilidad real de actuar sobre ella (acceso al agua), ilustrando que los mecanismos homeostaticos que dependen de una conducta no son automaticos como los puramente fisiologicos, y pueden verse limitados por el contexto externo."}, {"skill": "COM", "q": "Un estudiante debe explicar por que el parto es un buen ejemplo para ilustrar que la retroalimentacion positiva, a diferencia de la negativa, tiene un punto final definido en lugar de mantenerse indefinidamente. Cual es la explicacion mas precisa?", "options": ["Las contracciones uterinas se amplifican progresivamente en intensidad y frecuencia, pero este proceso no continua indefinidamente: culmina con el nacimiento del bebe, momento en el cual el estimulo que mantenia el ciclo (la presion del bebe sobre el cuello uterino) desaparece, deteniendo naturalmente la amplificacion", "Las contracciones uterinas durante el parto continuan amplificandose de forma indefinida, sin ningun punto final definido", "La retroalimentacion positiva siempre continua indefinidamente, sin ningun mecanismo que la detenga en ningun proceso fisiologico", "El nacimiento del bebe no tiene ninguna relacion con la detencion del ciclo de contracciones uterinas", "La retroalimentacion positiva y la retroalimentacion negativa comparten exactamente la misma logica de funcionamiento"], "correct": 0, "exp": "La explicacion debe conectar la logica de amplificacion progresiva de la retroalimentacion positiva con su punto final natural (el nacimiento, que elimina el estimulo original que mantenia el ciclo), distinguiendola de un proceso que se autoperpetuaria indefinidamente sin ningun mecanismo de detencion."}, {"skill": "COM", "q": "Al explicar por que medir multiples variables fisiologicas simultaneamente (como glucosa y sensacion de hambre) es mas informativo que medir una sola variable de forma aislada al estudiar un mecanismo homeostatico, cual es la explicacion mas precisa?", "options": ["Medir simultaneamente la variable fisiologica interna (como el nivel de glucosa) y la respuesta asociada (como la sensacion de hambre reportada) permite establecer si existe una relacion consistente entre ambas, fortaleciendo la evidencia de que un mecanismo regulador especifico conecta la deteccion de una desviacion con la respuesta correctiva observada", "Medir una sola variable de forma aislada siempre proporciona exactamente la misma informacion que medir multiples variables simultaneamente", "La sensacion de hambre reportada no tiene ninguna relacion con ningun nivel fisiologico interno del cuerpo", "No es necesario medir mas de una variable para establecer conclusiones solidas sobre un mecanismo homeostatico", "Medir multiples variables simultaneamente nunca aporta ninguna ventaja metodologica adicional en el estudio de la fisiologia"], "correct": 0, "exp": "La explicacion debe destacar el valor metodologico de medir simultaneamente variable interna y respuesta asociada, ya que esto permite establecer una relacion mas solida y especifica entre ambas, en comparacion con estudiar cada una de forma aislada sin poder conectar deteccion y respuesta."}];
+
+let currentQuiz = [];
+let currentIndex = 0;
+let answered = false;
+let userAnswers = [];
+let scoreBySkill = {};
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function buildQuiz(){
+  let selected = [];
+  SKILL_ORDER.forEach(skillKey=>{
+    const pool = QUESTION_BANK.filter(q=>q.skill===skillKey);
+    const picked = shuffle(pool).slice(0,PICK_PER_SKILL);
+    selected = selected.concat(picked);
+  });
+  selected = shuffle(selected);
+  return selected.map(orig=>{
+    const idxArr = [0,1,2,3,4];
+    const shuffledIdx = shuffle(idxArr);
+    const newOptions = shuffledIdx.map(i=>orig.options[i]);
+    const newCorrect = shuffledIdx.indexOf(orig.correct);
+    return { skill: orig.skill, question: orig.q, options: newOptions, correct: newCorrect, exp: orig.exp };
+  });
+}
+
+function startQuiz(){
+  currentQuiz = buildQuiz();
+  currentIndex = 0;
+  answered = false;
+  userAnswers = [];
+  scoreBySkill = {};
+  SKILL_ORDER.forEach(s=>scoreBySkill[s]={correct:0,total:0});
+  document.getElementById('start-screen').classList.add('hidden');
+  document.getElementById('dashboard-screen').classList.add('hidden');
+  document.getElementById('review-screen').classList.add('hidden');
+  document.getElementById('quiz-screen').classList.remove('hidden');
+  renderQuestion();
+}
+
+function renderQuestion(){
+  answered = false;
+  const q = currentQuiz[currentIndex];
+  const total = currentQuiz.length;
+  document.getElementById('progress-fill').style.width = ((currentIndex)/total*100)+'%';
+  document.getElementById('progress-label').textContent = (currentIndex+1)+' / '+total;
+  document.getElementById('skill-tag').textContent = SKILL_NAMES[q.skill];
+  document.getElementById('qnum').textContent = 'Pregunta '+(currentIndex+1);
+  document.getElementById('question-text').textContent = q.question;
+
+  const optsDiv = document.getElementById('options');
+  optsDiv.innerHTML = '';
+  q.options.forEach((opt, i)=>{
+    const btn = document.createElement('button');
+    btn.className = 'option';
+    btn.innerHTML = '<span class="letter">'+LETTERS[i]+')</span><span>'+opt+'</span>';
+    btn.onclick = ()=>selectOption(i);
+    optsDiv.appendChild(btn);
+  });
+
+  document.getElementById('feedback').classList.add('hidden');
+  document.getElementById('next-btn').classList.add('hidden');
+}
+
+function selectOption(i){
+  if(answered) return;
+  answered = true;
+  const q = currentQuiz[currentIndex];
+  const correct = q.correct;
+  const options = document.querySelectorAll('#options .option');
+  options.forEach((opt, idx)=>{
+    opt.classList.add('locked');
+    if(idx===correct) opt.classList.add('correct');
+    else if(idx===i) opt.classList.add('incorrect');
+    else opt.classList.add('dim');
+  });
+
+  const isCorrect = (i===correct);
+  scoreBySkill[q.skill].total++;
+  if(isCorrect) scoreBySkill[q.skill].correct++;
+
+  userAnswers.push({ skill:q.skill, question:q.question, options:q.options, correctIdx:correct, chosenIdx:i, exp:q.exp, isCorrect });
+
+  const fb = document.getElementById('feedback');
+  fb.classList.remove('hidden');
+  fb.classList.toggle('wrong', !isCorrect);
+  fb.innerHTML = '<span class="pista-label">'+(isCorrect ? '✓ Correcto — Pista' : '✕ Incorrecto — Pista')+'</span>'+
+    '<strong>Respuesta correcta: '+LETTERS[correct]+') '+q.options[correct]+'</strong><br><br>'+q.exp;
+
+  document.getElementById('next-btn').classList.remove('hidden');
+}
+
+function nextQuestion(){
+  currentIndex++;
+  if(currentIndex >= currentQuiz.length){
+    showDashboard();
+  } else {
+    renderQuestion();
+  }
+}
+
+function showDashboard(){
+  document.getElementById('quiz-screen').classList.add('hidden');
+  document.getElementById('dashboard-screen').classList.remove('hidden');
+
+  const totalCorrect = userAnswers.filter(a=>a.isCorrect).length;
+  const totalQ = userAnswers.length;
+  document.getElementById('score-total').innerHTML = totalCorrect+'<span>/'+totalQ+'</span>';
+  const pct = Math.round((totalCorrect/totalQ)*100);
+  document.getElementById('score-caption').textContent = pct+'% de logro general';
+
+  const barsDiv = document.getElementById('skill-bars');
+  barsDiv.innerHTML = '';
+  const weakSkills = [];
+  const strongSkills = [];
+
+  SKILL_ORDER.forEach(skillKey=>{
+    const s = scoreBySkill[skillKey];
+    const skillPct = s.total>0 ? Math.round((s.correct/s.total)*100) : 0;
+    let color = 'var(--accent-coral)';
+    if(skillPct>=75) color='var(--accent-sage)';
+    else if(skillPct>=50) color='var(--accent-amber)';
+
+    const row = document.createElement('div');
+    row.className='skill-bar-row';
+    row.innerHTML = '<div class="skill-bar-head"><span class="name">'+SKILL_NAMES[skillKey]+'</span><span class="frac">'+s.correct+'/'+s.total+'</span></div>'+
+      '<div class="skill-bar-track"><div class="skill-bar-fill" style="width:'+skillPct+'%;background:'+color+';"></div></div>';
+    barsDiv.appendChild(row);
+
+    if(skillPct<75) weakSkills.push({name:SKILL_NAMES[skillKey], pct:skillPct});
+    else strongSkills.push(SKILL_NAMES[skillKey]);
+  });
+
+  const improveBox = document.getElementById('improve-box');
+  const improveList = document.getElementById('improve-list');
+  improveList.innerHTML='';
+  if(weakSkills.length>0){
+    improveBox.classList.remove('hidden');
+    weakSkills.sort((a,b)=>a.pct-b.pct).forEach(w=>{
+      const li = document.createElement('li');
+      li.innerHTML = '<strong>'+w.name+'</strong> ('+w.pct+'%) — refuerza con más ejercicios de este tipo de habilidad, revisando las pistas de las preguntas falladas.';
+      improveList.appendChild(li);
+    });
+  } else {
+    improveBox.classList.add('hidden');
+  }
+
+  const strongBox = document.getElementById('strong-box');
+  const strongText = document.getElementById('strong-text');
+  if(strongSkills.length>0){
+    strongBox.classList.remove('hidden');
+    strongText.textContent = strongSkills.join(', ') + '. Buen dominio, mantén la práctica con nuevos intentos.';
+  } else {
+    strongBox.classList.add('hidden');
+  }
+}
+
+function restartQuiz(){ startQuiz(); }
+
+function reviewAnswers(){
+  document.getElementById('dashboard-screen').classList.add('hidden');
+  const rev = document.getElementById('review-screen');
+  rev.classList.remove('hidden');
+  let html = '<p class="eyebrow">Revisión de respuestas</p>';
+  userAnswers.forEach((a, i)=>{
+    html += '<div style="margin-bottom:22px;padding-bottom:18px;border-bottom:1px solid var(--line);">'+
+      '<span class="skill-tag">'+SKILL_NAMES[a.skill]+'</span>'+
+      '<p class="question-text" style="font-size:16px;">'+(i+1)+'. '+a.question+'</p>'+
+      '<p style="font-size:14px;color:'+(a.isCorrect?'var(--accent-sage)':'var(--accent-coral)')+';margin:0 0 6px;">'+
+        (a.isCorrect ? '✓ Respondiste correctamente' : '✕ Tu respuesta: '+LETTERS[a.chosenIdx]+') '+a.options[a.chosenIdx])+
+      '</p>'+
+      '<p style="font-size:14px;color:var(--text-muted);margin:0 0 8px;">Correcta: '+LETTERS[a.correctIdx]+') '+a.options[a.correctIdx]+'</p>'+
+      '<div class="feedback" style="margin-top:6px;"><span class="pista-label">Pista</span>'+a.exp+'</div>'+
+    '</div>';
+  });
+  html += '<div class="actions"><button class="btn" onclick="restartQuiz(); document.getElementById(\'review-screen\').classList.add(\'hidden\');">Repetir con nuevas preguntas</button></div>';
+  rev.innerHTML = html;
+}
+</script>
+</body>
+</html>

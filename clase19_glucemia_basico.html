@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PAES Biología · Clase 19 · Regulación de la Glucemia (Nivel Básico)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Source+Sans+3:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-deep:#0f2027;
+    --bg-panel:#15303a;
+    --bg-panel-2:#1b3a45;
+    --accent-amber:#e8a33d;
+    --accent-sage:#6fa88a;
+    --accent-coral:#e4572e;
+    --text-light:#f3ede1;
+    --text-muted:#a9c0c2;
+    --line:#2a4750;
+    --radius:14px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:radial-gradient(circle at 15% -10%, #1c4552 0%, var(--bg-deep) 55%) fixed;
+    color:var(--text-light);
+    font-family:'Source Sans 3', system-ui, sans-serif;
+    min-height:100vh;
+    padding:32px 16px 64px;
+  }
+  .wrap{max-width:820px;margin:0 auto;}
+  .eyebrow{font-family:'JetBrains Mono', monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent-amber);margin:0 0 8px;}
+  h1{font-family:'Fraunces', serif;font-weight:600;font-size:clamp(26px,4vw,38px);line-height:1.1;margin:0 0 6px;color:var(--text-light);}
+  .sub{color:var(--text-muted);font-size:15px;margin:0 0 28px;max-width:60ch;}
+  .card{background:linear-gradient(180deg, var(--bg-panel) 0%, var(--bg-panel-2) 100%);border:1px solid var(--line);border-radius:var(--radius);padding:28px;box-shadow:0 20px 40px -20px rgba(0,0,0,.5);}
+  #start-screen ul{color:var(--text-muted);font-size:14.5px;line-height:1.7;padding-left:20px;margin:18px 0 26px;}
+  #start-screen li{margin-bottom:4px;}
+  .btn{font-family:'Source Sans 3', sans-serif;font-weight:700;font-size:15px;border:none;border-radius:999px;padding:14px 30px;cursor:pointer;background:var(--accent-amber);color:#20140a;transition:transform .15s ease, box-shadow .15s ease;box-shadow:0 8px 20px -8px rgba(0,0,0,.35);}
+  .btn:hover{transform:translateY(-1px);}
+  .btn:active{transform:translateY(0);}
+  .btn.ghost{background:transparent;color:var(--text-muted);border:1.5px solid var(--line);box-shadow:none;}
+  .progress-row{display:flex;align-items:center;gap:14px;margin-bottom:18px;}
+  .progress-track{flex:1;height:6px;border-radius:99px;background:var(--line);overflow:hidden;}
+  .progress-fill{height:100%;background:linear-gradient(90deg,var(--accent-sage),var(--accent-amber));border-radius:99px;transition:width .3s ease;}
+  .progress-label{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--text-muted);white-space:nowrap;}
+  .skill-tag{display:inline-block;font-family:'JetBrains Mono', monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--bg-deep);background:var(--accent-sage);padding:5px 11px;border-radius:999px;margin-bottom:14px;}
+  .qnum{color:var(--text-muted);font-size:13px;font-family:'JetBrains Mono',monospace;margin-bottom:6px;}
+  .question-text{font-family:'Fraunces', serif;font-weight:500;font-size:19px;line-height:1.45;margin:0 0 22px;}
+  .options{display:flex;flex-direction:column;gap:10px;}
+  .option{display:flex;align-items:flex-start;gap:12px;text-align:left;background:rgba(255,255,255,.03);border:1.5px solid var(--line);border-radius:10px;padding:13px 15px;cursor:pointer;color:var(--text-light);font-size:14.5px;line-height:1.4;transition:border-color .15s, background .15s;}
+  .option:hover:not(.locked){border-color:var(--accent-amber);}
+  .option .letter{font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--accent-amber);flex-shrink:0;}
+  .option.correct{border-color:var(--accent-sage);background:rgba(111,168,138,.14);}
+  .option.incorrect{border-color:var(--accent-coral);background:rgba(228,87,46,.14);}
+  .option.locked{cursor:default;}
+  .option.dim{opacity:.45;}
+  .feedback{margin-top:18px;padding:16px 18px;border-radius:10px;background:rgba(255,255,255,.04);border-left:4px solid var(--accent-sage);font-size:14px;line-height:1.6;color:var(--text-muted);}
+  .feedback.wrong{border-left-color:var(--accent-coral);}
+  .feedback strong{color:var(--text-light);}
+  .feedback .pista-label{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent-amber);display:block;margin-bottom:6px;}
+  .nav-row{display:flex;justify-content:flex-end;margin-top:22px;}
+  .score-hero{text-align:center;padding:10px 0 26px;}
+  .score-big{font-family:'Fraunces',serif;font-weight:700;font-size:56px;color:var(--accent-amber);line-height:1;}
+  .score-big span{font-size:24px;color:var(--text-muted);font-weight:500;}
+  .score-caption{color:var(--text-muted);font-size:14px;margin-top:6px;}
+  .skill-bars{display:flex;flex-direction:column;gap:16px;margin:22px 0 8px;}
+  .skill-bar-head{display:flex;justify-content:space-between;font-size:13.5px;margin-bottom:6px;}
+  .skill-bar-head .name{font-weight:600;}
+  .skill-bar-head .frac{font-family:'JetBrains Mono',monospace;color:var(--text-muted);}
+  .skill-bar-track{height:10px;border-radius:99px;background:var(--line);overflow:hidden;}
+  .skill-bar-fill{height:100%;border-radius:99px;}
+  .improve-box{margin-top:26px;background:rgba(228,87,46,.08);border:1px solid rgba(228,87,46,.35);border-radius:10px;padding:18px 20px;}
+  .improve-box h3{font-family:'Fraunces',serif;font-size:16px;margin:0 0 10px;color:var(--accent-coral);}
+  .improve-box ul{margin:0;padding-left:20px;color:var(--text-light);font-size:14px;line-height:1.75;}
+  .strong-box{margin-top:14px;background:rgba(111,168,138,.08);border:1px solid rgba(111,168,138,.35);border-radius:10px;padding:18px 20px;}
+  .strong-box h3{font-family:'Fraunces',serif;font-size:16px;margin:0 0 10px;color:var(--accent-sage);}
+  .strong-box p{margin:0;color:var(--text-light);font-size:14px;line-height:1.6;}
+  .actions{display:flex;gap:12px;margin-top:28px;flex-wrap:wrap;}
+  .hidden{display:none !important;}
+  footer{text-align:center;color:var(--text-muted);font-size:12px;margin-top:26px;opacity:.6;}
+</style>
+</head>
+<body> <div style="float: left; margin-right: 25px; margin-bottom: 25px;"><img src="Logo_AMC.png" alt="Logo" style="max-width: 150px;"></div>
+<div class="wrap">
+  <p class="eyebrow">PAES · Ciencias — Módulo Biología Común · Nivel Básico</p>
+  <h1>Regulación de la Glucemia (Insulina y Glucagón)</h1>
+  <p class="sub">Eje 3: Procesos Químicos de la Vida e Integración — Sub-eje: Regulación y Función Endocrina — Clase 19: Regulación de la Glucemia</p>
+
+  <div class="card" id="start-screen">
+    <p class="eyebrow" style="margin-bottom:14px;">Antes de comenzar</p>
+    <p style="color:var(--text-muted);font-size:14.5px;line-height:1.6;">Este quiz evalúa nivel <strong style='color:var(--text-light);'>básico</strong>, con 20 preguntas (4 por cada habilidad PAES), extraídas al azar de un banco de 40. Cada intento genera una versión distinta.</p>
+    <ul>
+      <li>Observar y plantear preguntas</li>
+      <li>Planificar y conducir una investigación</li>
+      <li>Procesar y analizar la evidencia</li>
+      <li>Evaluar</li>
+      <li>Comunicar</li>
+    </ul>
+    <button class="btn" onclick="startQuiz()">Comenzar quiz</button>
+  </div>
+
+  <div class="card hidden" id="quiz-screen">
+    <div class="progress-row">
+      <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+      <div class="progress-label" id="progress-label">1 / 20</div>
+    </div>
+    <span class="skill-tag" id="skill-tag"></span>
+    <p class="qnum" id="qnum"></p>
+    <p class="question-text" id="question-text"></p>
+    <div class="options" id="options"></div>
+    <div class="feedback hidden" id="feedback"></div>
+    <div class="nav-row">
+      <button class="btn hidden" id="next-btn" onclick="nextQuestion()">Siguiente →</button>
+    </div>
+  </div>
+
+  <div class="card hidden" id="dashboard-screen">
+    <p class="eyebrow">Resultados</p>
+    <div class="score-hero">
+      <div class="score-big" id="score-total">0<span>/20</span></div>
+      <p class="score-caption" id="score-caption">Puntaje global</p>
+    </div>
+    <div class="skill-bars" id="skill-bars"></div>
+    <div class="improve-box hidden" id="improve-box">
+      <h3>Puntos a mejorar</h3>
+      <ul id="improve-list"></ul>
+    </div>
+    <div class="strong-box hidden" id="strong-box">
+      <h3>Habilidades consolidadas</h3>
+      <p id="strong-text"></p>
+    </div>
+    <div class="actions">
+      <button class="btn" onclick="restartQuiz()">Repetir con nuevas preguntas</button>
+      <button class="btn ghost" onclick="reviewAnswers()">Revisar mis respuestas</button>
+    </div>
+  </div>
+
+  <div class="card hidden" id="review-screen"></div>
+
+  <footer>Banco de 40 preguntas · nivel básico · Clase 19 de 30 · basado en el temario DEMRE PAES Ciencias — Biología Común</footer>
+</div>
+
+<script>
+const SKILL_NAMES = {"OBS": "Observar y plantear preguntas", "PLAN": "Planificar y conducir una investigación", "PROC": "Procesar y analizar la evidencia", "EVAL": "Evaluar", "COM": "Comunicar"};
+const SKILL_ORDER = ["OBS", "PLAN", "PROC", "EVAL", "COM"];
+const LETTERS = ["A","B","C","D","E"];
+const PICK_PER_SKILL = 4;
+
+const QUESTION_BANK = [{"skill": "OBS", "q": "Un estudiante mide los niveles de glucosa en sangre de una persona en ayunas y los compara con los niveles medidos una hora despues de una comida rica en carbohidratos: los niveles postprandiales (tras la comida) son considerablemente mas altos. ¿Pregunta más pertinente?", "options": ["¿El aumento de glucosa en sangre tras una comida rica en carbohidratos activa mecanismos hormonales que ayudan a reducir progresivamente esos niveles hacia un rango normal?", "¿Los niveles de glucosa en sangre son siempre mas altos en ayunas que despues de comer?", "¿La ingesta de carbohidratos no tiene ninguna relacion con los niveles de glucosa en sangre?", "¿Los niveles de glucosa en sangre permanecen siempre constantes, sin importar la alimentacion?", "¿El aumento de glucosa tras una comida es permanente e irreversible?"], "correct": 0, "exp": "El aumento de glucosa tras una comida rica en carbohidratos activa la secrecion de insulina, hormona que promueve la captacion de glucosa por las celulas, reduciendo progresivamente sus niveles en sangre hacia un rango normal."}, {"skill": "OBS", "q": "Se observa que, cuando una persona pasa varias horas sin comer (ayuno prolongado), sus niveles de glucosa en sangre no caen a valores peligrosamente bajos, sino que se mantienen relativamente estables gracias a la liberacion de glucosa almacenada en el higado. ¿Pregunta más precisa?", "options": ["¿Existe un mecanismo hormonal que, durante el ayuno, estimula al higado a liberar glucosa almacenada para mantener niveles estables en sangre?", "¿El higado no tiene ninguna relacion con el mantenimiento de los niveles de glucosa en sangre?", "¿Los niveles de glucosa en sangre caen siempre a valores peligrosos durante cualquier periodo de ayuno?", "¿El ayuno prolongado aumenta indefinidamente los niveles de glucosa en sangre, sin ningun limite?", "¿El higado consume toda la glucosa disponible durante el ayuno, sin liberar ninguna cantidad adicional?"], "correct": 0, "exp": "Durante el ayuno, el glucagon estimula al higado a liberar glucosa almacenada (como glucogeno) hacia la sangre, evitando que los niveles caigan a valores peligrosamente bajos y manteniendo un suministro relativamente estable de energia para el cuerpo."}, {"skill": "OBS", "q": "Un investigador nota que las celulas beta del pancreas, ubicadas en los islotes de Langerhans, aumentan su secrecion de una hormona especifica cuando los niveles de glucosa en sangre son altos, y disminuyen esa secrecion cuando los niveles bajan. ¿Pregunta más precisa?", "options": ["¿La secrecion de esta hormona por las celulas beta esta regulada directamente por el nivel de glucosa en sangre detectado en cada momento?", "¿Las celulas beta del pancreas no tienen ninguna relacion con la regulacion de la glucosa en sangre?", "¿La secrecion de esta hormona es siempre constante, sin importar el nivel de glucosa en sangre?", "¿Los niveles bajos de glucosa en sangre aumentan la secrecion de esta hormona por las celulas beta?", "¿Los islotes de Langerhans no tienen ninguna relacion con ninguna funcion pancreatica?"], "correct": 0, "exp": "La secrecion de insulina por las celulas beta pancreaticas esta directamente regulada por el nivel de glucosa en sangre: aumenta cuando la glucemia es alta (para reducirla) y disminuye cuando es baja, ilustrando un mecanismo de retroalimentacion negativa."}, {"skill": "OBS", "q": "Se observa que las celulas alfa del pancreas, tambien ubicadas en los islotes de Langerhans, aumentan su secrecion de una hormona distinta cuando los niveles de glucosa en sangre son bajos, y disminuyen esa secrecion cuando los niveles son altos. ¿Pregunta más precisa?", "options": ["¿La secrecion de esta segunda hormona por las celulas alfa responde de forma opuesta a la de la insulina, activandose especificamente ante niveles bajos de glucosa en sangre?", "¿Las celulas alfa secretan exactamente la misma hormona que las celulas beta, sin ninguna diferencia?", "¿La secrecion de esta hormona por las celulas alfa aumenta cuando los niveles de glucosa en sangre son altos?", "¿Las celulas alfa no tienen ninguna relacion con la regulacion de la glucosa en sangre?", "¿Los niveles de glucosa en sangre no influyen en ningun grado sobre la actividad de las celulas alfa?"], "correct": 0, "exp": "La secrecion de glucagon por las celulas alfa responde de forma opuesta a la insulina: aumenta ante niveles bajos de glucosa (para elevarla mediante la liberacion de glucosa hepatica) y disminuye ante niveles altos, formando un sistema regulador antagonico."}, {"skill": "OBS", "q": "Un estudiante nota que una persona con diabetes tipo 1 (que no produce insulina propia) presenta niveles de glucosa en sangre persistentemente elevados si no recibe insulina externa, a pesar de tener niveles normales de glucagon. ¿Pregunta más precisa?", "options": ["¿La ausencia de insulina, incluso con glucagon presente, impide que las celulas del cuerpo capten adecuadamente la glucosa de la sangre, manteniendo elevados sus niveles?", "¿El glucagon puede compensar completamente la ausencia de insulina en el control de la glucemia?", "¿La diabetes tipo 1 no tiene ninguna relacion con la produccion de insulina por el pancreas?", "¿Los niveles de glucosa en sangre disminuyen siempre, independientemente de la presencia de insulina?", "¿Una persona sin insulina propia presenta siempre niveles bajos de glucosa en sangre?"], "correct": 0, "exp": "Sin insulina, las celulas del cuerpo no pueden captar eficientemente la glucosa de la sangre, manteniendola elevada (hiperglucemia) incluso con niveles normales de glucagon, ya que esta ultima hormona no compensa la funcion especifica de la insulina."}, {"skill": "OBS", "q": "Se observa que, tras la inyeccion de insulina en una persona con diabetes, sus niveles de glucosa en sangre disminuyen progresivamente, y que una dosis excesiva de insulina puede provocar niveles peligrosamente bajos de glucosa (hipoglucemia). ¿Pregunta más precisa?", "options": ["¿La cantidad de insulina administrada se relaciona directamente con la magnitud de la reduccion de glucosa en sangre, existiendo un riesgo de hipoglucemia si la dosis es excesiva?", "¿La insulina no tiene ninguna relacion con la reduccion de los niveles de glucosa en sangre?", "¿Una dosis excesiva de insulina siempre aumenta los niveles de glucosa en sangre?", "¿La hipoglucemia ocurre exclusivamente en ausencia total de insulina en el cuerpo?", "¿Los niveles de glucosa en sangre son completamente independientes de la cantidad de insulina administrada?"], "correct": 0, "exp": "La relacion dosis-dependiente entre la insulina administrada y la reduccion de glucosa en sangre confirma su funcion reguladora directa, y explica por que una dosis excesiva puede provocar una reduccion peligrosa (hipoglucemia) al sobrepasar la necesidad real del cuerpo."}, {"skill": "OBS", "q": "Un investigador nota que las personas con diabetes tipo 2 (resistencia a la insulina) frecuentemente presentan niveles de insulina en sangre normales o incluso elevados, a pesar de tener niveles altos de glucosa (hiperglucemia). ¿Pregunta más precisa?", "options": ["¿La hiperglucemia en la diabetes tipo 2 podria relacionarse con una menor capacidad de respuesta de las celulas del cuerpo a la insulina, en lugar de una deficiencia en su produccion?", "¿La diabetes tipo 2 implica siempre una ausencia total de insulina en el cuerpo, de la misma manera que la diabetes tipo 1?", "¿Los niveles altos de insulina en sangre siempre indican niveles bajos de glucosa en sangre?", "¿La resistencia a la insulina no tiene ninguna relacion con los niveles de glucosa en sangre?", "¿La diabetes tipo 2 y la diabetes tipo 1 tienen exactamente la misma causa fisiologica?"], "correct": 0, "exp": "La coexistencia de insulina normal o elevada con hiperglucemia plantea la pregunta central sobre la resistencia a la insulina: las celulas del cuerpo responden menos eficientemente a esta hormona, a diferencia de la diabetes tipo 1 donde el problema es la falta de produccion de insulina."}, {"skill": "OBS", "q": "Se observa que, tras realizar ejercicio fisico intenso, los niveles de glucosa en sangre de una persona disminuyen mas rapidamente que en reposo, incluso sin cambios en la secrecion de insulina. ¿Pregunta más precisa?", "options": ["¿El ejercicio fisico intenso podria aumentar la captacion de glucosa por parte del musculo mediante un mecanismo adicional, independiente o complementario a la accion de la insulina?", "¿El ejercicio fisico siempre aumenta los niveles de glucosa en sangre, sin ninguna excepcion?", "¿La captacion de glucosa por el musculo no tiene ninguna relacion con la actividad fisica realizada?", "¿Los niveles de glucosa en sangre no cambian nunca durante el ejercicio fisico, independientemente de su intensidad?", "¿La insulina es el unico mecanismo posible mediante el cual la glucosa puede ser captada por las celulas musculares?"], "correct": 0, "exp": "La reduccion mas rapida de glucosa durante el ejercicio, sin cambios proporcionales en la insulina, plantea la pregunta sobre mecanismos adicionales de captacion de glucosa por el musculo activo, relevantes para comprender la regulacion energetica durante la actividad fisica."}, {"skill": "PLAN", "q": "Para comprobar que la secrecion de insulina aumenta especificamente en respuesta a niveles altos de glucosa en sangre, ¿cuál es el diseño experimental más adecuado?", "options": ["Medir la secrecion de insulina bajo distintos niveles controlados de glucosa en sangre, comparando los resultados obtenidos en cada nivel evaluado", "Medir la secrecion de insulina solo bajo un nivel fijo de glucosa, sin ninguna variacion", "No es necesario variar el nivel de glucosa en sangre para responder esta pregunta", "Medir solo el nivel de glucosa, sin evaluar directamente la secrecion de insulina resultante", "Usar personas completamente distintas para cada nivel de glucosa evaluado, sin ningun control sobre otras diferencias"], "correct": 0, "exp": "Variar sistematicamente el nivel de glucosa en sangre y medir la secrecion de insulina resultante en cada nivel permite establecer de forma experimental la relacion directa entre ambas variables."}, {"skill": "PLAN", "q": "Un investigador desea comprobar que el higado libera glucosa almacenada durante el ayuno en respuesta a la accion del glucagon. ¿Diseño experimental adecuado?", "options": ["Medir la liberacion de glucosa por el higado en presencia de glucagon administrado experimentalmente frente a un grupo control sin glucagon, bajo las mismas condiciones de ayuno", "Medir la liberacion de glucosa solo en presencia de glucagon, sin ningun grupo de comparacion sin esta hormona", "No es necesario ningun grupo de comparacion sin glucagon para esta pregunta", "Medir solo los niveles de glucosa en sangre, sin evaluar directamente la liberacion hepatica de glucosa", "Usar personas con distintos niveles de ayuno para cada grupo evaluado, sin ningun control sobre esta variable"], "correct": 0, "exp": "Comparar la liberacion hepatica de glucosa con y sin glucagon administrado, bajo las mismas condiciones de ayuno, permite establecer de forma experimental el rol especifico de esta hormona en la movilizacion de las reservas de glucosa del higado."}, {"skill": "PLAN", "q": "Para determinar si una persona con diabetes tipo 1 recupera niveles normales de glucosa en sangre al recibir insulina externa, ¿cuál es el diseño experimental más adecuado?", "options": ["Medir los niveles de glucosa en sangre de la persona antes y despues de recibir una dosis controlada de insulina externa, comparando los valores obtenidos en cada momento", "Medir los niveles de glucosa solo antes de recibir insulina, sin ninguna medicion posterior", "No es necesario medir los niveles de glucosa despues de administrar la insulina para esta pregunta", "Medir solo los niveles de glucagon, sin evaluar directamente los niveles de glucosa en sangre", "Comparar personas completamente distintas para cada momento evaluado, sin ningun control sobre otras diferencias"], "correct": 0, "exp": "Medir los niveles de glucosa antes y despues de la administracion de insulina, en la misma persona, permite establecer de forma experimental el efecto especifico de esta hormona sobre la reduccion de la glucemia en un contexto de deficiencia de insulina propia."}, {"skill": "PLAN", "q": "Se desea comprobar que las celulas de personas con diabetes tipo 2 responden menos eficientemente a la insulina que las celulas de personas sin esta condicion. ¿Diseño experimental más adecuado?", "options": ["Comparar la captacion de glucosa por celulas de personas con diabetes tipo 2 y celulas de personas sin diabetes, bajo la misma concentracion de insulina administrada experimentalmente", "Comparar solo celulas de personas con diabetes tipo 2, sin ningun grupo de comparacion sin diabetes", "No es necesario ningun grupo de comparacion sin diabetes para esta pregunta", "Medir solo los niveles de insulina en sangre, sin evaluar directamente la captacion celular de glucosa", "Usar concentraciones distintas de insulina para cada grupo evaluado, sin ningun control sobre esta variable"], "correct": 0, "exp": "Comparar la captacion de glucosa bajo la misma concentracion de insulina entre celulas de personas con y sin diabetes tipo 2 permite establecer de forma experimental si existe una menor respuesta celular a esta hormona, consistente con el concepto de resistencia a la insulina."}, {"skill": "PLAN", "q": "Para investigar si el ejercicio fisico intenso aumenta la captacion de glucosa por el musculo independientemente de la insulina, ¿cuál es el diseño experimental más adecuado?", "options": ["Medir la captacion de glucosa muscular durante el ejercicio en condiciones donde la accion de la insulina esta experimentalmente bloqueada, comparando con la captacion en reposo bajo el mismo bloqueo", "Medir la captacion de glucosa muscular solo con insulina funcionando normalmente, sin ningun bloqueo experimental de esta hormona", "No es necesario bloquear la accion de la insulina para responder esta pregunta", "Medir solo los niveles de glucosa en sangre, sin evaluar directamente la captacion muscular de glucosa", "Comparar personas completamente distintas para cada condicion evaluada, sin ningun control sobre otras diferencias"], "correct": 0, "exp": "Bloquear experimentalmente la accion de la insulina y comparar la captacion de glucosa muscular durante el ejercicio con la captacion en reposo, bajo el mismo bloqueo, permite establecer si existe un mecanismo de captacion independiente de la insulina activado por la actividad fisica."}, {"skill": "PROC", "q": "Se midio la secrecion de insulina bajo distintos niveles controlados de glucosa en sangre: secrecion alta con glucosa elevada, secrecion baja con glucosa normal o baja. ¿Qué conclusión es más adecuada?", "options": ["La secrecion de insulina esta directamente regulada por el nivel de glucosa en sangre, aumentando cuando la glucemia es alta", "La secrecion de insulina disminuye siempre que el nivel de glucosa en sangre aumenta", "El nivel de glucosa en sangre no tiene ninguna relacion con la secrecion de insulina", "Todos los niveles de glucosa evaluados muestran exactamente la misma secrecion de insulina", "La secrecion de insulina es completamente independiente de cualquier factor fisiologico"], "correct": 0, "exp": "La relacion directa observada entre nivel de glucosa y secrecion de insulina (mayor secrecion con mayor glucemia) confirma experimentalmente el mecanismo de retroalimentacion negativa que regula la produccion de esta hormona segun el estado de glucosa en sangre."}, {"skill": "PROC", "q": "Se comparo la liberacion de glucosa por el higado en presencia de glucagon administrado (liberacion considerablemente mayor) frente a un grupo control sin glucagon (liberacion basal, menor), bajo las mismas condiciones de ayuno. ¿Qué conclusión es más adecuada?", "options": ["El glucagon estimula efectivamente la liberacion de glucosa almacenada por el higado, consistente con su funcion en la regulacion de la glucemia durante el ayuno", "El glucagon reduce la liberacion de glucosa por el higado en comparacion con su ausencia", "El higado no tiene ninguna relacion con la liberacion de glucosa en respuesta al glucagon", "Ambos grupos muestran exactamente la misma liberacion de glucosa por el higado", "El glucagon no tiene ninguna funcion relacionada con la regulacion de la glucemia"], "correct": 0, "exp": "La mayor liberacion de glucosa hepatica especificamente en presencia de glucagon, comparada con el grupo control sin esta hormona, confirma experimentalmente su funcion como estimulador de la movilizacion de las reservas de glucosa del higado."}, {"skill": "PROC", "q": "Se midieron los niveles de glucosa en sangre de una persona con diabetes tipo 1 antes (niveles altos) y despues de recibir una dosis controlada de insulina externa (niveles normalizados). ¿Qué conclusión es más adecuada?", "options": ["La administracion de insulina externa reduce efectivamente los niveles de glucosa en sangre en una persona con deficiencia de insulina propia", "La insulina externa aumenta los niveles de glucosa en sangre en comparacion con no recibir ningun tratamiento", "Los niveles de glucosa en sangre no tienen ninguna relacion con la administracion de insulina", "Ambos momentos evaluados muestran exactamente los mismos niveles de glucosa en sangre", "La insulina externa no tiene ningun efecto sobre los niveles de glucosa de una persona con diabetes tipo 1"], "correct": 0, "exp": "La normalizacion de los niveles de glucosa tras recibir insulina externa, comparado con los niveles altos previos, confirma experimentalmente la efectividad de esta hormona para reducir la glucemia en un contexto de deficiencia de produccion propia."}, {"skill": "PROC", "q": "Se comparo la captacion de glucosa bajo la misma concentracion de insulina administrada entre celulas de personas con diabetes tipo 2 (captacion considerablemente menor) y celulas de personas sin diabetes (captacion normal, mayor). ¿Qué conclusión es más adecuada?", "options": ["Las celulas de personas con diabetes tipo 2 presentan una menor respuesta a la insulina en comparacion con celulas de personas sin esta condicion, consistente con el concepto de resistencia a la insulina", "Las celulas de personas con diabetes tipo 2 responden mejor a la insulina que las celulas de personas sin diabetes", "La concentracion de insulina administrada no tiene ninguna relacion con la captacion de glucosa observada", "Ambos grupos de celulas muestran exactamente la misma captacion de glucosa bajo la misma concentracion de insulina", "La diabetes tipo 2 no tiene ninguna relacion con la capacidad celular de responder a la insulina"], "correct": 0, "exp": "La menor captacion de glucosa especificamente en celulas de personas con diabetes tipo 2, bajo la misma concentracion de insulina administrada, confirma experimentalmente el fenomeno de resistencia a la insulina caracteristico de esta condicion."}, {"skill": "PROC", "q": "Se midio la captacion de glucosa muscular durante el ejercicio con la accion de la insulina experimentalmente bloqueada: captacion aumentada respecto al reposo bajo el mismo bloqueo, aunque menor que con insulina funcionando normalmente. ¿Qué conclusión es más adecuada?", "options": ["El ejercicio fisico activa un mecanismo de captacion de glucosa muscular al menos parcialmente independiente de la accion de la insulina", "La captacion de glucosa muscular depende exclusivamente de la accion de la insulina, sin ningun mecanismo adicional", "El bloqueo de la insulina elimina por completo cualquier captacion de glucosa muscular durante el ejercicio", "El reposo y el ejercicio muestran exactamente la misma captacion de glucosa muscular bajo el bloqueo de insulina", "El ejercicio fisico reduce la captacion de glucosa muscular en comparacion con el reposo, bajo el mismo bloqueo"], "correct": 0, "exp": "El aumento de la captacion de glucosa muscular durante el ejercicio, incluso con la insulina bloqueada, confirma experimentalmente la existencia de un mecanismo adicional (al menos parcialmente independiente de la insulina) activado por la actividad fisica muscular."}, {"skill": "EVAL", "q": "Un estudiante concluyó que 'la insulina y el glucagon cumplen exactamente la misma funcion sobre la glucemia, siendo ambas hormonas intercambiables', basándose en que ambas provienen del pancreas. ¿Qué crítica es más pertinente?", "options": ["La conclusión es correcta porque ambas hormonas, al provenir del mismo organo, cumplen exactamente la misma funcion sobre la glucemia", "La insulina y el glucagon cumplen funciones opuestas y complementarias: la insulina reduce la glucemia (facilitando la captacion celular de glucosa), mientras el glucagon la aumenta (estimulando la liberacion hepatica de glucosa); afirmar que son 'intercambiables, con la misma funcion' ignora esta relacion antagonica bien documentada", "El glucagon reduce la glucemia de la misma manera que la insulina", "La insulina aumenta la glucemia de la misma manera que el glucagon", "Ninguna de las dos hormonas mencionadas tiene relacion con la regulacion de la glucosa en sangre"], "correct": 1, "exp": "La insulina y el glucagon cumplen funciones opuestas (reduccion versus aumento de la glucemia respectivamente); el origen comun en el pancreas no implica una funcion identica o intercambiable, sino una regulacion complementaria y antagonica del mismo parametro fisiologico."}, {"skill": "EVAL", "q": "Una investigación afirmó que 'la diabetes tipo 1 y la diabetes tipo 2 tienen exactamente la misma causa fisiologica, siendo ambas resultado de una ausencia total de insulina en el cuerpo'. ¿Qué crítica es más pertinente?", "options": ["La afirmación es correcta porque ambos tipos de diabetes son causados exactamente por la misma ausencia total de insulina en el cuerpo", "La diabetes tipo 1 se caracteriza por una ausencia (o produccion muy reducida) de insulina propia, mientras la diabetes tipo 2 tipicamente involucra niveles normales o incluso elevados de insulina junto con una menor respuesta celular a esta hormona (resistencia a la insulina); tratar ambas condiciones como teniendo 'exactamente la misma causa fisiologica' ignora esta distincion mecanistica fundamental bien documentada", "La diabetes tipo 2 siempre implica una ausencia total de insulina, de la misma manera que la diabetes tipo 1", "La resistencia a la insulina no tiene ninguna relacion con ningun tipo de diabetes", "La diabetes tipo 1 nunca involucra ninguna alteracion relacionada con la produccion de insulina"], "correct": 1, "exp": "La diabetes tipo 1 (deficiencia de produccion) y la diabetes tipo 2 (resistencia celular con produccion normal o elevada) tienen mecanismos fisiologicos distintos; tratarlas como identicas ignora esta diferencia bien establecida en la fisiopatologia de ambas condiciones."}, {"skill": "EVAL", "q": "Un estudio concluyó que 'una dosis mayor de insulina siempre es mejor para controlar la glucemia de una persona con diabetes, sin ningun riesgo asociado a dosis excesivas'. ¿Qué crítica es más pertinente?", "options": ["La conclusión es correcta porque una dosis mayor de insulina siempre mejora el control de la glucemia, sin ningun riesgo posible asociado", "Una dosis excesiva de insulina puede provocar hipoglucemia (niveles peligrosamente bajos de glucosa en sangre), una condicion que puede ser tan riesgosa como la hiperglucemia; afirmar que 'una dosis mayor siempre es mejor, sin ningun riesgo' ignora este peligro documentado de la sobredosificacion de insulina", "La insulina nunca puede provocar niveles bajos de glucosa en sangre, sin importar la dosis administrada", "La hipoglucemia es siempre menos riesgosa que la hiperglucemia para la salud de una persona", "No es necesario considerar la dosis de insulina administrada al evaluar su efecto sobre la glucemia"], "correct": 1, "exp": "Una dosis excesiva de insulina puede provocar hipoglucemia peligrosa; afirmar que una dosis mayor siempre es mejor sin ningun riesgo ignora este peligro bien documentado, subrayando la importancia de un ajuste cuidadoso y preciso de la dosis segun las necesidades reales de cada persona."}, {"skill": "COM", "q": "Un estudiante debe explicar por qué el sistema de regulacion de la glucemia mediante insulina y glucagon se considera un ejemplo clasico de retroalimentacion negativa. Cual es la explicación más precisa?", "options": ["Cuando la glucosa en sangre se desvia de su nivel normal (ya sea aumentando tras una comida o disminuyendo durante el ayuno), se activa la hormona correspondiente (insulina o glucagon) para contrarrestar esa desviacion y devolver la glucemia hacia su rango normal, ilustrando la logica de correccion caracteristica de la retroalimentacion negativa", "El sistema de insulina y glucagon amplifica progresivamente cualquier desviacion de la glucemia, sin ningun mecanismo de correccion", "La insulina y el glucagon actuan de forma completamente independiente del nivel real de glucosa en sangre", "La retroalimentacion negativa implica que la glucemia aumenta indefinidamente sin ningun mecanismo que la limite", "Este sistema hormonal no tiene ninguna relacion con el concepto de retroalimentacion negativa"], "correct": 0, "exp": "La explicación debe conectar el patron de correccion bidireccional (insulina reduce excesos, glucagon corrige deficits) con la logica general de retroalimentacion negativa: detectar una desviacion y activar una respuesta que la contrarreste, devolviendo la variable hacia su valor normal."}, {"skill": "COM", "q": "Al explicar la diferencia fisiologica entre diabetes tipo 1 y diabetes tipo 2, ¿cuál es la explicación más precisa?", "options": ["En la diabetes tipo 1, el pancreas no produce suficiente insulina (frecuentemente por destruccion autoinmune de las celulas beta), requiriendo insulina externa; en la diabetes tipo 2, el pancreas generalmente si produce insulina (a veces en cantidades normales o elevadas), pero las celulas del cuerpo responden de forma menos eficiente a ella (resistencia a la insulina), por lo que el tratamiento inicial suele enfocarse en mejorar esa sensibilidad antes de recurrir a insulina externa", "La diabetes tipo 1 y la diabetes tipo 2 tienen exactamente la misma causa fisiologica, sin ninguna diferencia relevante entre ellas", "La diabetes tipo 2 siempre implica una ausencia total de insulina, de la misma manera que la diabetes tipo 1", "La resistencia a la insulina es caracteristica de la diabetes tipo 1, no de la diabetes tipo 2", "La diabetes tipo 1 nunca requiere de ningun tratamiento con insulina externa"], "correct": 0, "exp": "La explicación debe distinguir claramente entre la falta de produccion de insulina (tipo 1) y la resistencia celular a una insulina presente en cantidades normales o elevadas (tipo 2), dos mecanismos fisiologicos distintos que subyacen a ambas formas de diabetes."}, {"skill": "COM", "q": "Un estudiante debe explicar por qué el ejercicio fisico puede ser una herramienta util para personas con diabetes tipo 2, mas alla de su efecto general sobre la salud cardiovascular. Cual es la explicación más precisa?", "options": ["El ejercicio fisico puede activar mecanismos de captacion de glucosa muscular al menos parcialmente independientes de la insulina, ayudando a reducir la glucemia incluso en un contexto de resistencia a esta hormona, ademas de que el ejercicio regular puede mejorar la sensibilidad celular a la insulina a mediano plazo", "El ejercicio fisico no tiene ninguna relacion con la captacion de glucosa por parte del musculo", "El ejercicio fisico aumenta siempre los niveles de glucosa en sangre, sin ninguna excepcion", "La resistencia a la insulina no puede ser mejorada mediante ningun tipo de intervencion, incluyendo el ejercicio fisico", "El unico beneficio del ejercicio fisico para una persona con diabetes tipo 2 es su efecto sobre la salud cardiovascular"], "correct": 0, "exp": "La explicación debe conectar el mecanismo especifico (captacion de glucosa muscular activada por el ejercicio, en parte independiente de la insulina) con su relevancia particular para personas con resistencia a esta hormona, ademas de mencionar el beneficio adicional de mejora de sensibilidad a la insulina con el ejercicio regular."}, {"skill": "COM", "q": "Al explicar por qué medir tanto los niveles de insulina como los de glucosa en sangre es mas informativo que medir unicamente la glucosa para diagnosticar el tipo de diabetes de una persona, ¿cuál es la explicación más precisa?", "options": ["Medir ambos parametros simultaneamente permite distinguir entre los distintos mecanismos subyacentes de la hiperglucemia: niveles bajos de insulina junto con glucosa alta sugieren una deficiencia de produccion (mas consistente con diabetes tipo 1), mientras niveles normales o altos de insulina junto con glucosa alta sugieren resistencia a la insulina (mas consistente con diabetes tipo 2)", "Medir solo la glucosa en sangre siempre proporciona exactamente la misma informacion diagnostica que medir ambos parametros", "Los niveles de insulina no aportan ninguna informacion adicional relevante para distinguir entre los distintos tipos de diabetes", "La glucosa y la insulina siempre varian de forma identica, por lo que medir ambas es completamente redundante", "No es posible distinguir entre distintos tipos de diabetes mediante ninguna combinacion de mediciones hormonales"], "correct": 0, "exp": "La explicación debe destacar el valor diagnostico de medir simultaneamente ambos parametros, ya que el patron combinado (nivel de insulina junto con nivel de glucosa) permite inferir el mecanismo fisiologico subyacente especifico, distinguiendo entre deficiencia de produccion y resistencia celular a la hormona."}, {"skill": "PLAN", "q": "Un investigador desea determinar si el nivel de glucosa en sangre despues de comer varia segun el tipo de alimento consumido (carbohidratos simples versus complejos). Cual es el diseno experimental adecuado?", "options": ["Medir el nivel de glucosa en sangre a distintos tiempos tras consumir cada tipo de alimento por separado, manteniendo constante la cantidad total de carbohidratos en cada caso", "Medir el nivel de glucosa solo tras consumir un tipo de alimento, sin ninguna comparacion con otro tipo", "No es necesario comparar distintos tipos de alimento para responder esta pregunta", "Usar cantidades distintas de carbohidratos para cada tipo de alimento evaluado, sin ningun control sobre esta variable", "Medir solo la cantidad de alimento consumido, sin evaluar directamente el nivel de glucosa resultante"], "correct": 0, "exp": "Comparar el nivel de glucosa tras consumir distintos tipos de alimento, manteniendo constante la cantidad de carbohidratos, permite establecer de forma experimental si el tipo especifico de alimento influye en la respuesta glucemica."}, {"skill": "PLAN", "q": "Para determinar si el nivel de glucagon en sangre aumenta especificamente durante el ayuno prolongado, cual es el diseno experimental mas adecuado?", "options": ["Medir el nivel de glucagon en sangre en distintos momentos a lo largo de un periodo de ayuno prolongado, comparando los valores obtenidos con el nivel basal previo al ayuno", "Medir el nivel de glucagon solo en un momento fijo del ayuno, sin ninguna comparacion con el nivel previo", "No es necesario medir el glucagon en distintos momentos del ayuno para esta pregunta", "Medir solo el nivel de glucosa, sin evaluar directamente el nivel de glucagon durante el ayuno", "Comparar personas completamente distintas para cada momento evaluado, sin ningun control sobre otras diferencias"], "correct": 0, "exp": "Medir el glucagon en distintos momentos del ayuno, comparando con el nivel basal previo, permite establecer de forma experimental si su secrecion aumenta progresivamente conforme se prolonga el periodo sin ingesta de alimento."}, {"skill": "PROC", "q": "Se midio el nivel de glucosa en sangre tras consumir carbohidratos simples (aumento rapido y pronunciado) y tras consumir carbohidratos complejos con la misma cantidad total (aumento mas gradual y moderado). Que conclusion es mas adecuada?", "options": ["El tipo de carbohidrato consumido influye en la velocidad y magnitud del aumento de glucosa en sangre, siendo mas pronunciado con carbohidratos simples", "El tipo de carbohidrato consumido no tiene ninguna relacion con la respuesta de glucosa en sangre", "Los carbohidratos complejos siempre producen un aumento mayor de glucosa que los carbohidratos simples", "Ambos tipos de carbohidrato producen exactamente la misma respuesta de glucosa en sangre", "La cantidad total de carbohidratos consumidos no influye en ningun grado sobre el nivel de glucosa resultante"], "correct": 0, "exp": "La diferencia observada en la velocidad y magnitud del aumento de glucosa segun el tipo de carbohidrato, con la misma cantidad total consumida, confirma experimentalmente que la estructura quimica del alimento influye en la respuesta glucemica."}, {"skill": "PROC", "q": "Se midio el nivel de glucagon en sangre en distintos momentos de un ayuno prolongado: aumento progresivo desde el nivel basal a medida que se prolongaba el periodo sin ingesta de alimento. Que conclusion es mas adecuada?", "options": ["La secrecion de glucagon aumenta progresivamente conforme se prolonga el periodo de ayuno, consistente con su funcion de elevar la glucemia ante la falta de ingesta", "La secrecion de glucagon disminuye progresivamente durante un periodo de ayuno prolongado", "El nivel de glucagon no tiene ninguna relacion con la duracion del periodo de ayuno", "El nivel de glucagon permanece exactamente constante durante todo el periodo de ayuno evaluado", "El ayuno prolongado detiene por completo la secrecion de glucagon en el cuerpo"], "correct": 0, "exp": "El aumento progresivo de glucagon a medida que se prolonga el ayuno confirma experimentalmente su funcion reguladora especifica: estimular la liberacion de glucosa almacenada para mantener la glucemia estable ante la ausencia sostenida de ingesta de alimento."}, {"skill": "EVAL", "q": "Un estudio concluyo que 'el pancreas es el unico organo del cuerpo relacionado con la regulacion de la glucosa en sangre, sin ninguna contribucion de otros organos', ignorando el papel del higado. Que critica es mas pertinente?", "options": ["La conclusion es correcta porque el pancreas es, sin excepcion, el unico organo involucrado en la regulacion de la glucosa en sangre", "El higado cumple un papel central en la regulacion de la glucemia al almacenar y liberar glucosa segun las senales hormonales recibidas (insulina, glucagon); afirmar que el pancreas es 'el unico organo... sin ninguna contribucion de otros' ignora esta funcion complementaria bien documentada del higado en este sistema regulador", "El higado no tiene ninguna relacion con el almacenamiento o liberacion de glucosa en el cuerpo", "Ningun otro organo, ademas del pancreas, puede tener alguna relacion con la regulacion de la glucemia", "La insulina y el glucagon no tienen ninguna relacion con la funcion del higado en el cuerpo"], "correct": 1, "exp": "El higado cumple una funcion central como organo efector en la regulacion de la glucemia (almacenando y liberando glucosa segun las senales hormonales); reducir la regulacion de la glucosa exclusivamente al pancreas ignora esta contribucion bien documentada de otros organos del sistema."}, {"skill": "EVAL", "q": "Una investigacion afirmo que 'la resistencia a la insulina en la diabetes tipo 2 significa que el cuerpo deja de producir insulina por completo, de la misma manera que en la diabetes tipo 1'. Que critica es mas pertinente?", "options": ["La afirmacion es correcta porque la resistencia a la insulina implica necesariamente que el cuerpo deja de producir esta hormona por completo", "La resistencia a la insulina se refiere a una menor respuesta celular a una hormona que sigue siendo producida (frecuentemente en cantidades normales o incluso elevadas), un mecanismo distinto a la ausencia de produccion caracteristica de la diabetes tipo 1; confundir ambos conceptos ignora esta diferencia fisiologica fundamental", "La diabetes tipo 2 siempre implica exactamente la misma ausencia total de insulina que la diabetes tipo 1", "La resistencia a la insulina no tiene ninguna relacion con los niveles de esta hormona presentes en el cuerpo", "La produccion de insulina se detiene automaticamente en cualquier persona con resistencia a esta hormona"], "correct": 1, "exp": "La resistencia a la insulina implica una menor respuesta celular a una hormona que generalmente sigue siendo producida, un mecanismo fisiologico distinto de la ausencia de produccion caracteristica de la diabetes tipo 1; confundir estos conceptos ignora una distincion central en la fisiopatologia de ambas condiciones."}, {"skill": "COM", "q": "Un estudiante debe explicar por que las celulas beta y alfa del pancreas, a pesar de estar ubicadas juntas en los islotes de Langerhans, cumplen funciones opuestas en la regulacion de la glucemia. Cual es la explicacion mas precisa?", "options": ["Aunque ambas se encuentran en la misma estructura anatomica, las celulas beta secretan insulina (que reduce la glucemia) en respuesta a niveles altos de glucosa, mientras las celulas alfa secretan glucagon (que aumenta la glucemia) en respuesta a niveles bajos, formando un sistema regulador antagonico y complementario que permite un control bidireccional preciso", "Las celulas beta y alfa secretan exactamente la misma hormona, sin ninguna diferencia funcional entre ellas", "Las celulas alfa secretan insulina, mientras las celulas beta secretan glucagon, de forma opuesta a lo comunmente descrito", "La ubicacion anatomica compartida de ambos tipos celulares implica que cumplen exactamente la misma funcion fisiologica", "Ninguno de los dos tipos celulares tiene relacion con la regulacion de la glucosa en sangre"], "correct": 0, "exp": "La explicacion debe destacar que la proximidad anatomica no implica funcion identica: cada tipo celular responde a estimulos opuestos (glucosa alta vs. baja) y secreta hormonas con efectos opuestos, formando un sistema regulador bidireccional preciso a pesar de su ubicacion compartida."}, {"skill": "COM", "q": "Al explicar por que el higado es considerado un organo clave (efector) en el sistema de regulacion de la glucemia, ademas del pancreas, cual es la explicacion mas precisa?", "options": ["El higado actua como el principal reservorio de glucosa almacenada (en forma de glucogeno) del cuerpo, respondiendo a las senales hormonales del pancreas: libera glucosa ante la accion del glucagon (durante el ayuno) y almacena glucosa ante la accion de la insulina (tras una comida), cumpliendo la funcion de efector dentro del sistema de control homeostatico de la glucemia", "El higado produce directamente insulina y glucagon, de la misma manera que el pancreas", "El higado no tiene ninguna relacion con el almacenamiento o liberacion de glucosa en el cuerpo", "La funcion del higado en la regulacion de la glucemia es identica a la del pancreas, sin ninguna diferencia", "El higado solo responde a la insulina, sin ninguna respuesta a la accion del glucagon"], "correct": 0, "exp": "La explicacion debe conectar la funcion especifica del higado (reservorio de glucosa que responde a las senales hormonales pancreaticas) con su rol como organo efector dentro del sistema completo de control homeostatico de la glucemia, complementando la funcion reguladora del pancreas."}, {"skill": "COM", "q": "Un estudiante debe explicar por que comprender la diferencia entre diabetes tipo 1 y tipo 2 es relevante para determinar el tratamiento apropiado de cada condicion. Cual es la explicacion mas precisa?", "options": ["Dado que la diabetes tipo 1 involucra una deficiencia de produccion de insulina, su tratamiento principal requiere la administracion de insulina externa; en cambio, la diabetes tipo 2, al involucrar resistencia celular con produccion de insulina generalmente presente, puede responder inicialmente a cambios en el estilo de vida o medicamentos que mejoren la sensibilidad a la insulina, antes de requerir insulina externa en casos mas avanzados", "Ambos tipos de diabetes requieren exactamente el mismo tratamiento, sin ninguna diferencia relevante entre ellos", "La diabetes tipo 2 siempre requiere insulina externa como primer tratamiento, de la misma manera que la diabetes tipo 1", "El tipo de diabetes que presenta una persona no tiene ninguna relacion con el tratamiento mas apropiado para su condicion", "La diabetes tipo 1 nunca requiere de ningun tipo de tratamiento con insulina externa"], "correct": 0, "exp": "La explicacion debe conectar el mecanismo fisiologico especifico de cada tipo de diabetes (deficiencia de produccion vs. resistencia celular) con las implicancias practicas para el tratamiento mas apropiado, ilustrando la relevancia clinica de comprender la distincion fisiologica entre ambas condiciones."}, {"skill": "PLAN", "q": "Un investigador desea determinar si la sensibilidad a la insulina mejora tras un programa de ejercicio regular en personas con resistencia a la insulina. Cual es el diseno experimental adecuado?", "options": ["Medir la captacion de glucosa en respuesta a una dosis controlada de insulina antes y despues de un periodo de entrenamiento regular, en el mismo grupo de personas con resistencia a la insulina", "Medir la captacion de glucosa solo despues del entrenamiento, sin ninguna medicion previa de referencia", "No es necesario medir la captacion de glucosa antes del entrenamiento para esta pregunta", "Comparar personas completamente distintas antes y despues del entrenamiento, sin ningun control sobre otras diferencias", "Medir solo el peso corporal, sin evaluar directamente la captacion de glucosa en respuesta a insulina"], "correct": 0, "exp": "Medir la respuesta a la insulina antes y despues de un periodo de entrenamiento, en el mismo grupo de personas, permite establecer de forma experimental si el ejercicio regular mejora la sensibilidad celular a esta hormona en personas con resistencia previa."}, {"skill": "PROC", "q": "Se midio la captacion de glucosa en respuesta a una dosis controlada de insulina antes (captacion reducida, consistente con resistencia) y despues de un periodo de entrenamiento regular (captacion mejorada, mas cercana a lo normal). Que conclusion es mas adecuada?", "options": ["El entrenamiento fisico regular mejora la sensibilidad celular a la insulina en personas que presentaban resistencia previa a esta hormona", "El entrenamiento fisico regular empeora la sensibilidad celular a la insulina en personas con resistencia previa", "La captacion de glucosa en respuesta a insulina no tiene ninguna relacion con el entrenamiento fisico realizado", "Ambos momentos evaluados muestran exactamente la misma captacion de glucosa en respuesta a insulina", "El entrenamiento fisico no tiene ningun efecto sobre la resistencia a la insulina de una persona"], "correct": 0, "exp": "La mejora en la captacion de glucosa tras el periodo de entrenamiento, comparada con la captacion reducida previa, confirma experimentalmente que el ejercicio regular puede mejorar la sensibilidad celular a la insulina en personas con resistencia previa a esta hormona."}, {"skill": "EVAL", "q": "Un estudio afirmo que 'toda persona con niveles altos de glucosa en sangre despues de comer tiene necesariamente diabetes', sin considerar que cierto aumento postprandial es normal. Que critica es mas pertinente?", "options": ["La afirmacion es correcta porque cualquier aumento de glucosa despues de comer, sin excepcion, indica necesariamente la presencia de diabetes", "Un aumento moderado y temporal de la glucosa tras una comida es una respuesta fisiologica normal en cualquier persona, incluso sin diabetes; lo que caracteriza a la diabetes es una elevacion excesiva o sostenida mas alla de los rangos normales, o una incapacidad de retornar a niveles normales en un tiempo esperado; afirmar que 'cualquier' aumento indica diabetes ignora esta variacion fisiologica normal", "Los niveles de glucosa en sangre nunca aumentan despues de comer en ninguna persona, tenga o no diabetes", "La diabetes es una condicion que nunca se relaciona con los niveles de glucosa en sangre despues de comer", "El aumento postprandial de glucosa es identico en magnitud entre personas con y sin diabetes"], "correct": 1, "exp": "Un aumento moderado y temporal de glucosa tras comer es fisiologicamente normal en cualquier persona; la diabetes se caracteriza por una elevacion excesiva, sostenida o una incapacidad de retornar a niveles normales, no por la sola presencia de cualquier aumento postprandial."}, {"skill": "EVAL", "q": "Una investigacion afirmo que 'el higado almacena glucosa de forma indefinida, sin ningun limite en su capacidad, pudiendo suministrar glucosa durante cualquier periodo de ayuno sin importar su duracion'. Que critica es mas pertinente?", "options": ["La afirmacion es correcta porque el higado tiene una capacidad ilimitada de almacenar y liberar glucosa, sin ningun limite temporal", "Las reservas de glucogeno hepatico son limitadas y se agotan tras un periodo prolongado de ayuno (generalmente entre 12 y 24 horas), tras lo cual el cuerpo recurre a otros mecanismos (como la gluconeogenesis a partir de otras moleculas); afirmar una capacidad 'ilimitada... sin importar la duracion' del ayuno ignora este limite fisiologico bien documentado de las reservas hepaticas", "Las reservas de glucogeno hepatico se agotan en cuestion de segundos, sin ningun periodo de suministro sostenido", "El higado no tiene ninguna capacidad de almacenar o liberar glucosa durante ningun periodo de ayuno", "El ayuno prolongado nunca agota las reservas de glucosa almacenadas en el higado, sin importar su duracion"], "correct": 1, "exp": "Las reservas de glucogeno hepatico son limitadas y se agotan tras cierto periodo de ayuno prolongado, tras lo cual el cuerpo recurre a mecanismos alternativos (como la gluconeogenesis); afirmar una capacidad ilimitada de suministro ignora este limite fisiologico bien documentado."}, {"skill": "EVAL", "q": "Un estudio concluyo que 'la unica forma de que las celulas capten glucosa de la sangre es mediante la accion de la insulina, sin ninguna excepcion posible', ignorando mecanismos de captacion independientes de esta hormona. Que critica es mas pertinente?", "options": ["La conclusion es correcta porque la insulina es, sin excepcion, el unico mecanismo posible mediante el cual las celulas pueden captar glucosa de la sangre", "Ciertos tejidos (como el cerebro) y ciertas condiciones (como el ejercicio muscular intenso) permiten la captacion de glucosa mediante mecanismos al menos parcialmente independientes de la insulina; afirmar que es 'la unica forma... sin ninguna excepcion' ignora esta diversidad de mecanismos de captacion documentados en distintos tejidos y contextos fisiologicos", "Ningun tejido del cuerpo puede captar glucosa de la sangre bajo ninguna circunstancia, ni siquiera con insulina presente", "El ejercicio muscular nunca influye en la capacidad de las celulas de captar glucosa de la sangre", "El cerebro requiere de altas concentraciones de insulina para poder captar cualquier cantidad de glucosa"], "correct": 1, "exp": "Ciertos tejidos y contextos fisiologicos (como el cerebro en condiciones normales, o el musculo durante ejercicio intenso) permiten la captacion de glucosa mediante mecanismos al menos parcialmente independientes de la insulina; afirmar que es la unica via posible ignora esta diversidad documentada."}, {"skill": "COM", "q": "Un estudiante debe explicar por que la capacidad limitada de las reservas de glucogeno hepatico durante un ayuno prolongado hace necesario recurrir a otros mecanismos para mantener la glucemia, mas alla de la simple liberacion de glucosa almacenada. Cual es la explicacion mas precisa?", "options": ["Dado que las reservas de glucogeno hepatico son limitadas y se agotan tras cierto tiempo de ayuno, el cuerpo debe recurrir a mecanismos adicionales (como la sintesis de nueva glucosa a partir de otras moleculas, un proceso llamado gluconeogenesis) para mantener niveles adecuados de glucosa en sangre durante periodos de ayuno mas prolongados que la capacidad de esas reservas", "Las reservas de glucogeno hepatico son ilimitadas, por lo que nunca es necesario recurrir a ningun otro mecanismo durante el ayuno", "La gluconeogenesis no tiene ninguna relacion con el mantenimiento de la glucemia durante el ayuno prolongado", "El cuerpo detiene por completo cualquier necesidad de glucosa una vez agotadas las reservas de glucogeno hepatico", "El ayuno prolongado nunca agota las reservas de glucogeno hepatico del cuerpo, sin importar su duracion"], "correct": 0, "exp": "La explicacion debe conectar la limitacion de las reservas hepaticas de glucogeno con la necesidad de mecanismos complementarios (como la gluconeogenesis) para sostener la glucemia durante periodos de ayuno que excedan la capacidad de esas reservas iniciales, ilustrando la existencia de multiples estrategias metabolicas coordinadas."}];
+
+let currentQuiz = [];
+let currentIndex = 0;
+let answered = false;
+let userAnswers = [];
+let scoreBySkill = {};
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function buildQuiz(){
+  let selected = [];
+  SKILL_ORDER.forEach(skillKey=>{
+    const pool = QUESTION_BANK.filter(q=>q.skill===skillKey);
+    const picked = shuffle(pool).slice(0,PICK_PER_SKILL);
+    selected = selected.concat(picked);
+  });
+  selected = shuffle(selected);
+  return selected.map(orig=>{
+    const idxArr = [0,1,2,3,4];
+    const shuffledIdx = shuffle(idxArr);
+    const newOptions = shuffledIdx.map(i=>orig.options[i]);
+    const newCorrect = shuffledIdx.indexOf(orig.correct);
+    return { skill: orig.skill, question: orig.q, options: newOptions, correct: newCorrect, exp: orig.exp };
+  });
+}
+
+function startQuiz(){
+  currentQuiz = buildQuiz();
+  currentIndex = 0;
+  answered = false;
+  userAnswers = [];
+  scoreBySkill = {};
+  SKILL_ORDER.forEach(s=>scoreBySkill[s]={correct:0,total:0});
+  document.getElementById('start-screen').classList.add('hidden');
+  document.getElementById('dashboard-screen').classList.add('hidden');
+  document.getElementById('review-screen').classList.add('hidden');
+  document.getElementById('quiz-screen').classList.remove('hidden');
+  renderQuestion();
+}
+
+function renderQuestion(){
+  answered = false;
+  const q = currentQuiz[currentIndex];
+  const total = currentQuiz.length;
+  document.getElementById('progress-fill').style.width = ((currentIndex)/total*100)+'%';
+  document.getElementById('progress-label').textContent = (currentIndex+1)+' / '+total;
+  document.getElementById('skill-tag').textContent = SKILL_NAMES[q.skill];
+  document.getElementById('qnum').textContent = 'Pregunta '+(currentIndex+1);
+  document.getElementById('question-text').textContent = q.question;
+
+  const optsDiv = document.getElementById('options');
+  optsDiv.innerHTML = '';
+  q.options.forEach((opt, i)=>{
+    const btn = document.createElement('button');
+    btn.className = 'option';
+    btn.innerHTML = '<span class="letter">'+LETTERS[i]+')</span><span>'+opt+'</span>';
+    btn.onclick = ()=>selectOption(i);
+    optsDiv.appendChild(btn);
+  });
+
+  document.getElementById('feedback').classList.add('hidden');
+  document.getElementById('next-btn').classList.add('hidden');
+}
+
+function selectOption(i){
+  if(answered) return;
+  answered = true;
+  const q = currentQuiz[currentIndex];
+  const correct = q.correct;
+  const options = document.querySelectorAll('#options .option');
+  options.forEach((opt, idx)=>{
+    opt.classList.add('locked');
+    if(idx===correct) opt.classList.add('correct');
+    else if(idx===i) opt.classList.add('incorrect');
+    else opt.classList.add('dim');
+  });
+
+  const isCorrect = (i===correct);
+  scoreBySkill[q.skill].total++;
+  if(isCorrect) scoreBySkill[q.skill].correct++;
+
+  userAnswers.push({ skill:q.skill, question:q.question, options:q.options, correctIdx:correct, chosenIdx:i, exp:q.exp, isCorrect });
+
+  const fb = document.getElementById('feedback');
+  fb.classList.remove('hidden');
+  fb.classList.toggle('wrong', !isCorrect);
+  fb.innerHTML = '<span class="pista-label">'+(isCorrect ? '✓ Correcto — Pista' : '✕ Incorrecto — Pista')+'</span>'+
+    '<strong>Respuesta correcta: '+LETTERS[correct]+') '+q.options[correct]+'</strong><br><br>'+q.exp;
+
+  document.getElementById('next-btn').classList.remove('hidden');
+}
+
+function nextQuestion(){
+  currentIndex++;
+  if(currentIndex >= currentQuiz.length){
+    showDashboard();
+  } else {
+    renderQuestion();
+  }
+}
+
+function showDashboard(){
+  document.getElementById('quiz-screen').classList.add('hidden');
+  document.getElementById('dashboard-screen').classList.remove('hidden');
+
+  const totalCorrect = userAnswers.filter(a=>a.isCorrect).length;
+  const totalQ = userAnswers.length;
+  document.getElementById('score-total').innerHTML = totalCorrect+'<span>/'+totalQ+'</span>';
+  const pct = Math.round((totalCorrect/totalQ)*100);
+  document.getElementById('score-caption').textContent = pct+'% de logro general';
+
+  const barsDiv = document.getElementById('skill-bars');
+  barsDiv.innerHTML = '';
+  const weakSkills = [];
+  const strongSkills = [];
+
+  SKILL_ORDER.forEach(skillKey=>{
+    const s = scoreBySkill[skillKey];
+    const skillPct = s.total>0 ? Math.round((s.correct/s.total)*100) : 0;
+    let color = 'var(--accent-coral)';
+    if(skillPct>=75) color='var(--accent-sage)';
+    else if(skillPct>=50) color='var(--accent-amber)';
+
+    const row = document.createElement('div');
+    row.className='skill-bar-row';
+    row.innerHTML = '<div class="skill-bar-head"><span class="name">'+SKILL_NAMES[skillKey]+'</span><span class="frac">'+s.correct+'/'+s.total+'</span></div>'+
+      '<div class="skill-bar-track"><div class="skill-bar-fill" style="width:'+skillPct+'%;background:'+color+';"></div></div>';
+    barsDiv.appendChild(row);
+
+    if(skillPct<75) weakSkills.push({name:SKILL_NAMES[skillKey], pct:skillPct});
+    else strongSkills.push(SKILL_NAMES[skillKey]);
+  });
+
+  const improveBox = document.getElementById('improve-box');
+  const improveList = document.getElementById('improve-list');
+  improveList.innerHTML='';
+  if(weakSkills.length>0){
+    improveBox.classList.remove('hidden');
+    weakSkills.sort((a,b)=>a.pct-b.pct).forEach(w=>{
+      const li = document.createElement('li');
+      li.innerHTML = '<strong>'+w.name+'</strong> ('+w.pct+'%) — refuerza con más ejercicios de este tipo de habilidad, revisando las pistas de las preguntas falladas.';
+      improveList.appendChild(li);
+    });
+  } else {
+    improveBox.classList.add('hidden');
+  }
+
+  const strongBox = document.getElementById('strong-box');
+  const strongText = document.getElementById('strong-text');
+  if(strongSkills.length>0){
+    strongBox.classList.remove('hidden');
+    strongText.textContent = strongSkills.join(', ') + '. Buen dominio, mantén la práctica con nuevos intentos.';
+  } else {
+    strongBox.classList.add('hidden');
+  }
+}
+
+function restartQuiz(){ startQuiz(); }
+
+function reviewAnswers(){
+  document.getElementById('dashboard-screen').classList.add('hidden');
+  const rev = document.getElementById('review-screen');
+  rev.classList.remove('hidden');
+  let html = '<p class="eyebrow">Revisión de respuestas</p>';
+  userAnswers.forEach((a, i)=>{
+    html += '<div style="margin-bottom:22px;padding-bottom:18px;border-bottom:1px solid var(--line);">'+
+      '<span class="skill-tag">'+SKILL_NAMES[a.skill]+'</span>'+
+      '<p class="question-text" style="font-size:16px;">'+(i+1)+'. '+a.question+'</p>'+
+      '<p style="font-size:14px;color:'+(a.isCorrect?'var(--accent-sage)':'var(--accent-coral)')+';margin:0 0 6px;">'+
+        (a.isCorrect ? '✓ Respondiste correctamente' : '✕ Tu respuesta: '+LETTERS[a.chosenIdx]+') '+a.options[a.chosenIdx])+
+      '</p>'+
+      '<p style="font-size:14px;color:var(--text-muted);margin:0 0 8px;">Correcta: '+LETTERS[a.correctIdx]+') '+a.options[a.correctIdx]+'</p>'+
+      '<div class="feedback" style="margin-top:6px;"><span class="pista-label">Pista</span>'+a.exp+'</div>'+
+    '</div>';
+  });
+  html += '<div class="actions"><button class="btn" onclick="restartQuiz(); document.getElementById(\'review-screen\').classList.add(\'hidden\');">Repetir con nuevas preguntas</button></div>';
+  rev.innerHTML = html;
+}
+</script>
+</body>
+</html>

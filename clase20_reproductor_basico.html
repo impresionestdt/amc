@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PAES Biología · Clase 20 · Sistema Reproductor (Nivel Básico)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Source+Sans+3:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-deep:#0f2027;
+    --bg-panel:#15303a;
+    --bg-panel-2:#1b3a45;
+    --accent-amber:#e8a33d;
+    --accent-sage:#6fa88a;
+    --accent-coral:#e4572e;
+    --text-light:#f3ede1;
+    --text-muted:#a9c0c2;
+    --line:#2a4750;
+    --radius:14px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:radial-gradient(circle at 15% -10%, #1c4552 0%, var(--bg-deep) 55%) fixed;
+    color:var(--text-light);
+    font-family:'Source Sans 3', system-ui, sans-serif;
+    min-height:100vh;
+    padding:32px 16px 64px;
+  }
+  .wrap{max-width:820px;margin:0 auto;}
+  .eyebrow{font-family:'JetBrains Mono', monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent-amber);margin:0 0 8px;}
+  h1{font-family:'Fraunces', serif;font-weight:600;font-size:clamp(26px,4vw,38px);line-height:1.1;margin:0 0 6px;color:var(--text-light);}
+  .sub{color:var(--text-muted);font-size:15px;margin:0 0 28px;max-width:60ch;}
+  .card{background:linear-gradient(180deg, var(--bg-panel) 0%, var(--bg-panel-2) 100%);border:1px solid var(--line);border-radius:var(--radius);padding:28px;box-shadow:0 20px 40px -20px rgba(0,0,0,.5);}
+  #start-screen ul{color:var(--text-muted);font-size:14.5px;line-height:1.7;padding-left:20px;margin:18px 0 26px;}
+  #start-screen li{margin-bottom:4px;}
+  .btn{font-family:'Source Sans 3', sans-serif;font-weight:700;font-size:15px;border:none;border-radius:999px;padding:14px 30px;cursor:pointer;background:var(--accent-amber);color:#20140a;transition:transform .15s ease, box-shadow .15s ease;box-shadow:0 8px 20px -8px rgba(0,0,0,.35);}
+  .btn:hover{transform:translateY(-1px);}
+  .btn:active{transform:translateY(0);}
+  .btn.ghost{background:transparent;color:var(--text-muted);border:1.5px solid var(--line);box-shadow:none;}
+  .progress-row{display:flex;align-items:center;gap:14px;margin-bottom:18px;}
+  .progress-track{flex:1;height:6px;border-radius:99px;background:var(--line);overflow:hidden;}
+  .progress-fill{height:100%;background:linear-gradient(90deg,var(--accent-sage),var(--accent-amber));border-radius:99px;transition:width .3s ease;}
+  .progress-label{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--text-muted);white-space:nowrap;}
+  .skill-tag{display:inline-block;font-family:'JetBrains Mono', monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--bg-deep);background:var(--accent-sage);padding:5px 11px;border-radius:999px;margin-bottom:14px;}
+  .qnum{color:var(--text-muted);font-size:13px;font-family:'JetBrains Mono',monospace;margin-bottom:6px;}
+  .question-text{font-family:'Fraunces', serif;font-weight:500;font-size:19px;line-height:1.45;margin:0 0 22px;}
+  .options{display:flex;flex-direction:column;gap:10px;}
+  .option{display:flex;align-items:flex-start;gap:12px;text-align:left;background:rgba(255,255,255,.03);border:1.5px solid var(--line);border-radius:10px;padding:13px 15px;cursor:pointer;color:var(--text-light);font-size:14.5px;line-height:1.4;transition:border-color .15s, background .15s;}
+  .option:hover:not(.locked){border-color:var(--accent-amber);}
+  .option .letter{font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--accent-amber);flex-shrink:0;}
+  .option.correct{border-color:var(--accent-sage);background:rgba(111,168,138,.14);}
+  .option.incorrect{border-color:var(--accent-coral);background:rgba(228,87,46,.14);}
+  .option.locked{cursor:default;}
+  .option.dim{opacity:.45;}
+  .feedback{margin-top:18px;padding:16px 18px;border-radius:10px;background:rgba(255,255,255,.04);border-left:4px solid var(--accent-sage);font-size:14px;line-height:1.6;color:var(--text-muted);}
+  .feedback.wrong{border-left-color:var(--accent-coral);}
+  .feedback strong{color:var(--text-light);}
+  .feedback .pista-label{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent-amber);display:block;margin-bottom:6px;}
+  .nav-row{display:flex;justify-content:flex-end;margin-top:22px;}
+  .score-hero{text-align:center;padding:10px 0 26px;}
+  .score-big{font-family:'Fraunces',serif;font-weight:700;font-size:56px;color:var(--accent-amber);line-height:1;}
+  .score-big span{font-size:24px;color:var(--text-muted);font-weight:500;}
+  .score-caption{color:var(--text-muted);font-size:14px;margin-top:6px;}
+  .skill-bars{display:flex;flex-direction:column;gap:16px;margin:22px 0 8px;}
+  .skill-bar-head{display:flex;justify-content:space-between;font-size:13.5px;margin-bottom:6px;}
+  .skill-bar-head .name{font-weight:600;}
+  .skill-bar-head .frac{font-family:'JetBrains Mono',monospace;color:var(--text-muted);}
+  .skill-bar-track{height:10px;border-radius:99px;background:var(--line);overflow:hidden;}
+  .skill-bar-fill{height:100%;border-radius:99px;}
+  .improve-box{margin-top:26px;background:rgba(228,87,46,.08);border:1px solid rgba(228,87,46,.35);border-radius:10px;padding:18px 20px;}
+  .improve-box h3{font-family:'Fraunces',serif;font-size:16px;margin:0 0 10px;color:var(--accent-coral);}
+  .improve-box ul{margin:0;padding-left:20px;color:var(--text-light);font-size:14px;line-height:1.75;}
+  .strong-box{margin-top:14px;background:rgba(111,168,138,.08);border:1px solid rgba(111,168,138,.35);border-radius:10px;padding:18px 20px;}
+  .strong-box h3{font-family:'Fraunces',serif;font-size:16px;margin:0 0 10px;color:var(--accent-sage);}
+  .strong-box p{margin:0;color:var(--text-light);font-size:14px;line-height:1.6;}
+  .actions{display:flex;gap:12px;margin-top:28px;flex-wrap:wrap;}
+  .hidden{display:none !important;}
+  footer{text-align:center;color:var(--text-muted);font-size:12px;margin-top:26px;opacity:.6;}
+</style>
+</head>
+<body> <div style="float: left; margin-right: 25px; margin-bottom: 25px;"><img src="Logo_AMC.png" alt="Logo" style="max-width: 150px;"></div>
+<div class="wrap">
+  <p class="eyebrow">PAES · Ciencias — Módulo Biología Común · Nivel Básico</p>
+  <h1>Sistema Reproductor y Gametogénesis</h1>
+  <p class="sub">Eje 3: Procesos Químicos de la Vida e Integración — Sub-eje: Regulación y Función Endocrina — Clase 20: Sistema Reproductor</p>
+
+  <div class="card" id="start-screen">
+    <p class="eyebrow" style="margin-bottom:14px;">Antes de comenzar</p>
+    <p style="color:var(--text-muted);font-size:14.5px;line-height:1.6;">Este quiz evalúa nivel <strong style='color:var(--text-light);'>básico</strong>, con 20 preguntas (4 por cada habilidad PAES), extraídas al azar de un banco de 40. Cada intento genera una versión distinta.</p>
+    <ul>
+      <li>Observar y plantear preguntas</li>
+      <li>Planificar y conducir una investigación</li>
+      <li>Procesar y analizar la evidencia</li>
+      <li>Evaluar</li>
+      <li>Comunicar</li>
+    </ul>
+    <button class="btn" onclick="startQuiz()">Comenzar quiz</button>
+  </div>
+
+  <div class="card hidden" id="quiz-screen">
+    <div class="progress-row">
+      <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+      <div class="progress-label" id="progress-label">1 / 20</div>
+    </div>
+    <span class="skill-tag" id="skill-tag"></span>
+    <p class="qnum" id="qnum"></p>
+    <p class="question-text" id="question-text"></p>
+    <div class="options" id="options"></div>
+    <div class="feedback hidden" id="feedback"></div>
+    <div class="nav-row">
+      <button class="btn hidden" id="next-btn" onclick="nextQuestion()">Siguiente →</button>
+    </div>
+  </div>
+
+  <div class="card hidden" id="dashboard-screen">
+    <p class="eyebrow">Resultados</p>
+    <div class="score-hero">
+      <div class="score-big" id="score-total">0<span>/20</span></div>
+      <p class="score-caption" id="score-caption">Puntaje global</p>
+    </div>
+    <div class="skill-bars" id="skill-bars"></div>
+    <div class="improve-box hidden" id="improve-box">
+      <h3>Puntos a mejorar</h3>
+      <ul id="improve-list"></ul>
+    </div>
+    <div class="strong-box hidden" id="strong-box">
+      <h3>Habilidades consolidadas</h3>
+      <p id="strong-text"></p>
+    </div>
+    <div class="actions">
+      <button class="btn" onclick="restartQuiz()">Repetir con nuevas preguntas</button>
+      <button class="btn ghost" onclick="reviewAnswers()">Revisar mis respuestas</button>
+    </div>
+  </div>
+
+  <div class="card hidden" id="review-screen"></div>
+
+  <footer>Banco de 40 preguntas · nivel básico · Clase 20 de 30 · basado en el temario DEMRE PAES Ciencias — Biología Común</footer>
+</div>
+
+<script>
+const SKILL_NAMES = {"OBS": "Observar y plantear preguntas", "PLAN": "Planificar y conducir una investigación", "PROC": "Procesar y analizar la evidencia", "EVAL": "Evaluar", "COM": "Comunicar"};
+const SKILL_ORDER = ["OBS", "PLAN", "PROC", "EVAL", "COM"];
+const LETTERS = ["A","B","C","D","E"];
+const PICK_PER_SKILL = 4;
+
+const QUESTION_BANK = [{"skill": "OBS", "q": "Un estudiante observa al microscopio celulas de un testiculo y encuentra estructuras con la mitad del numero de cromosomas que las celulas somaticas del mismo organismo, ademas de celulas con el numero completo. ¿Pregunta más pertinente?", "options": ["¿Las celulas con la mitad del numero de cromosomas corresponden a gametos (espermatozoides) producidos mediante un proceso de division celular distinto a la mitosis?", "¿Todas las celulas del testiculo tienen siempre el mismo numero de cromosomas que las celulas somaticas?", "¿Las celulas con el numero completo de cromosomas son gametos maduros?", "¿El testiculo no tiene ninguna relacion con la produccion de celulas reproductivas?", "¿La reduccion del numero de cromosomas ocurre durante la mitosis normal de cualquier celula?"], "correct": 0, "exp": "Las celulas con la mitad del numero de cromosomas (haploides) corresponden a gametos, producidos mediante meiosis, un proceso de division celular distinto a la mitosis que reduce el numero cromosomico a la mitad para permitir que, al fusionarse dos gametos, se restaure el numero completo en la descendencia."}, {"skill": "OBS", "q": "Se observa que, durante el desarrollo de un ovulo dentro del ovario, solo una de las cuatro celulas potenciales resultantes de la meiosis se desarrolla como un ovulo funcional grande, mientras las otras tres quedan como pequenos cuerpos polares que degeneran. ¿Pregunta más precisa?", "options": ["¿La division desigual del citoplasma durante la meiosis femenina concentra la mayor parte de los recursos citoplasmaticos en un unico ovulo funcional, en lugar de distribuirlos equitativamente?", "¿Los cuatro productos de la meiosis femenina se desarrollan siempre como ovulos funcionales igualmente viables?", "¿Los cuerpos polares contienen mas citoplasma que el ovulo funcional?", "¿La meiosis femenina no tiene ninguna relacion con la formacion de cuerpos polares?", "¿El ovulo funcional y los cuerpos polares tienen distinto numero de cromosomas entre si?"], "correct": 0, "exp": "La division citoplasmatica desigual durante la ovogenesis concentra la mayor parte de los recursos (nutrientes, organelos) en un unico ovulo funcional grande, mientras los cuerpos polares (con el mismo numero de cromosomas pero minimo citoplasma) generalmente degeneran sin funcion reproductiva."}, {"skill": "OBS", "q": "Un investigador nota que la produccion de espermatozoides en el hombre es un proceso continuo que ocurre a lo largo de toda la vida adulta, en contraste con la produccion de ovulos en la mujer, que se limita a la liberacion de un unico ovulo (generalmente) por ciclo menstrual. ¿Pregunta más precisa?", "options": ["¿Existe una diferencia fundamental en la estrategia reproductiva entre hombres y mujeres, relacionada con la cantidad y frecuencia de produccion de gametos a lo largo de la vida?", "¿La produccion de espermatozoides y de ovulos ocurre exactamente con la misma frecuencia y cantidad en ambos sexos?", "¿La produccion de ovulos es un proceso continuo a lo largo de toda la vida adulta de la mujer?", "¿Los hombres producen solo un espermatozoide por ciclo, de la misma manera que las mujeres producen un ovulo?", "¿La gametogenesis no tiene ninguna relacion con las diferencias reproductivas entre hombres y mujeres?"], "correct": 0, "exp": "La diferencia marcada entre la produccion continua y masiva de espermatozoides y la liberacion ciclica de un unico ovulo por vez plantea la pregunta sobre las distintas estrategias reproductivas desarrolladas evolutivamente entre ambos sexos en la especie humana."}, {"skill": "OBS", "q": "Se observa que, tras la fecundacion (union de un espermatozoide con un ovulo), la celula resultante (cigoto) posee el numero completo de cromosomas caracteristico de la especie, con la mitad proveniente del padre y la mitad de la madre. ¿Pregunta más precisa?", "options": ["¿La fecundacion restaura el numero cromosomico completo al combinar los gametos haploides de ambos progenitores, cada uno aportando la mitad del material genetico?", "¿El cigoto posee el doble del numero cromosomico caracteristico de la especie, en lugar del numero completo normal?", "¿La fecundacion no tiene ninguna relacion con el numero de cromosomas del cigoto resultante?", "¿Solo el espermatozoide aporta material genetico al cigoto, sin ninguna contribucion del ovulo?", "¿El numero de cromosomas del cigoto es independiente del numero de cromosomas de los gametos que le dieron origen?"], "correct": 0, "exp": "La fecundacion combina dos gametos haploides (cada uno con la mitad del numero cromosomico de la especie), restaurando el numero diploide completo caracteristico en el cigoto resultante, con material genetico proveniente de ambos progenitores en igual proporcion."}, {"skill": "OBS", "q": "Un estudiante nota que los testiculos se encuentran ubicados fuera de la cavidad abdominal, dentro del escroto, a diferencia de la mayoria de los demas organos internos del cuerpo. ¿Pregunta más precisa?", "options": ["¿Esta ubicacion externa de los testiculos se relaciona con la necesidad de mantener una temperatura ligeramente menor a la corporal para la produccion optima de espermatozoides?", "¿La ubicacion de los testiculos no tiene ninguna relacion con la temperatura corporal?", "¿Los testiculos requieren una temperatura mas alta que la corporal para producir espermatozoides de forma optima?", "¿Todos los organos del cuerpo se benefician de estar ubicados fuera de la cavidad abdominal?", "¿La produccion de espermatozoides no se ve afectada por ningun cambio de temperatura?"], "correct": 0, "exp": "La ubicacion externa de los testiculos, ligeramente mas fria que la temperatura corporal interna, es consistente con el requerimiento de una temperatura optima ligeramente menor para el proceso de espermatogenesis, que se ve afectado negativamente por temperaturas mas altas."}, {"skill": "OBS", "q": "Se observa que el revestimiento interno del utero (endometrio) crece y se engrosa progresivamente durante cada ciclo menstrual, y que si no ocurre un embarazo, este tejido se desprende y es eliminado (menstruacion), reiniciando el ciclo. ¿Pregunta más precisa?", "options": ["¿Este proceso ciclico de crecimiento y desprendimiento del endometrio prepara al utero para un posible embarazo en cada ciclo, reiniciandose si la implantacion no ocurre?", "¿El endometrio se desprende exclusivamente si ocurre un embarazo exitoso?", "¿El crecimiento del endometrio no tiene ninguna relacion con la posibilidad de un embarazo?", "¿El ciclo menstrual ocurre una unica vez en la vida reproductiva de una mujer?", "¿El desprendimiento del endometrio es un proceso que ocurre de forma completamente aleatoria, sin ningun patron ciclico?"], "correct": 0, "exp": "El ciclo de crecimiento y desprendimiento del endometrio prepara ciclicamente al utero para recibir un posible embrion; si la implantacion no ocurre, el revestimiento se elimina mediante la menstruacion, reiniciando el proceso en el siguiente ciclo."}, {"skill": "OBS", "q": "Un investigador nota que, tras la ovulacion (liberacion del ovulo desde el ovario), este debe ser captado por las trompas de Falopio y transportado hacia el utero, y que la fecundacion, si ocurre, generalmente sucede dentro de las trompas y no directamente en el utero. ¿Pregunta más precisa?", "options": ["¿Las trompas de Falopio cumplen una funcion especifica como sitio de encuentro entre el ovulo y el espermatozoide, ademas de servir como via de transporte hacia el utero?", "¿La fecundacion ocurre siempre dentro del utero, y nunca en las trompas de Falopio?", "¿Las trompas de Falopio no tienen ninguna relacion con el proceso de fecundacion?", "¿El ovulo se dirige directamente al utero sin pasar por las trompas de Falopio en ningun momento?", "¿El espermatozoide nunca puede llegar hasta las trompas de Falopio para encontrarse con el ovulo?"], "correct": 0, "exp": "Las trompas de Falopio cumplen una doble funcion: son el sitio habitual donde ocurre la fecundacion (encuentro entre ovulo y espermatozoide) y tambien la via de transporte del ovulo (o del embrion temprano, si hay fecundacion) hacia el utero para su eventual implantacion."}, {"skill": "OBS", "q": "Se observa que, en la especie humana, cada gameto (ovulo o espermatozoide) contiene exactamente 23 cromosomas, mientras las celulas somaticas del cuerpo (como las de la piel) contienen 46 cromosomas. ¿Pregunta más precisa?", "options": ["¿El numero de cromosomas en los gametos corresponde exactamente a la mitad del numero presente en las celulas somaticas, consistente con su naturaleza haploide?", "¿Los gametos contienen el doble de cromosomas que las celulas somaticas del cuerpo?", "¿El numero de cromosomas es identico entre gametos y celulas somaticas, sin ninguna diferencia?", "¿Las celulas somaticas contienen la mitad del numero de cromosomas presente en los gametos?", "¿El numero de cromosomas de los gametos no tiene ninguna relacion con el numero presente en las celulas somaticas?"], "correct": 0, "exp": "El numero de cromosomas en los gametos (23, haploide) corresponde exactamente a la mitad del numero presente en las celulas somaticas (46, diploide), un resultado directo del proceso de meiosis que reduce el numero cromosomico a la mitad durante la formacion de celulas reproductivas."}, {"skill": "PLAN", "q": "Para comprobar que la temperatura ligeramente menor del escroto es necesaria para una produccion optima de espermatozoides, ¿cuál es el diseño experimental más adecuado?", "options": ["Comparar la cantidad y calidad de espermatozoides producidos bajo condiciones de temperatura testicular normal frente a condiciones de temperatura testicular elevada experimentalmente, manteniendo iguales las demas condiciones", "Medir la produccion de espermatozoides solo bajo temperatura normal, sin ningun grupo de comparacion con temperatura elevada", "No es necesario ningun grupo de comparacion con temperatura elevada para esta pregunta", "Medir solo la temperatura corporal general, sin evaluar directamente la produccion de espermatozoides", "Usar individuos completamente distintos para cada condicion de temperatura evaluada, sin ningun control sobre otras diferencias"], "correct": 0, "exp": "Comparar la produccion de espermatozoides bajo temperatura testicular normal y elevada, manteniendo iguales las demas condiciones, permite establecer de forma experimental el efecto especifico de la temperatura sobre la espermatogenesis."}, {"skill": "PLAN", "q": "Un investigador desea comprobar que el endometrio crece progresivamente a lo largo del ciclo menstrual antes de desprenderse en ausencia de embarazo. ¿Diseño experimental adecuado?", "options": ["Medir el grosor del endometrio en distintos momentos a lo largo de un ciclo menstrual completo, comparando los valores obtenidos desde el inicio hasta el final del ciclo", "Medir el grosor del endometrio solo en un momento fijo del ciclo, sin ningun seguimiento temporal", "No es necesario ningun seguimiento temporal para responder esta pregunta", "Medir solo la duracion total del ciclo menstrual, sin evaluar directamente el grosor del endometrio", "Comparar personas completamente distintas para cada momento evaluado, sin ningun control sobre otras diferencias"], "correct": 0, "exp": "Un seguimiento temporal del grosor del endometrio a lo largo de un ciclo menstrual completo permite establecer de forma experimental el patron de crecimiento progresivo y posterior desprendimiento caracteristico de este proceso ciclico."}, {"skill": "PLAN", "q": "Para determinar si la fecundacion ocurre habitualmente en las trompas de Falopio y no directamente en el utero, ¿cuál es el diseño experimental más adecuado?", "options": ["Recolectar muestras de distintas ubicaciones del tracto reproductivo femenino (trompas y utero) en distintos momentos tras la ovulacion y el coito, evaluando en cual ubicacion se detecta con mayor frecuencia el embrion en sus primeras etapas de desarrollo", "Recolectar muestras solo del utero, sin ninguna muestra de las trompas de Falopio para comparar", "No es necesario comparar distintas ubicaciones del tracto reproductivo para esta pregunta", "Medir solo el momento de la ovulacion, sin evaluar directamente la ubicacion del embrion temprano", "Recolectar muestras en un unico momento fijo, sin ningun seguimiento temporal tras la ovulacion"], "correct": 0, "exp": "Comparar la presencia del embrion temprano en distintas ubicaciones del tracto reproductivo en distintos momentos permite establecer de forma experimental el sitio habitual donde ocurre la fecundacion."}, {"skill": "PLAN", "q": "Se desea comprobar que los gametos humanos contienen exactamente la mitad del numero de cromosomas presente en las celulas somaticas. ¿Diseño experimental más adecuado?", "options": ["Contar el numero de cromosomas mediante analisis citogenetico tanto en celulas somaticas (como celulas de la piel) como en gametos (ovulos o espermatozoides) del mismo individuo, comparando los valores obtenidos", "Contar el numero de cromosomas solo en celulas somaticas, sin ningun analisis de los gametos para comparar", "No es necesario comparar el numero de cromosomas entre distintos tipos celulares para esta pregunta", "Contar los cromosomas en celulas de distintos individuos para cada tipo celular evaluado, sin ningun control sobre otras diferencias", "Medir solo el tamano celular, sin evaluar directamente el numero de cromosomas presentes"], "correct": 0, "exp": "Comparar el numero de cromosomas mediante analisis citogenetico entre celulas somaticas y gametos del mismo individuo permite establecer de forma experimental la relacion exacta entre el numero diploide y haploide caracteristico de cada tipo celular."}, {"skill": "PROC", "q": "Se midio el grosor del endometrio a lo largo de un ciclo menstrual completo: aumento progresivo desde el inicio del ciclo hasta poco antes de la menstruacion, seguido de un desprendimiento brusco. ¿Qué conclusión es más adecuada?", "options": ["El endometrio crece progresivamente en preparacion para un posible embarazo, desprendiendose ciclicamente si la implantacion no ocurre", "El endometrio se mantiene siempre con el mismo grosor durante todo el ciclo menstrual, sin ningun cambio", "El grosor del endometrio disminuye progresivamente a lo largo del ciclo menstrual, en lugar de aumentar", "El desprendimiento del endometrio no tiene ninguna relacion con la preparacion para un posible embarazo", "El ciclo menstrual no involucra ningun cambio en el grosor del endometrio a lo largo del tiempo"], "correct": 0, "exp": "El patron de crecimiento progresivo seguido de desprendimiento ciclico confirma experimentalmente la funcion preparatoria del endometrio para un posible embarazo en cada ciclo, reiniciandose el proceso si la implantacion no ocurre."}, {"skill": "PROC", "q": "Se comparo la deteccion del embrion temprano en distintas ubicaciones del tracto reproductivo femenino: mayor frecuencia de deteccion en las trompas de Falopio en los primeros dias tras la ovulacion, y en el utero en dias posteriores. ¿Qué conclusión es más adecuada?", "options": ["La fecundacion ocurre habitualmente en las trompas de Falopio, y el embrion resultante se transporta posteriormente hacia el utero", "La fecundacion ocurre siempre directamente en el utero, sin ninguna participacion de las trompas de Falopio", "El embrion se encuentra exactamente en la misma ubicacion en cualquier momento tras la ovulacion, sin ningun cambio temporal", "Las trompas de Falopio no tienen ninguna relacion con la ubicacion del embrion en sus primeras etapas", "El utero es la unica ubicacion posible donde puede detectarse un embrion en cualquier etapa de desarrollo"], "correct": 0, "exp": "El patron temporal observado (mayor deteccion en trompas primero, luego en utero) confirma experimentalmente que la fecundacion ocurre habitualmente en las trompas de Falopio, con el transporte posterior del embrion resultante hacia el utero para su eventual implantacion."}, {"skill": "PROC", "q": "Se conto el numero de cromosomas mediante analisis citogenetico en celulas somaticas (46 cromosomas) y en gametos (23 cromosomas) del mismo individuo. ¿Qué conclusión es más adecuada?", "options": ["Los gametos humanos contienen exactamente la mitad del numero de cromosomas presente en las celulas somaticas del mismo individuo", "Los gametos contienen el doble del numero de cromosomas presente en las celulas somaticas", "El numero de cromosomas es identico entre gametos y celulas somaticas del mismo individuo", "Las celulas somaticas contienen menos cromosomas que los gametos del mismo individuo", "El numero de cromosomas de un gameto no tiene ninguna relacion con el numero presente en las celulas somaticas"], "correct": 0, "exp": "La proporcion exacta de la mitad (23 versus 46 cromosomas) confirma experimentalmente la naturaleza haploide de los gametos en comparacion con la naturaleza diploide de las celulas somaticas del mismo individuo, resultado directo del proceso de meiosis."}, {"skill": "EVAL", "q": "Un estudiante concluyó que 'la meiosis y la mitosis son exactamente el mismo tipo de division celular, sin ninguna diferencia relevante entre ellas'. ¿Qué crítica es más pertinente?", "options": ["La conclusión es correcta porque la meiosis y la mitosis son exactamente el mismo tipo de division celular, sin ninguna diferencia relevante", "La mitosis produce dos celulas hijas identicas con el mismo numero de cromosomas que la celula original, mientras la meiosis produce cuatro celulas con la mitad del numero de cromosomas (gametos); tratar ambos procesos como 'exactamente el mismo, sin ninguna diferencia relevante' ignora esta distincion fundamental en el numero cromosomico resultante y en su funcion biologica", "La mitosis produce gametos con la mitad del numero de cromosomas, de la misma manera que la meiosis", "La meiosis produce dos celulas hijas identicas, de la misma manera que la mitosis", "Ninguno de los dos procesos mencionados tiene relacion con la division celular"], "correct": 1, "exp": "La mitosis (dos celulas hijas identicas, mismo numero cromosomico) y la meiosis (cuatro celulas con la mitad del numero cromosomico, gametos) son procesos fundamentalmente distintos en su resultado y funcion biologica; tratarlos como identicos ignora esta diferencia central."}, {"skill": "EVAL", "q": "Una investigación afirmó que 'la produccion de gametos en hombres y mujeres es identica en cantidad y frecuencia, sin ninguna diferencia entre ambos sexos'. ¿Qué crítica es más pertinente?", "options": ["La afirmación es correcta porque la produccion de gametos es identica en cantidad y frecuencia entre hombres y mujeres, sin ninguna diferencia", "Existe una diferencia marcada entre la produccion continua y masiva de espermatozoides a lo largo de la vida adulta masculina, y la liberacion ciclica de un unico ovulo (generalmente) por ciclo menstrual en la mujer; afirmar que son 'identicas en cantidad y frecuencia, sin ninguna diferencia' ignora esta distincion bien documentada entre ambas estrategias reproductivas", "Las mujeres producen gametos con mayor frecuencia y cantidad que los hombres, de forma opuesta a lo comunmente descrito", "Los hombres producen un unico gameto por ciclo, de la misma manera que las mujeres", "La produccion de gametos no tiene ninguna relacion con las diferencias reproductivas entre hombres y mujeres"], "correct": 1, "exp": "Existe una diferencia bien documentada entre la produccion continua y masiva de espermatozoides y la liberacion ciclica de un unico ovulo por vez; afirmar que ambas son identicas en cantidad y frecuencia ignora esta distincion fundamental entre las estrategias reproductivas de ambos sexos."}, {"skill": "EVAL", "q": "Un estudio concluyó que 'los cuerpos polares generados durante la ovogenesis tienen exactamente la misma funcion reproductiva que el ovulo funcional', ignorando su papel biologico distinto. ¿Qué crítica es más pertinente?", "options": ["La conclusión es correcta porque los cuerpos polares y el ovulo funcional cumplen exactamente la misma funcion reproductiva, sin ninguna diferencia", "Aunque los cuerpos polares contienen el mismo numero de cromosomas que el ovulo funcional (por provenir de la misma division meiotica), generalmente carecen del citoplasma y los recursos necesarios para sostener el desarrollo embrionario, y tipicamente degeneran sin funcion reproductiva; afirmar que tienen 'exactamente la misma funcion reproductiva' que el ovulo funcional ignora esta diferencia critica en viabilidad funcional", "Los cuerpos polares contienen mas citoplasma que el ovulo funcional, siendo mas viables reproductivamente", "El ovulo funcional y los cuerpos polares tienen distinto numero de cromosomas entre si", "Los cuerpos polares no tienen ninguna relacion con el proceso de ovogenesis"], "correct": 1, "exp": "Aunque comparten el mismo numero de cromosomas por origen meiotico comun, los cuerpos polares carecen generalmente de los recursos citoplasmaticos necesarios para el desarrollo embrionario y no cumplen una funcion reproductiva equivalente a la del ovulo funcional, que concentra esos recursos."}, {"skill": "COM", "q": "Un estudiante debe explicar por qué la meiosis, y no la mitosis, es el proceso necesario para producir gametos en la reproduccion sexual. Cual es la explicación más precisa?", "options": ["La meiosis reduce el numero de cromosomas a la mitad en los gametos producidos, de modo que al fusionarse un ovulo y un espermatozoide durante la fecundacion, el cigoto resultante recupera el numero cromosomico completo caracteristico de la especie; si los gametos se produjeran por mitosis (con el numero completo de cromosomas), la fecundacion duplicaria ese numero en cada generacion", "La mitosis tambien reduce el numero de cromosomas a la mitad, de la misma manera que la meiosis", "La meiosis produce celulas con el numero completo de cromosomas, igual que la mitosis", "El numero de cromosomas de los gametos no tiene ninguna relacion con el proceso de fecundacion posterior", "La fecundacion no requiere que los gametos tengan un numero especifico de cromosomas"], "correct": 0, "exp": "La explicación debe conectar la reduccion cromosomica caracteristica de la meiosis con su funcion esencial en la reproduccion sexual: mantener constante el numero de cromosomas de la especie a traves de generaciones, evitando una duplicacion progresiva que ocurriria si los gametos se produjeran mediante mitosis."}, {"skill": "COM", "q": "Al explicar por qué el ciclo menstrual involucra tanto el crecimiento del endometrio como la ovulacion, coordinados en el tiempo, cual es la explicación más precisa?", "options": ["El crecimiento del endometrio prepara al utero para recibir un posible embrion, mientras la ovulacion libera el ovulo que podria ser fecundado; ambos procesos deben estar coordinados temporalmente para que, si ocurre la fecundacion, el embrion resultante llegue al utero cuando el endometrio esta en condiciones optimas para la implantacion", "El crecimiento del endometrio y la ovulacion son procesos completamente independientes, sin ninguna coordinacion temporal necesaria entre ellos", "La ovulacion ocurre siempre despues de que el endometrio se ha desprendido por completo", "El endometrio no tiene ninguna relacion con la preparacion para un posible embarazo", "La coordinacion entre estos dos procesos no aporta ninguna ventaja funcional para la reproduccion"], "correct": 0, "exp": "La explicación debe conectar la funcion complementaria de ambos procesos (liberacion del ovulo y preparacion del sitio de implantacion) con la necesidad de su coordinacion temporal precisa, para que el sistema reproductivo este listo para un posible embarazo en el momento adecuado."}, {"skill": "COM", "q": "Un estudiante debe explicar por qué la ubicacion externa de los testiculos, a pesar de exponerlos a mayor riesgo de lesion en comparacion con organos internos protegidos, representa una adaptacion funcional relevante. Cual es la explicación más precisa?", "options": ["La produccion optima de espermatozoides requiere una temperatura ligeramente menor que la temperatura corporal interna; la ubicacion externa de los testiculos, a pesar del riesgo adicional de exposicion, permite mantener esa temperatura mas fresca necesaria para una espermatogenesis eficiente, representando un compromiso evolutivo entre proteccion fisica y funcion reproductiva optima", "La ubicacion externa de los testiculos no aporta ninguna ventaja funcional relacionada con la temperatura corporal", "Los testiculos producen espermatozoides de forma mas eficiente a temperaturas mas altas que la temperatura corporal interna", "La proteccion fisica de un organo es siempre mas importante que cualquier otra consideracion funcional en su ubicacion anatomica", "La temperatura corporal no tiene ninguna relacion con la eficiencia de la produccion de espermatozoides"], "correct": 0, "exp": "La explicación debe articular el compromiso evolutivo entre dos presiones distintas: proteccion fisica (favorecida por ubicacion interna) y requerimiento termico especifico para la espermatogenesis optima (favorecido por ubicacion externa mas fresca), ilustrando como la anatomia refleja adaptaciones funcionales especificas."}, {"skill": "PLAN", "q": "Un investigador desea determinar si la cantidad de espermatozoides producidos varia segun la edad del hombre. Cual es el diseno experimental adecuado?", "options": ["Medir la cantidad de espermatozoides producidos en hombres de distintos grupos de edad, manteniendo similares las demas condiciones de salud entre los grupos comparados", "Medir la cantidad de espermatozoides solo en un grupo de edad, sin ninguna comparacion con otros grupos", "No es necesario comparar distintos grupos de edad para responder esta pregunta", "Comparar hombres con condiciones de salud completamente distintas para cada grupo de edad, sin ningun control sobre esta variable", "Medir solo el volumen testicular, sin evaluar directamente la cantidad de espermatozoides producidos"], "correct": 0, "exp": "Comparar la produccion de espermatozoides entre distintos grupos de edad, controlando otras variables de salud, permite establecer de forma experimental si existe una relacion entre la edad y la cantidad de gametos masculinos producidos."}, {"skill": "PLAN", "q": "Para determinar si el momento de la ovulacion coincide consistentemente con un punto especifico del ciclo menstrual, cual es el diseno experimental mas adecuado?", "options": ["Medir indicadores de ovulacion (como niveles hormonales especificos) en distintos momentos a lo largo de varios ciclos menstruales completos de una misma persona, identificando en que momento del ciclo ocurre consistentemente la ovulacion", "Medir los indicadores de ovulacion solo en un unico momento de un unico ciclo, sin ningun seguimiento a lo largo de varios ciclos", "No es necesario ningun seguimiento a lo largo de varios ciclos para esta pregunta", "Medir solo la duracion total del ciclo, sin evaluar directamente ningun indicador especifico de ovulacion", "Comparar personas completamente distintas para cada ciclo evaluado, sin ningun seguimiento del mismo individuo"], "correct": 0, "exp": "Un seguimiento de indicadores especificos de ovulacion a lo largo de varios ciclos completos de la misma persona permite establecer de forma experimental si este evento ocurre consistentemente en un momento especifico y predecible del ciclo menstrual."}, {"skill": "PROC", "q": "Se midio la cantidad de espermatozoides producidos en hombres de distintos grupos de edad, con condiciones de salud similares entre grupos: cantidad relativamente estable en adultos jovenes y de mediana edad, con cierta disminucion gradual en edades mas avanzadas. Que conclusion es mas adecuada?", "options": ["La produccion de espermatozoides tiende a mantenerse relativamente estable durante gran parte de la vida adulta, con cierta disminucion gradual asociada a edades mas avanzadas", "La produccion de espermatozoides aumenta siempre con la edad del hombre, sin ninguna excepcion", "La edad no tiene ninguna relacion con la cantidad de espermatozoides producidos por un hombre", "Todos los grupos de edad evaluados muestran exactamente la misma cantidad de espermatozoides producidos", "La produccion de espermatozoides se detiene por completo al llegar a la mediana edad"], "correct": 0, "exp": "El patron de relativa estabilidad seguido de disminucion gradual en edades avanzadas confirma experimentalmente que, si bien la produccion de espermatozoides es un proceso continuo durante gran parte de la vida adulta, no es completamente inmune a cambios relacionados con la edad."}, {"skill": "PROC", "q": "Se midieron indicadores hormonales de ovulacion a lo largo de varios ciclos menstruales completos de una misma persona: pico consistente de estos indicadores aproximadamente en la mitad de cada ciclo evaluado. Que conclusion es mas adecuada?", "options": ["La ovulacion ocurre de forma consistente y predecible en un momento especifico del ciclo menstrual, aproximadamente en su punto medio", "La ovulacion ocurre de forma completamente aleatoria, sin ningun patron predecible dentro del ciclo menstrual", "Los indicadores hormonales de ovulacion no muestran ningun patron consistente entre distintos ciclos menstruales", "La ovulacion ocurre siempre al inicio del ciclo menstrual, en lugar de en su punto medio", "El momento de la ovulacion varia completamente entre cada ciclo evaluado, sin ningun patron identificable"], "correct": 0, "exp": "El pico consistente de indicadores hormonales aproximadamente en la mitad de cada ciclo evaluado confirma experimentalmente que la ovulacion ocurre de forma predecible en un momento especifico del ciclo menstrual, un patron relevante para comprender la fisiologia reproductiva femenina."}, {"skill": "EVAL", "q": "Un estudio concluyo que 'la ovulacion ocurre exactamente en el mismo dia del ciclo menstrual en todas las mujeres, sin ninguna variacion individual', basandose en un promedio poblacional. Que critica es mas pertinente?", "options": ["La conclusion es correcta porque la ovulacion ocurre exactamente en el mismo dia del ciclo en cualquier mujer, sin ninguna variacion individual", "La duracion del ciclo menstrual y el momento especifico de la ovulacion varian entre distintas mujeres (e incluso entre distintos ciclos de la misma mujer); generalizar un dia exacto identico para 'todas las mujeres, sin ninguna variacion individual' ignora esta variabilidad fisiologica normal bien documentada en el ciclo reproductivo femenino", "La ovulacion nunca ocurre en un momento predecible del ciclo menstrual, siendo siempre completamente aleatoria", "La duracion del ciclo menstrual es identica en todas las mujeres, sin ninguna variacion posible", "No es necesario considerar ninguna variacion individual al describir el momento de la ovulacion en el ciclo menstrual"], "correct": 1, "exp": "La duracion del ciclo menstrual y el momento especifico de ovulacion varian entre mujeres, e incluso entre ciclos de una misma mujer; generalizar un dia exacto e identico para todas ignora esta variabilidad fisiologica normal bien documentada."}, {"skill": "COM", "q": "Un estudiante debe explicar por qué comprender el momento aproximado de la ovulacion dentro del ciclo menstrual es relevante tanto para la planificacion familiar como para la comprension de la fertilidad. Cual es la explicación más precisa?", "options": ["Dado que el ovulo solo puede ser fecundado durante un periodo limitado tras la ovulacion, identificar el momento aproximado en que esta ocurre dentro del ciclo permite comprender la ventana de fertilidad de cada ciclo menstrual, informacion relevante tanto para quienes buscan lograr un embarazo como para quienes buscan evitarlo mediante metodos basados en el conocimiento del ciclo", "El momento de la ovulacion no tiene ninguna relacion con la ventana de fertilidad de una mujer", "El ovulo puede ser fecundado en cualquier momento del ciclo menstrual, sin ninguna ventana de tiempo limitada", "La planificacion familiar no requiere ningun conocimiento sobre el momento de la ovulacion en el ciclo menstrual", "La fertilidad de una mujer es identica en cualquier momento de su ciclo menstrual, sin ninguna variacion"], "correct": 0, "exp": "La explicación debe conectar el conocimiento fisiologico basico (momento y ventana de fertilidad asociada a la ovulacion) con su aplicacion practica relevante tanto para la planificacion reproductiva como para la comprension general de la fisiologia de la fertilidad femenina."}, {"skill": "PLAN", "q": "Para comprobar que la fecundacion requiere la union de un unico espermatozoide con el ovulo (y no de multiples espermatozoides), cual es el diseno experimental adecuado?", "options": ["Observar mediante microscopia el proceso de fecundacion, registrando cuantos espermatozoides logran penetrar exitosamente la membrana del ovulo en casos de fecundacion normal", "No es necesario observar el proceso de fecundacion para responder esta pregunta", "Asumir el numero de espermatozoides necesarios sin realizar ninguna observacion directa del proceso", "Contar solo el numero de espermatozoides presentes cerca del ovulo, sin observar cuantos logran penetrarlo", "Medir unicamente el tamano del ovulo, sin observar el proceso de penetracion espermatica"], "correct": 0, "exp": "Observar directamente mediante microscopia el proceso de fecundacion, registrando el numero de espermatozoides que logran penetrar exitosamente, permite establecer de forma experimental cuantos gametos masculinos participan normalmente en este proceso."}, {"skill": "PLAN", "q": "Un investigador desea determinar si el numero de cromosomas se mantiene constante a lo largo de multiples generaciones en una especie con reproduccion sexual. Cual es el diseno experimental adecuado?", "options": ["Contar el numero de cromosomas en celulas somaticas de varias generaciones sucesivas de la misma especie, comparando los valores obtenidos entre generaciones", "Contar el numero de cromosomas solo en una unica generacion, sin ninguna comparacion con generaciones anteriores o posteriores", "No es necesario comparar distintas generaciones para responder esta pregunta", "Contar los cromosomas en especies completamente distintas para cada generacion evaluada, sin ningun control sobre esta variable", "Medir solo el tamano corporal de los organismos, sin evaluar directamente el numero de cromosomas presentes"], "correct": 0, "exp": "Comparar el numero de cromosomas en celulas somaticas de generaciones sucesivas permite establecer de forma experimental si este numero se mantiene constante a lo largo del tiempo, confirmando la funcion de la meiosis en preservar la estabilidad cromosomica de la especie."}, {"skill": "PROC", "q": "Se observo mediante microscopia el proceso de fecundacion en casos normales: un unico espermatozoide penetrando exitosamente la membrana del ovulo, tras lo cual esta membrana se modifica rapidamente impidiendo la entrada de espermatozoides adicionales. Que conclusion es mas adecuada?", "options": ["La fecundacion normal involucra la union de un unico espermatozoide con el ovulo, con un mecanismo que previene la entrada de espermatozoides adicionales tras la penetracion inicial", "La fecundacion normal requiere siempre la union de multiples espermatozoides simultaneamente con el ovulo", "La membrana del ovulo no cambia de ninguna manera tras la penetracion del primer espermatozoide", "Cualquier numero de espermatozoides puede penetrar el ovulo sin ninguna restriccion tras la fecundacion inicial", "El mecanismo de bloqueo de la membrana ocurre antes de la penetracion del primer espermatozoide, no despues"], "correct": 0, "exp": "La observacion de un unico espermatozoide penetrante seguido de un cambio rapido en la membrana del ovulo confirma experimentalmente que la fecundacion normal involucra un unico gameto masculino, con un mecanismo de bloqueo que previene la poliespermia (entrada de multiples espermatozoides)."}, {"skill": "PROC", "q": "Se conto el numero de cromosomas en celulas somaticas de varias generaciones sucesivas de una especie con reproduccion sexual: numero identico y constante (46 en el caso humano) en todas las generaciones evaluadas. Que conclusion es mas adecuada?", "options": ["El numero de cromosomas se mantiene constante a lo largo de generaciones sucesivas, consistente con la funcion de la meiosis en preservar la estabilidad cromosomica de la especie", "El numero de cromosomas aumenta progresivamente con cada generacion sucesiva evaluada", "El numero de cromosomas no tiene ninguna relacion con el proceso de meiosis en la reproduccion sexual", "Cada generacion evaluada muestra un numero de cromosomas completamente distinto y aleatorio", "La meiosis no cumple ninguna funcion relacionada con la estabilidad cromosomica de una especie a traves de generaciones"], "correct": 0, "exp": "La constancia del numero de cromosomas a traves de generaciones sucesivas confirma experimentalmente la funcion esencial de la meiosis (reduccion cromosomica en gametos) combinada con la fecundacion (restauracion del numero completo), manteniendo estable el numero caracteristico de la especie a lo largo del tiempo."}, {"skill": "PROC", "q": "Se comparo la cantidad y calidad de espermatozoides producidos bajo temperatura testicular normal (cantidad y calidad optimas) frente a temperatura testicular experimentalmente elevada (cantidad y calidad reducidas). Que conclusion es mas adecuada?", "options": ["La temperatura testicular elevada reduce la cantidad y calidad de los espermatozoides producidos, consistente con el requerimiento de una temperatura mas fresca para una espermatogenesis optima", "La temperatura testicular elevada mejora la cantidad y calidad de los espermatozoides producidos", "La temperatura testicular no tiene ninguna relacion con la cantidad o calidad de los espermatozoides producidos", "Ambas condiciones de temperatura muestran exactamente la misma cantidad y calidad de espermatozoides", "La espermatogenesis ocurre con la misma eficiencia sin importar la temperatura testicular"], "correct": 0, "exp": "La reduccion de cantidad y calidad de espermatozoides especificamente bajo temperatura elevada, comparada con temperatura normal, confirma experimentalmente el requerimiento de una temperatura testicular ligeramente mas fresca para una espermatogenesis optima."}, {"skill": "EVAL", "q": "Un estudio concluyo que 'cualquier numero de espermatozoides puede fecundar exitosamente un ovulo simultaneamente, sin ningun mecanismo que lo impida'. Que critica es mas pertinente?", "options": ["La conclusion es correcta porque cualquier numero de espermatozoides puede fecundar simultaneamente un ovulo, sin ningun mecanismo que lo impida", "La observacion microscopica del proceso de fecundacion muestra un mecanismo especifico (cambio rapido en la membrana del ovulo) que impide la entrada de espermatozoides adicionales tras la penetracion del primero; afirmar que 'cualquier numero... sin ningun mecanismo que lo impida' contradice esta evidencia observacional bien documentada sobre el bloqueo de la poliespermia", "La fecundacion nunca involucra la penetracion de ningun espermatozoide en el ovulo", "La membrana del ovulo nunca cambia de ninguna manera durante el proceso de fecundacion", "El bloqueo de espermatozoides adicionales ocurre antes de la penetracion del primer espermatozoide"], "correct": 1, "exp": "La observacion microscopica documenta un mecanismo especifico de bloqueo (cambio en la membrana del ovulo tras la penetracion inicial) que previene la entrada de espermatozoides adicionales; afirmar que no existe ningun mecanismo que lo impida contradice esta evidencia observacional directa."}, {"skill": "EVAL", "q": "Una investigacion afirmo que 'el numero de cromosomas de una especie puede cambiar libremente de una generacion a otra sin ninguna consecuencia, gracias a la meiosis'. Que critica es mas pertinente?", "options": ["La afirmacion es correcta porque la meiosis permite que el numero de cromosomas cambie libremente entre generaciones sin ninguna consecuencia", "La funcion de la meiosis es precisamente mantener constante el numero de cromosomas a traves de generaciones (al reducirlo a la mitad en los gametos, que luego se combinan en la fecundacion); cambios en el numero cromosomico entre generaciones (aneuploidias) generalmente tienen consecuencias significativas para el desarrollo del organismo, contradiciendo la afirmacion de que esto ocurre 'sin ninguna consecuencia'", "La meiosis no tiene ninguna relacion con el mantenimiento del numero de cromosomas entre generaciones", "El numero de cromosomas de una especie nunca puede mantenerse constante entre distintas generaciones", "Cualquier cambio en el numero de cromosomas de una especie carece siempre de cualquier consecuencia biologica"], "correct": 1, "exp": "La funcion central de la meiosis es preservar la estabilidad cromosomica a traves de generaciones; alteraciones en el numero de cromosomas (aneuploidias) tipicamente tienen consecuencias significativas para el desarrollo, contradiciendo la afirmacion de que estos cambios ocurren libremente sin ninguna consecuencia."}, {"skill": "EVAL", "q": "Un estudio concluyo que 'la produccion de espermatozoides no se ve afectada de ninguna manera por factores ambientales como la temperatura, siendo un proceso completamente resistente a cualquier influencia externa'. Que critica es mas pertinente?", "options": ["La conclusion es correcta porque la produccion de espermatozoides es completamente resistente a cualquier factor ambiental externo, incluyendo la temperatura", "La evidencia muestra que la temperatura testicular elevada reduce la cantidad y calidad de los espermatozoides producidos; afirmar que este proceso es 'completamente resistente a cualquier influencia externa' contradice esta evidencia bien documentada sobre la sensibilidad de la espermatogenesis a factores ambientales como la temperatura", "La temperatura nunca puede afectar ningun aspecto de la fisiologia reproductiva masculina", "La espermatogenesis ocurre exactamente igual sin importar ninguna condicion ambiental externa", "No es necesario considerar ningun factor ambiental al evaluar la produccion de espermatozoides de un hombre"], "correct": 1, "exp": "La evidencia sobre la sensibilidad de la espermatogenesis a la temperatura testicular contradice directamente la afirmacion de que este proceso es completamente resistente a cualquier influencia ambiental externa, ignorando un factor bien documentado que puede afectar significativamente la produccion de gametos masculinos."}, {"skill": "EVAL", "q": "Una publicacion afirmo que 'la ventana de fertilidad de una mujer dura exactamente el mismo numero de dias en cualquier ciclo menstrual, sin ninguna variacion posible'. Que critica es mas pertinente?", "options": ["La afirmacion es correcta porque la ventana de fertilidad dura exactamente el mismo numero de dias en cualquier ciclo menstrual de cualquier mujer, sin ninguna variacion", "La duracion del ciclo menstrual y el momento especifico de la ovulacion pueden variar entre distintos ciclos, incluso en la misma mujer, lo que hace que la ventana de fertilidad tambien pueda variar en su duracion exacta y ubicacion dentro de cada ciclo; afirmar una duracion 'exactamente la misma... sin ninguna variacion posible' ignora esta variabilidad fisiologica normal", "La ventana de fertilidad nunca varia entre distintos ciclos menstruales de una misma mujer", "El ciclo menstrual tiene siempre exactamente la misma duracion total en cualquier mujer y en cualquier ciclo", "No es necesario considerar ninguna variacion en la duracion del ciclo menstrual al describir la ventana de fertilidad"], "correct": 1, "exp": "La duracion del ciclo menstrual y el momento de ovulacion pueden variar entre ciclos, incluso en la misma mujer; afirmar una duracion exactamente identica de la ventana de fertilidad en cualquier ciclo ignora esta variabilidad fisiologica normal bien documentada."}, {"skill": "COM", "q": "Un estudiante debe explicar por qué el mecanismo de bloqueo de la poliespermia (que impide la entrada de multiples espermatozoides al ovulo) es biologicamente importante para el desarrollo normal del embrion. Cual es la explicación más precisa?", "options": ["Si mas de un espermatozoide fecundara al mismo ovulo, el cigoto resultante tendria un numero anormal de cromosomas (mas del doble del numero haploide normal), lo cual generalmente resulta en un desarrollo embrionario anormal o inviable; el mecanismo de bloqueo asegura que solo un espermatozoide contribuya con su material genetico, manteniendo el numero cromosomico correcto", "La entrada de multiples espermatozoides al ovulo siempre resulta en un desarrollo embrionario normal y viable", "El numero de espermatozoides que fecundan un ovulo no tiene ninguna relacion con el numero de cromosomas del cigoto resultante", "El mecanismo de bloqueo de la poliespermia no aporta ninguna ventaja para el desarrollo normal del embrion", "Un cigoto con un numero anormal de cromosomas siempre se desarrolla con normalidad, sin ningun problema"], "correct": 0, "exp": "La explicación debe conectar el mecanismo de bloqueo con su consecuencia funcional critica: prevenir un numero anormal de cromosomas en el cigoto (que resultaria de la fecundacion por multiples espermatozoides), asegurando asi las condiciones geneticas necesarias para un desarrollo embrionario normal."}, {"skill": "COM", "q": "Al explicar por qué la meiosis es un proceso evolutivamente conservado y esencial para el mantenimiento de la estabilidad cromosomica de una especie a lo largo de generaciones, cual es la explicación más precisa?", "options": ["Sin la reduccion cromosomica caracteristica de la meiosis, cada fecundacion sucesiva duplicaria el numero de cromosomas de la descendencia respecto a la generacion anterior, lo cual rapidamente resultaria en un numero cromosomico inmanejable y probablemente incompatible con el desarrollo normal; la meiosis, al reducir el numero a la mitad en los gametos, permite que la fecundacion restaure exactamente el numero original, manteniendo la estabilidad a traves de generaciones", "La meiosis produce gametos con el numero completo de cromosomas, de la misma manera que la mitosis", "Sin la meiosis, el numero de cromosomas de una especie permaneceria constante de todas formas, gracias a otros mecanismos alternativos", "La estabilidad del numero de cromosomas a traves de generaciones no depende en ningun grado del proceso de meiosis", "La fecundacion no tiene ninguna relacion con el numero de cromosomas presente en cada generacion sucesiva"], "correct": 0, "exp": "La explicación debe articular el problema que resolveria la meiosis (evitar una duplicacion progresiva del numero cromosomico en cada generacion) y como su mecanismo especifico (reduccion a la mitad en los gametos) permite que la fecundacion restaure el numero correcto, un principio central para comprender la logica evolutiva de la reproduccion sexual."}, {"skill": "COM", "q": "Un estudiante debe explicar por qué comprender los factores que afectan la produccion de espermatozoides (como la temperatura testicular) tiene aplicaciones practicas relevantes, por ejemplo en el contexto de la fertilidad masculina. Cual es la explicación más precisa?", "options": ["Si ciertos factores ambientales (como la exposicion prolongada a temperaturas elevadas, por ejemplo por el uso frecuente de saunas o ropa muy ajustada) pueden reducir la cantidad y calidad de espermatozoides producidos, comprender esta relacion permite identificar y potencialmente modificar factores de estilo de vida que podrian estar contribuyendo a problemas de fertilidad masculina", "La temperatura testicular no tiene ninguna aplicacion practica relevante para la comprension de la fertilidad masculina", "La produccion de espermatozoides es completamente inmune a cualquier factor ambiental o de estilo de vida", "No es posible modificar ningun factor relacionado con la temperatura testicular para mejorar la fertilidad masculina", "La fertilidad masculina no tiene ninguna relacion con la cantidad o calidad de los espermatozoides producidos"], "correct": 0, "exp": "La explicación debe conectar el conocimiento fisiologico basico (sensibilidad de la espermatogenesis a la temperatura) con su aplicacion practica relevante para la salud reproductiva: identificar factores modificables de estilo de vida que podrian influir en la fertilidad masculina."}, {"skill": "COM", "q": "Un estudiante debe explicar por que la division citoplasmatica desigual durante la ovogenesis (que concentra recursos en un unico ovulo funcional en lugar de distribuirlos entre cuatro celulas iguales) representa una estrategia reproductiva distinta a la observada en la espermatogenesis. Cual es la explicación más precisa?", "options": ["Mientras la espermatogenesis produce cuatro espermatozoides funcionales de tamano similar (celulas pequenas y moviles, optimizadas para el transporte y la busqueda del ovulo), la ovogenesis concentra la mayoria de los recursos citoplasmaticos en un unico ovulo grande (optimizado para sostener las primeras etapas del desarrollo embrionario tras la fecundacion), reflejando las distintas funciones biologicas de cada tipo de gameto", "La ovogenesis y la espermatogenesis producen exactamente el mismo numero de gametos funcionales de tamano identico, sin ninguna diferencia", "Los espermatozoides requieren mas recursos citoplasmaticos que el ovulo para cumplir su funcion reproductiva", "La division citoplasmatica desigual de la ovogenesis no tiene ninguna relacion con la funcion biologica del ovulo resultante", "Todos los productos de la meiosis, tanto en hombres como en mujeres, son funcionalmente equivalentes entre si"], "correct": 0, "exp": "La explicación debe contrastar las distintas estrategias de division citoplasmatica entre ambos tipos de gametogenesis, conectando cada patron con la funcion biologica especifica de cada tipo de gameto: movilidad y numero en los espermatozoides, recursos concentrados para sostener el desarrollo inicial en el ovulo."}];
+
+let currentQuiz = [];
+let currentIndex = 0;
+let answered = false;
+let userAnswers = [];
+let scoreBySkill = {};
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function buildQuiz(){
+  let selected = [];
+  SKILL_ORDER.forEach(skillKey=>{
+    const pool = QUESTION_BANK.filter(q=>q.skill===skillKey);
+    const picked = shuffle(pool).slice(0,PICK_PER_SKILL);
+    selected = selected.concat(picked);
+  });
+  selected = shuffle(selected);
+  return selected.map(orig=>{
+    const idxArr = [0,1,2,3,4];
+    const shuffledIdx = shuffle(idxArr);
+    const newOptions = shuffledIdx.map(i=>orig.options[i]);
+    const newCorrect = shuffledIdx.indexOf(orig.correct);
+    return { skill: orig.skill, question: orig.q, options: newOptions, correct: newCorrect, exp: orig.exp };
+  });
+}
+
+function startQuiz(){
+  currentQuiz = buildQuiz();
+  currentIndex = 0;
+  answered = false;
+  userAnswers = [];
+  scoreBySkill = {};
+  SKILL_ORDER.forEach(s=>scoreBySkill[s]={correct:0,total:0});
+  document.getElementById('start-screen').classList.add('hidden');
+  document.getElementById('dashboard-screen').classList.add('hidden');
+  document.getElementById('review-screen').classList.add('hidden');
+  document.getElementById('quiz-screen').classList.remove('hidden');
+  renderQuestion();
+}
+
+function renderQuestion(){
+  answered = false;
+  const q = currentQuiz[currentIndex];
+  const total = currentQuiz.length;
+  document.getElementById('progress-fill').style.width = ((currentIndex)/total*100)+'%';
+  document.getElementById('progress-label').textContent = (currentIndex+1)+' / '+total;
+  document.getElementById('skill-tag').textContent = SKILL_NAMES[q.skill];
+  document.getElementById('qnum').textContent = 'Pregunta '+(currentIndex+1);
+  document.getElementById('question-text').textContent = q.question;
+
+  const optsDiv = document.getElementById('options');
+  optsDiv.innerHTML = '';
+  q.options.forEach((opt, i)=>{
+    const btn = document.createElement('button');
+    btn.className = 'option';
+    btn.innerHTML = '<span class="letter">'+LETTERS[i]+')</span><span>'+opt+'</span>';
+    btn.onclick = ()=>selectOption(i);
+    optsDiv.appendChild(btn);
+  });
+
+  document.getElementById('feedback').classList.add('hidden');
+  document.getElementById('next-btn').classList.add('hidden');
+}
+
+function selectOption(i){
+  if(answered) return;
+  answered = true;
+  const q = currentQuiz[currentIndex];
+  const correct = q.correct;
+  const options = document.querySelectorAll('#options .option');
+  options.forEach((opt, idx)=>{
+    opt.classList.add('locked');
+    if(idx===correct) opt.classList.add('correct');
+    else if(idx===i) opt.classList.add('incorrect');
+    else opt.classList.add('dim');
+  });
+
+  const isCorrect = (i===correct);
+  scoreBySkill[q.skill].total++;
+  if(isCorrect) scoreBySkill[q.skill].correct++;
+
+  userAnswers.push({ skill:q.skill, question:q.question, options:q.options, correctIdx:correct, chosenIdx:i, exp:q.exp, isCorrect });
+
+  const fb = document.getElementById('feedback');
+  fb.classList.remove('hidden');
+  fb.classList.toggle('wrong', !isCorrect);
+  fb.innerHTML = '<span class="pista-label">'+(isCorrect ? '✓ Correcto — Pista' : '✕ Incorrecto — Pista')+'</span>'+
+    '<strong>Respuesta correcta: '+LETTERS[correct]+') '+q.options[correct]+'</strong><br><br>'+q.exp;
+
+  document.getElementById('next-btn').classList.remove('hidden');
+}
+
+function nextQuestion(){
+  currentIndex++;
+  if(currentIndex >= currentQuiz.length){
+    showDashboard();
+  } else {
+    renderQuestion();
+  }
+}
+
+function showDashboard(){
+  document.getElementById('quiz-screen').classList.add('hidden');
+  document.getElementById('dashboard-screen').classList.remove('hidden');
+
+  const totalCorrect = userAnswers.filter(a=>a.isCorrect).length;
+  const totalQ = userAnswers.length;
+  document.getElementById('score-total').innerHTML = totalCorrect+'<span>/'+totalQ+'</span>';
+  const pct = Math.round((totalCorrect/totalQ)*100);
+  document.getElementById('score-caption').textContent = pct+'% de logro general';
+
+  const barsDiv = document.getElementById('skill-bars');
+  barsDiv.innerHTML = '';
+  const weakSkills = [];
+  const strongSkills = [];
+
+  SKILL_ORDER.forEach(skillKey=>{
+    const s = scoreBySkill[skillKey];
+    const skillPct = s.total>0 ? Math.round((s.correct/s.total)*100) : 0;
+    let color = 'var(--accent-coral)';
+    if(skillPct>=75) color='var(--accent-sage)';
+    else if(skillPct>=50) color='var(--accent-amber)';
+
+    const row = document.createElement('div');
+    row.className='skill-bar-row';
+    row.innerHTML = '<div class="skill-bar-head"><span class="name">'+SKILL_NAMES[skillKey]+'</span><span class="frac">'+s.correct+'/'+s.total+'</span></div>'+
+      '<div class="skill-bar-track"><div class="skill-bar-fill" style="width:'+skillPct+'%;background:'+color+';"></div></div>';
+    barsDiv.appendChild(row);
+
+    if(skillPct<75) weakSkills.push({name:SKILL_NAMES[skillKey], pct:skillPct});
+    else strongSkills.push(SKILL_NAMES[skillKey]);
+  });
+
+  const improveBox = document.getElementById('improve-box');
+  const improveList = document.getElementById('improve-list');
+  improveList.innerHTML='';
+  if(weakSkills.length>0){
+    improveBox.classList.remove('hidden');
+    weakSkills.sort((a,b)=>a.pct-b.pct).forEach(w=>{
+      const li = document.createElement('li');
+      li.innerHTML = '<strong>'+w.name+'</strong> ('+w.pct+'%) — refuerza con más ejercicios de este tipo de habilidad, revisando las pistas de las preguntas falladas.';
+      improveList.appendChild(li);
+    });
+  } else {
+    improveBox.classList.add('hidden');
+  }
+
+  const strongBox = document.getElementById('strong-box');
+  const strongText = document.getElementById('strong-text');
+  if(strongSkills.length>0){
+    strongBox.classList.remove('hidden');
+    strongText.textContent = strongSkills.join(', ') + '. Buen dominio, mantén la práctica con nuevos intentos.';
+  } else {
+    strongBox.classList.add('hidden');
+  }
+}
+
+function restartQuiz(){ startQuiz(); }
+
+function reviewAnswers(){
+  document.getElementById('dashboard-screen').classList.add('hidden');
+  const rev = document.getElementById('review-screen');
+  rev.classList.remove('hidden');
+  let html = '<p class="eyebrow">Revisión de respuestas</p>';
+  userAnswers.forEach((a, i)=>{
+    html += '<div style="margin-bottom:22px;padding-bottom:18px;border-bottom:1px solid var(--line);">'+
+      '<span class="skill-tag">'+SKILL_NAMES[a.skill]+'</span>'+
+      '<p class="question-text" style="font-size:16px;">'+(i+1)+'. '+a.question+'</p>'+
+      '<p style="font-size:14px;color:'+(a.isCorrect?'var(--accent-sage)':'var(--accent-coral)')+';margin:0 0 6px;">'+
+        (a.isCorrect ? '✓ Respondiste correctamente' : '✕ Tu respuesta: '+LETTERS[a.chosenIdx]+') '+a.options[a.chosenIdx])+
+      '</p>'+
+      '<p style="font-size:14px;color:var(--text-muted);margin:0 0 8px;">Correcta: '+LETTERS[a.correctIdx]+') '+a.options[a.correctIdx]+'</p>'+
+      '<div class="feedback" style="margin-top:6px;"><span class="pista-label">Pista</span>'+a.exp+'</div>'+
+    '</div>';
+  });
+  html += '<div class="actions"><button class="btn" onclick="restartQuiz(); document.getElementById(\'review-screen\').classList.add(\'hidden\');">Repetir con nuevas preguntas</button></div>';
+  rev.innerHTML = html;
+}
+</script>
+</body>
+</html>
